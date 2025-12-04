@@ -93,7 +93,7 @@ input, textarea, button {
     color: var(--muted);
 }
 
-/* --- 3. GRID & CARD STYLES (UPDATED for Vertical Layout) --- */
+/* --- 3. GRID & CARD STYLES (UPDATED for MAX Image Height) --- */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
@@ -107,7 +107,8 @@ input, textarea, button {
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.05);
     transition: transform 0.2s, box-shadow 0.3s;
-    min-height: 320px; /* Minimum height thodi aur badhayi */
+    /* Card ki minimum height image ke hisaab se adjust ki */
+    min-height: 330px; 
     text-align: left;
 }
 .card:hover {
@@ -117,23 +118,25 @@ input, textarea, button {
 }
 .thumb, .card img {
     width: 100%;
-    /* Image height ko Vertical Card ke liye fix kiya */
-    height: 250px; 
+    /* Image ki height aur badhayi */
+    height: 270px; 
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Text area ko compact karne ke liye margin kam kiya */
 }
 .card h3{
     font-weight:600;
     font-size:16px;
-    margin: 5px 0;
+    margin: 0 0 2px 0; /* Margin bahut kam kiya */
 }
 .card p.meta{
     color:var(--muted);
     font-size:14px;
-    margin-top:6px;
+    margin: 0; /* Description/Year ke liye margin hataya */
 }
+/* Note: Description abhi bhi app.js se aa raha hai, jise hum hamesha hide nahi kar sakte. 
+   Lekin yeh CSS se text area compact ho jayega. */
 
 /* --- 4. AUTH & UPLOAD CARD STYLES (Assuming they are correct) --- */
 .auth-card, .upload-card {
