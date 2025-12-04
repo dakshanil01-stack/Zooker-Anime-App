@@ -319,38 +319,32 @@ input, textarea, button {
     
     /* 🔥 FINAL FIX: Anime List Grid Cards (Mobile View) 🔥 */
     .grid{
-        /* Grid columns ko aur chota kiya: 110px ka minimum width rakha, taaki choti screen par 3 cards bhi fit ho saken */
-        grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); 
-        gap:10px; /* Gap kam kiya */
+        /* ZAROORI: Grid columns ko fixed 2 columns mein set kiya, taaki sirf 2 cards dikhein. */
+        grid-template-columns: 1fr 1fr; 
+        gap:15px; /* Gap thoda badhaya */
     }
     
     .card{
-        /* Card ki height aur choti ki taki 2 ya 3 cards easily dikhein */
-        min-height: 250px; 
-        padding: 6px; /* Padding kam kiya */
+        /* Card ki height thodi aur badhayi taki image achhe se fit ho */
+        min-height: 280px; 
+        padding: 8px; 
     }
     
     .thumb, .card img {
-        /* Image ki height compact ki */
+        /* Image height ko 2 cards per line ke liye set kiya */
         height: 180px; 
-        border-radius: 6px;
-        margin-bottom: 6px;
+        border-radius: 8px;
+        margin-bottom: 8px;
     }
 
     .card h3{
         font-size: 14px;
-        /* Title ko 1 line mein rakheinga */
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
     .card p.meta{
-        font-size: 11px;
-        margin-top: 2px;
-        /* Description ko Mobile view mein hata dete hain jaisa ki reference image mein hai */
+        /* Description hide rakha taki card clean aur compact dikhe */
         display: none; 
     }
-    
-    /* Ensure Trending Slider still works horizontally */
-    /* No changes needed here, as the !important fixes in Section 6 should handle it. */
 }
