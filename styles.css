@@ -424,7 +424,7 @@ input, textarea, button {
 
     min-height: 300px; 
 
-    text-align: left;
+    text-align: center;
 
 }
 
@@ -432,7 +432,7 @@ input, textarea, button {
 
 .thumb, .card img {
 
-    width: 100%;
+    width: 140px;
 
     height: 250px; 
 
