@@ -1,7 +1,7 @@
 /* Variables and general styles */
 :root {
     --bg: #0c1520;
-    --bg-light: #151f2b; /* Added for card/auth backgrounds */
+    --bg-light: #151f2b; 
     --card: rgba(255, 255, 255, 0.08); 
     --text: #ffffff;
     --muted: #94a3b8;
@@ -16,7 +16,8 @@ body {
     color: var(--text);
     font-family: sans-serif;
     margin: 0;
-    padding-top: 60px; /* 🔥 FIX: Fixed Header ke liye space 🔥 */
+    /* 70px ki padding di, jismein header ke neeche ka content show ho */
+    padding-top: 70px; 
 }
 a {
     color: var(--accent);
@@ -40,16 +41,17 @@ input, textarea, button {
     border: none;
 }
 
-/* --- 1. HEADER & FOOTER STYLES (UPDATED) --- */
+/* --- 1. HEADER & FOOTER STYLES (Fixed Nav Overlap) --- */
 .site-header {
-    background: rgba(12, 21, 32, 0.95);
+    background: rgba(12, 21, 32, 0.98); /* Opaque background */
     backdrop-filter: blur(8px);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    /* Space between brand, search and nav */
+    justify-content: space-between; 
     align-items: center;
     padding: 10px 20px;
     z-index: 1000;
@@ -59,16 +61,32 @@ input, textarea, button {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--accent);
-    margin-right: 20px;
+    flex-shrink: 0; /* Ensures brand name doesn't shrink */
+    margin-right: 15px;
+}
+.site-header nav {
+    /* Nav ko compact rakha */
+    display: flex;
+    gap: 8px; /* Links ke beech ki jagah kam ki */
+    flex-shrink: 0;
+    margin-left: 15px;
 }
 .site-header nav a {
-    margin-left: 15px;
+    /* Margins removed, gap is used */
+    margin-left: 0; 
+    font-size: 0.9rem; /* Font size thoda chota kiya for compactness */
     font-weight: 500;
     color: var(--muted);
 }
 .site-header nav a:hover {
     color: var(--text);
 }
+/* Search bar container ki width manage ki */
+.site-header div[style*="flex-grow: 1"] {
+    max-width: 350px; /* Max width kam ki */
+    flex-grow: 1;
+}
+
 .site-footer {
     padding: 20px;
     text-align: center;
@@ -77,27 +95,29 @@ input, textarea, button {
     margin-top: 40px;
 }
 
-/* --- 2. HERO SECTION --- */
+/* --- 2. HERO SECTION (Compacted) --- */
 .hero {
-    background: linear-gradient(90deg, #1f364d, #0c1520);
-    padding: 40px;
+    /* Padding kam kiya (40px se 30px kiya) */
+    padding: 30px; 
     border-radius: 12px;
     margin-bottom: 30px;
     text-align: center;
+    background: linear-gradient(90deg, #1f364d, #0c1520);
 }
 .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Font size kam kiya */
     color: var(--accent);
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Margin kam kiya */
 }
 .hero p {
     color: var(--muted);
+    font-size: 1rem;
 }
 
-/* --- 3. GRID & CARD STYLES (UPDATED) --- */
+/* --- 3. GRID & CARD STYLES --- */
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); /* Min Card size kam kiya */
     gap:20px;
 }
 .card{
@@ -108,7 +128,7 @@ input, textarea, button {
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.05);
     transition: transform 0.2s, box-shadow 0.3s;
-    min-height: 330px; 
+    min-height: 300px; /* Overall min height kam kiya */
     text-align: left;
 }
 .card:hover {
@@ -118,15 +138,15 @@ input, textarea, button {
 }
 .thumb, .card img {
     width: 100%;
-    height: 270px; 
+    height: 250px; /* Image height kam kiya */
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .card h3{
     font-weight:600;
-    font-size:16px;
+    font-size:15px; /* Font size thoda kam kiya */
     margin: 0 0 2px 0;
     white-space: nowrap;
     overflow: hidden;
@@ -134,7 +154,7 @@ input, textarea, button {
 }
 .card p.meta{
     color:var(--muted);
-    font-size:14px;
+    font-size:13px; /* Font size thoda kam kiya */
     margin: 0;
 }
 
@@ -143,7 +163,7 @@ input, textarea, button {
     max-width: 400px;
     margin: 50px auto;
     padding: 30px;
-    background: var(--bg-light); /* Changed to use variable */
+    background: var(--bg-light); 
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -234,7 +254,7 @@ input, textarea, button {
 }
 
 
-/* --- 6. SLIDER STYLES (FIXED) --- */
+/* --- 6. SLIDER STYLES (Compacted and Fixed Alignment) --- */
 .slider-wrapper h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -245,22 +265,24 @@ input, textarea, button {
     display: flex;
     overflow-x: scroll;
     scroll-snap-type: x mandatory; 
-    gap: 20px;
+    gap: 15px; /* Gap kam kiya */
     padding-bottom: 25px;
-    /* Removed flex-wrap: nowrap !important; as it is the default for flex */
 }
 .trending-slider::-webkit-scrollbar { display: none; }
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
 
 .slider-card {
-    flex-shrink: 0; /* Ensures cards stay horizontal */
-    width: 280px;     
-    height: 150px;
+    flex-shrink: 0; 
+    /* Width kam kiya aur height badhayi for vertical image look */
+    width: 140px;     
+    height: 250px; 
     display: flex;
-    background: var(--bg-light); /* Changed to use variable */
+    flex-direction: column; /* Content vertical kiya */
+    justify-content: flex-start;
+    background: var(--bg-light); 
     border-radius: 12px;
-    padding: 10px;
-    text-align: left;
+    padding: 8px;
+    text-align: center;
     cursor: pointer;
     scroll-snap-align: start;
     transition: transform 0.2s, background 0.2s;
@@ -270,20 +292,20 @@ input, textarea, button {
     background: rgba(15, 23, 32, 0.7);
 }
 .slider-card img {
-    width: 130px; 
-    height: 100%; 
+    /* Image ko full card width diya */
+    width: 100%; 
+    height: 200px; 
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 0;
-    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-right: 0;
 }
 .slider-card h4 {
-    flex-grow: 1;
-    align-self: center;
-    font-size: 1.1rem;
+    flex-grow: 0;
+    font-size: 0.9rem; /* Font size chota kiya */
     font-weight: 600;
     margin: 0;
-    white-space: normal;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -301,14 +323,13 @@ input, textarea, button {
 }
 
 
-/* --- 8. PAGINATION CONTROLS STYLES (Center the Block) --- */
+/* --- 8. PAGINATION CONTROLS STYLES --- */
 .pagination-controls {
     max-width: 500px; 
-    margin: 40px auto; /* Block ko center kiya */
+    margin: 40px auto; 
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Optional styles (if not using Tailwind classes in HTML): */
     padding: 15px;
     background: var(--bg-light);
     border-radius: 12px;
@@ -339,7 +360,7 @@ input, textarea, button {
     }
     .site-header nav a {
         margin-left: 10px;
-        font-size: 0.9rem;
+        font-size: 0.8rem; /* Mobile par Nav links aur choti ki */
     }
     .container {
         padding: 10px;
@@ -347,6 +368,16 @@ input, textarea, button {
     .hero {
         padding: 20px;
         margin-top: 10px;
+    }
+    .hero h1 {
+        font-size: 1.8rem; /* Mobile Hero Title size */
+    }
+    .slider-card {
+        width: 120px; /* Mobile par slider cards aur choti ki */
+        height: 220px;
+    }
+    .slider-card img {
+        height: 170px;
     }
 }
 
@@ -376,12 +407,17 @@ input, textarea, button {
         font-size: 11px;
         margin: 0;
     }
-
-    .slider-card {
-        width: 250px; /* Slider cards ko thoda chota kiya */
-        height: 140px;
+    /* Header Stack fix (Mobile) */
+    .site-header {
+        flex-wrap: wrap; /* Elements ko next line mein aane diya */
     }
-    .slider-card img {
-        width: 120px;
+    .site-header div[style*="flex-grow: 1"] {
+        order: 3; /* Search bar ko neeche laya */
+        width: 100%;
+        max-width: 100%;
+        margin-top: 10px;
+    }
+    .site-header nav {
+        order: 2; /* Nav ko side mein rakha */
     }
 }
