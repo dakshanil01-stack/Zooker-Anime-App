@@ -136,12 +136,13 @@ function handleUpload(e) {
 // Global variable to store all fetched data once
 let allAnimeData = []; 
 
-// Load function (Will be called only once on page load)
+// app.js (SECTION 4. DATABASE के अंदर)
+
+// Load function (Will be called only once on page load to fetch and store data)
 function loadAnimeList() {
     const listContainer = document.getElementById('animeList');
     
     // 1. Skeleton Loader Injection (Same as before)
-    // ... (Skeleton code remains here) ...
     listContainer.innerHTML = ""; 
     let skeletonHTML = '';
     for(let i=0; i<8; i++) {
@@ -155,6 +156,63 @@ function loadAnimeList() {
     }
     listContainer.innerHTML = skeletonHTML; 
     
+    // 2. Data Fetching and Storing (Fetching only once)
+    db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+        
+        allAnimeData = []; // Reset global data array
+        const renderedItems = new Set(); 
+        
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
+
+            if (!renderedItems.has(uniqueKey)) {
+                renderedItems.add(uniqueKey);
+                // Data ko global array me store karein
+                allAnimeData.push(data); 
+            }
+        });
+        
+        // Initial render of all items
+        filterAnimeList(""); 
+    });
+}
+
+// New function to filter and render the list
+function filterAnimeList(query) {
+    const listContainer = document.getElementById('animeList');
+    listContainer.innerHTML = ""; // Clear existing list/skeleton
+
+    const filteredData = allAnimeData.filter(data => {
+        const titleMatch = data.title.toLowerCase().includes(query);
+        const seriesIdMatch = data.seriesId ? data.seriesId.toLowerCase().includes(query) : false;
+        return titleMatch || seriesIdMatch;
+    });
+
+    if (filteredData.length === 0) {
+        listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No results found for your search.</p>";
+        return;
+    }
+
+    filteredData.forEach((data) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const displayTitle = data.seriesId || data.title;
+        // Assuming you have a 'year' field or use a truncated part of description for year
+        const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
+
+
+        card.innerHTML = `
+            <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x270/000/fff?text=No+Image'">
+            <h3>${displayTitle}</h3>
+            <p class="meta">${displayYear}</p>
+        `;
+        
+        card.onclick = () => navigate('watch', data);
+        listContainer.appendChild(card);
+    });
+}
     // 2. Data Fetching and Storing (Fetching only once)
     db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
         
