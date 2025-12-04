@@ -16,24 +16,21 @@
     <header class="site-header">
       <div class="brand">ZOOKER</div>
       
-      <div style="flex-grow: 1; max-width: 400px; margin: 0 20px;">
-          <input type="text" id="searchBar" placeholder="Search Anime & Movies..." 
-                 style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0, 255, 240, 0.1); background: rgba(255, 255, 255, 0.05); color: white;">
-      </div>
-
-      <nav>
+            <nav>
         <a href="#" onclick="navigate('home')">Home</a>
         <a href="#" id="uploadLink" onclick="navigate('upload')" style="display:none;">Upload</a> 
-        
-                <a href="#" id="adminLink" onclick="navigate('admin')" style="display:none;">Admin</a> 
-
+        <a href="#" id="adminLink" onclick="navigate('admin')" style="display:none;">Admin</a> 
         <a href="#" id="authLink" onclick="navigate('login')">Login</a>
         <a href="#" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</a>
       </nav>
     </header>
 
-    <main id="view" class="container"></main>
-    <div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
+    <div id="searchBarContainer" class="search-bar-container">
+        <input type="text" id="searchBar" placeholder="Search Anime & Movies..." />
+    </div>
+        <main id="view" class="container"></main>
+    
+    <div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
     <button id="prevBtn" onclick="goToPreviousPage()" disabled 
             class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
         Previous
@@ -49,8 +46,8 @@
     </footer>
   </div>
 
-  <template id="tpl-home">
-    <section class="hero">
+<template id="tpl-home">
+    <section class="hero">
       <h1>Stream Free Anime & Movies</h1>
       <p>Welcome To Our Site</p>
     </section>
@@ -66,7 +63,7 @@
 </template>
 
 <template id="tpl-watch">
-    <section class="watch-container">
+    <section class="watch-container">
       <button class="back-btn" onclick="navigate('home')">← Back to Home</button>
       <div class="video-wrapper">
         <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
@@ -79,8 +76,8 @@
     </section>
 </template>
 
-  <template id="tpl-login">
-    <section class="auth-card">
+<template id="tpl-login">
+    <section class="auth-card">
       <h2>Login</h2>
       <form onsubmit="handleLogin(event)">
         <input id="loginEmail" type="email" placeholder="Email" required />
@@ -89,10 +86,10 @@
       </form>
       <p>New here? <a href="#" onclick="navigate('signup')">Create Admin Account</a></p>
     </section>
-  </template>
+</template>
 
-  <template id="tpl-signup">
-    <section class="auth-card">
+<template id="tpl-signup">
+    <section class="auth-card">
       <h2>Sign Up</h2>
       <form onsubmit="handleSignup(event)">
         <input id="signEmail" type="email" placeholder="Email" required />
@@ -103,10 +100,10 @@
       </form>
       <p>Already have an account? <a href="#" onclick="navigate('login')">Login</a></p>
     </section>
-  </template>
+</template>
 
- <template id="tpl-upload">
-    <section class="upload-card">
+<template id="tpl-upload">
+    <section class="upload-card">
       <h2>Upload New Anime</h2>
       <form onsubmit="handleUpload(event)">
         <input id="u_title" placeholder="Full Title (e.g., Attack on Titan S1 E1)" required />
