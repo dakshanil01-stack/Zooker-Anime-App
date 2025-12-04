@@ -16,9 +16,9 @@ const auth = firebase.auth();
 // Global variable to store all fetched data once (Search ke liye zaroori)
 let allAnimeData = [];
 
-// 🔥 NAYE PAGINATION VARIABLES 🔥
+// 🔥 PAGINATION VARIABLES 🔥
 let currentPage = 1;
-const itemsPerPage = 12; // Ek page par kitne items dikhane hain (8 se badhaya gaya)
+const itemsPerPage = 12; // Ek page par kitne items dikhane hain
 let lastVisible = null; // Next page ke liye reference
 let firstVisibleHistory = {}; // Previous pages ke liye reference store karne ke liye
 
@@ -45,6 +45,11 @@ function navigate(pageId, data = null) {
     // Search bar har home load par initialize hona chahiye
     initializeSearchBar();
   }
+  
+  // 🔥 NEW LOGIC FOR ADMIN PAGE 🔥
+  if (pageId === 'admin') {
+      loadAdminContentList();
+  }
     
   if (pageId === 'watch' && data) setupPlayer(data);
 }
@@ -54,48 +59,58 @@ function navigate(pageId, data = null) {
 
 /**
  * Authentication state ko check karta hai aur navigation bar mein links dikhata hai.
- * Upload link sirf 'ADMIN' displayName wale users ko dikhti hai.
+ * Upload link aur Admin link sirf 'ADMIN' displayName wale users ko dikhti hai.
  */
 function checkLoginStatus() {
   auth.onAuthStateChanged(user => {
     const authLink = document.getElementById('authLink');
     const logoutBtn = document.getElementById('logoutBtn');
     const uploadLink = document.getElementById('uploadLink');
+    // 🔥 Admin Link Variable 🔥
+    const adminLink = document.getElementById('adminLink'); 
 
     if (user) {
-      // User logged in hai
+      // User logged in है
       authLink.style.display = 'none';
       logoutBtn.style.display = 'inline';
       
-      // Admin Check: Agar displayName 'ADMIN' hai, toh Upload link dikhao
+      // Admin Check
       if(user.displayName === 'ADMIN') {
         uploadLink.style.display = 'inline';
+        // 🔥 Admin Link Visible 🔥
+        adminLink.style.display = 'inline'; 
       } else {
-        uploadLink.style.display = 'none'; // Non-admin users ke liye chhupa do
+        uploadLink.style.display = 'none'; 
+        // 🔥 Non-admin users के लिए Admin link hidden 🔥
+        adminLink.style.display = 'none';
       }
     } else {
-      // User logged out hai
+      // User logged out है
       authLink.style.display = 'inline';
       logoutBtn.style.display = 'none';
       uploadLink.style.display = 'none';
+      // 🔥 Logged out users के लिए hidden 🔥
+      adminLink.style.display = 'none'; 
     }
   });
 }
 
 /**
  * Naye user ko register karta hai (Standard User Signup).
- * Admin checkbox aur logic ab hata diya gaya hai.
  */
 function handleSignup(e) {
   e.preventDefault();
-  
-  // Error Handling: agar implemented ho toh yahan clear karein
-  // if (typeof clearAuthErrors === 'function') clearAuthErrors(); 
   
   const email = document.getElementById('signEmail').value;
   const pass = document.getElementById('signPass').value;
   
   auth.createUserWithEmailAndPassword(email, pass)
+    .then((userCredential) => {
+        // Default user ko 'USER' displayName de do (Admin access dene ke liye manually Firebase Console use karein)
+        return userCredential.user.updateProfile({
+            displayName: 'USER' 
+        });
+    })
     .then(() => {
       // Signup ke baad seedhe sign out karke login page par bhej do.
       return auth.signOut(); 
@@ -106,36 +121,25 @@ function handleSignup(e) {
     })
     .catch((error) => {
       alert("Error: " + error.message); 
-      // Error Handling: agar implemented ho toh yahan display karein
-      // if (typeof displayAuthError === 'function') displayAuthError('signup-error', error.message);
     });
 }
 
 /**
- * Existing user ko login karta hai (Sabhi users allowed hain).
- * Pichla Admin check remove kar diya gaya hai taki naye users login kar sakein.
+ * Existing user ko login karta hai.
  */
 function handleLogin(e) {
   e.preventDefault();
-  
-  // Error Handling: agar implemented ho toh yahan clear karein
-  // if (typeof clearAuthErrors === 'function') clearAuthErrors(); 
   
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
 
   auth.signInWithEmailAndPassword(email, pass)
     .then(() => {
-      // ✅ SUCCESS: Sabhi users successfully login kar sakte hain.
-      // checkLoginStatus() ab upload link ko control karega.
       alert("Welcome back!");
       navigate('home'); 
     })
     .catch((error) => {
-      // Login error ko handle karein
       alert("Error: " + error.message);
-      // Error Handling: agar implemented ho toh yahan display karein
-      // if (typeof displayAuthError === 'function') displayAuthError('login-error', error.message);
     });
 }
 
@@ -178,7 +182,7 @@ function handleUpload(e) {
 }
 
 
-// 🔥 UPDATED loadAnimeList (Ab yeh pagination ke saath kaam karega) 🔥
+// 🔥 PAGINATION SUPPORTED loadAnimeList 🔥
 function loadAnimeList(page = 1) {
     const listContainer = document.getElementById('animeList');
     const paginationControls = document.getElementById('paginationControls');
@@ -269,7 +273,7 @@ function loadAnimeList(page = 1) {
     });
 }
 
-// 🔥 NEW FUNCTION: Card Rendering Logic (loadAnimeList se alag kiya gaya) 🔥
+// Card Rendering Logic
 function renderAnimeCards(dataArray, container) {
     dataArray.forEach((data) => {
         const card = document.createElement('div');
@@ -290,7 +294,7 @@ function renderAnimeCards(dataArray, container) {
 }
 
 
-// 🔥 UPDATED filterAnimeList (Ab yeh sirf current page ke data par search karega) 🔥
+// Search Filtering Logic (only on current page's data)
 function filterAnimeList(query) {
     const listContainer = document.getElementById('animeList');
     const paginationControls = document.getElementById('paginationControls');
@@ -299,7 +303,6 @@ function filterAnimeList(query) {
     // Search ke waqt pagination controls chhupa do
     paginationControls.style.display = (query.length > 0) ? 'none' : 'flex';
 
-    // allAnimeData ab sirf current page ka data hai
     const filteredData = allAnimeData.filter(data => {
         const titleMatch = data.title.toLowerCase().includes(query.toLowerCase());
         const seriesIdMatch = data.seriesId ? data.seriesId.toLowerCase().includes(query.toLowerCase()) : false;
@@ -316,8 +319,9 @@ function filterAnimeList(query) {
 }
 
 
-// --- 5. SLIDER LOGIC (Trending List Dikhana - Naya Function) ---
+// --- 5. SLIDER LOGIC ---
 function loadTrendingSlider() {
+    // ... (logic remains the same) ...
     const sliderContainer = document.getElementById('trendingSlider');
     
     // 1. Skeleton Loader Injection
@@ -365,8 +369,9 @@ function loadTrendingSlider() {
 }
 
 
-// Player Setup (Ab Series ke episodes ko Season ke hisaab se group karke dikhayega)
+// Player Setup
 function setupPlayer(data) {
+    // ... (logic remains the same) ...
   document.getElementById('watchTitle').innerText = data.title;
   document.getElementById('watchDesc').innerText = data.description;
   
@@ -470,7 +475,7 @@ function initializeSearchBar() {
     }
 }
 
-// 🔥 NEW PAGINATION CONTROL LOGIC 🔥
+// --- 7. PAGINATION CONTROL LOGIC ---
 
 /**
  * Pagination Controls ko update karta hai (Disable/Enable buttons aur page number)
@@ -497,13 +502,11 @@ function updatePaginationControls(currentResultsCount) {
     if (currentResultsCount < itemsPerPage) {
         nextBtn.disabled = true;
     } else {
-        // Next page enable rakho. Next page load par agar results 0 aaye toh disable ho jayega.
         nextBtn.disabled = false;
     }
 }
 
 function goToNextPage() {
-    // next button click hone par next page load karein
     const nextPageIndex = currentPage + 1;
     loadAnimeList(nextPageIndex); 
     // Scroll to top
@@ -512,7 +515,6 @@ function goToNextPage() {
 
 function goToPreviousPage() {
     if (currentPage > 1) {
-        // previous button click hone par pichla page load karein
         const prevPageIndex = currentPage - 1;
         loadAnimeList(prevPageIndex); 
         // Scroll to top
@@ -521,10 +523,116 @@ function goToPreviousPage() {
 }
 
 
-// --- 7. INITIALIZATION (Window Load Fix) ---
-// Window.onload ko sirf ek baar use kiya gaya hai.
+// 🔥 --- 8. ADMIN MANAGEMENT LOGIC --- 🔥
+
+/**
+ * Firestore से सभी सामग्री लोड करता है और एडमिन पैनल में दिखाता है।
+ */
+function loadAdminContentList() {
+    const listContainer = document.getElementById('adminContentList');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '<h3>Loading all series/episodes...</h3>';
+
+    db.collection("animes").orderBy("timestamp", "desc").get()
+        .then((querySnapshot) => {
+            listContainer.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                listContainer.innerHTML = '<p>No content uploaded yet.</p>';
+                return;
+            }
+
+            const list = document.createElement('ul');
+            list.style.listStyle = 'none';
+            list.style.padding = '0';
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const docId = doc.id; // Document ID को प्राप्त करें
+
+                const listItem = document.createElement('li');
+                listItem.style.display = 'flex';
+                listItem.style.justifyContent = 'space-between';
+                listItem.style.alignItems = 'center';
+                listItem.style.padding = '10px 0';
+                listItem.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+
+                const titleElement = document.createElement('span');
+                // Display Title and Episode/Season
+                const displayTitle = data.seriesId || data.title;
+                const displayEpisode = data.episode ? `E${data.episode}` : (data.season ? `S${data.season}` : '');
+                titleElement.innerText = `${displayTitle} ${displayEpisode}`.trim();
+                titleElement.style.flexGrow = '1';
+
+                const buttonGroup = document.createElement('div');
+                buttonGroup.style.display = 'flex';
+                buttonGroup.style.gap = '10px';
+
+                // Edit Button (Placeholder)
+                const editBtn = document.createElement('button');
+                editBtn.innerText = 'Edit';
+                editBtn.className = 'edit-btn';
+                // Note: Agar aap Tailwind use kar rahe hain, toh yahan CSS classes use karein. Abhi inline styles hain.
+                editBtn.style.background = 'var(--accent2)';
+                editBtn.style.color = 'var(--bg)';
+                editBtn.style.border = 'none';
+                editBtn.style.padding = '5px 10px';
+                editBtn.style.borderRadius = '4px';
+                editBtn.onclick = () => { 
+                    alert(`Edit functionality for ${displayTitle} (ID: ${docId}) is coming soon!`);
+                };
+
+                // Delete Button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = 'Delete';
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.style.background = 'red';
+                deleteBtn.style.color = 'white';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.padding = '5px 10px';
+                deleteBtn.style.borderRadius = '4px';
+                deleteBtn.onclick = () => deleteContent(docId, displayTitle);
+
+                buttonGroup.appendChild(editBtn);
+                buttonGroup.appendChild(deleteBtn);
+                listItem.appendChild(titleElement);
+                listItem.appendChild(buttonGroup);
+                list.appendChild(listItem);
+            });
+            listContainer.appendChild(list);
+
+        })
+        .catch(error => {
+            listContainer.innerHTML = `<p style="color: red; text-align: center;">Error loading admin list: ${error.message}</p>`;
+        });
+}
+
+/**
+ * सामग्री को Firestore से हटाता है।
+ * @param {string} docId - वह डॉक्यूमेंट ID जिसे हटाना है।
+ * @param {string} title - सामग्री का शीर्षक (कंफर्मेशन के लिए)।
+ */
+function deleteContent(docId, title) {
+    if (confirm(`Are you sure you want to permanently delete: ${title}? This action cannot be undone.`)) {
+        db.collection("animes").doc(docId).delete()
+            .then(() => {
+                alert(`${title} successfully deleted.`);
+                // लिस्ट को फिर से लोड करें
+                loadAdminContentList(); 
+                // Home page list ko bhi refresh karna padega
+                loadAnimeList(currentPage); 
+            })
+            .catch((error) => {
+                alert("Error removing document: " + error.message);
+            });
+    }
+}
+
+
+// --- 9. INITIALIZATION (Window Load Fix) ---
+// Window.onload को सिर्फ एक बार use किया गया है.
 window.onload = () => {
     checkLoginStatus();
     navigate('home');  
-    // initializeSearchBar() call ab navigate('home') ke andar ho raha hai.
 };
