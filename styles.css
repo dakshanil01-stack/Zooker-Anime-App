@@ -145,56 +145,66 @@ button:hover {
 
 
 /* --- 6. SLIDER STYLES --- */
+/* --- 6. SLIDER STYLES (UPDATED FOR LAYOUT FIX) --- */
 .slider-wrapper h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
     color: white;
 }
+
 .trending-slider {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory; 
+    display: flex; /* Horizontal arrangement ke liye */
+    overflow-x: scroll; /* Scrollability ke liye */
+    scroll-snap-type: x mandatory; 
     gap: 20px;
     padding-bottom: 25px;
+    /* Yeh zaroori hai agar koi flex-wrap property problem kar rahi ho */
+    flex-wrap: nowrap !important;
 }
+
 .trending-slider::-webkit-scrollbar { display: none; }
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
+
 .slider-card {
-    flex-shrink: 0; 
-    width: 280px;
+    /* **FINAL FIXES:** Horizontal hone ke liye yeh properties pakki honi chahiye */
+    flex-shrink: 0 !important;  /* Isi wajah se vertical stack hota hai. Fix kiya! */
+    width: 280px !important;     /* Fixed width zaroori hai */
+    height: 150px;
+    display: flex;           /* Content ko side-by-side rakhega */
+
+    /* Baki styles */
     background: var(--card); 
     border-radius: 12px;
     padding: 10px;
     text-align: left;
     cursor: pointer;
     scroll-snap-align: start;
-    transition: transform 0.2s, background 0.2s;
-    height: 150px;
-    display: flex;
+    transition: transform 0.2s, background 0.2s;
 }
+
 .slider-card:hover {
-    transform: scale(1.02); /* Thoda kam scale */
-    background: rgba(15, 23, 32, 0.7); /* Hover par thoda dark ho jaye */
+    transform: scale(1.02);
+    background: rgba(15, 23, 32, 0.7);
 }
+
 .slider-card img {
-    /* Image ko left mein rakho */
-    width: 130px; 
-    height: 100%; /* Height poora use karein */
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 0;
-    margin-right: 10px; /* Title se doori */
+    width: 130px; 
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
+    margin-right: 10px;
 }
+
 .slider-card h4 {
-    /* Title ko image ke side mein rakho */
-    flex-grow: 1; /* Baki space title use karega */
-    align-self: center; /* Beech mein rakhega */
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-    white-space: normal; /* Title wrap ho sakta hai */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-grow: 1;
+    align-self: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
