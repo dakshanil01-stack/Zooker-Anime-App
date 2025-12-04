@@ -321,3 +321,30 @@ function setupPlayer(data) {
     listContainer.innerHTML = `<p>This is a standalone episode and is not part of a series.</p>`;
   }
 }
+// --- 6. SEARCH FUNCTIONALITY ---
+
+function initializeSearchBar() {
+    const searchBar = document.getElementById('searchBar');
+    
+    // Check if search bar exists on the current page (only on home page)
+    if (searchBar) {
+        // Debounce: हर कीस्ट्रोक पर नहीं, बल्कि टाइपिंग रुकने पर सर्च करेगा
+        let timeout = null;
+        
+        searchBar.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const query = this.value.trim().toLowerCase();
+                // Call the function to filter the list
+                filterAnimeList(query);
+            }, 300); // 300ms delay
+        });
+    }
+}
+
+// Ensure the search bar is initialized when the page loads
+window.onload = () => {
+    checkLoginStatus();
+    navigate('home');
+    initializeSearchBar(); // Call the new initializer
+};
