@@ -302,6 +302,7 @@ input, textarea, button {
 
 /* --- 8. MEDIA QUERIES --- */
 @media (max-width: 600px) {
+    /* Header adjustments */
     .site-header {
         padding: 10px;
     }
@@ -315,5 +316,39 @@ input, textarea, button {
     .hero h1 {
         font-size: 2rem;
     }
-    /* Ensure no styles here break the horizontal slider! */
+    
+    /* ZAROORI FIX: Anime List Grid Cards (Mobile View) */
+    .grid{
+        /* Grid columns ko chota kiya taki 2 ya 3 cards easily fit ho saken */
+        grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); 
+        gap:15px;
+    }
+    
+    .card{
+        /* Mobile par Card ki height badhayi (Vertical look) */
+        min-height: 280px; 
+        padding: 8px; /* Padding kam kiya */
+    }
+    
+    .thumb, .card img {
+        /* Mobile par Image ki height badhayi (Vertical look ke liye) */
+        height: 200px; 
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .card h3{
+        font-size: 15px;
+        /* Description hide kar sakte hain taki card compact dikhe, jaisa ki reference image mein hai */
+        /* display: none; */ 
+    }
+    .card p.meta{
+        font-size: 12px;
+        margin-top: 4px;
+        /* Description agar mobile par nahi dikhana to uncomment karein: */
+        /* display: none; */
+    }
+    
+    /* Ensure Slider does not break! */
+    /* Slider ke liye koi change yahan nahi hona chahiye, kyuki woh flex-shrink: 0 se fixed hai */
 }
