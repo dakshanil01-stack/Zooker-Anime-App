@@ -133,60 +133,83 @@ function handleUpload(e) {
   .catch((error) => alert("Upload Failed: " + error.message));
 }
 
-// Read Function (Ab Series aur Movies ko sirf ek baar dikhayega)
+// Global variable to store all fetched data once
+let allAnimeData = []; 
+
+// Load function (Will be called only once on page load)
 function loadAnimeList() {
-  const listContainer = document.getElementById('animeList');
-  const renderedItems = new Set();
-  
-  // 1. Skeleton Loader Injection (UPDATED FOR VERTICAL CARD SIZE)
-  listContainer.innerHTML = ""; 
-  let skeletonHTML = '';
-  for(let i=0; i<8; i++) {
-    skeletonHTML += `
-      <div class="card skeleton-loader">
-        <div class="thumb skeleton-loader" style="height:250px; margin-bottom:10px; border-radius:10px;"></div>
-        <div class="skeleton-loader" style="height:16px; width:90%; margin-bottom:5px;"></div>
-        <div class="skeleton-loader" style="height:14px; width:60%;"></div>
-      </div>
-    `;
-  }
-  listContainer.innerHTML = skeletonHTML; 
-  
-  // 2. Data Fetching and Rendering
-  db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+    const listContainer = document.getElementById('animeList');
     
-    listContainer.innerHTML = ""; // Skeleton Clear 
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      
-      const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
-
-      if (renderedItems.has(uniqueKey)) {
-          return;
-      }
-      renderedItems.add(uniqueKey);
-
-      const card = document.createElement('div');
-      card.className = 'card';
-      
-      const displayTitle = data.seriesId || data.title;
-
-      card.innerHTML = `
-        <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x250/000/fff?text=No+Image'">
-        <h3>${displayTitle}</h3>
-        <p class="meta">${data.description ? data.description.substring(0, 50) + '...' : 'No description provided'}</p>
-      `;
-      
-      card.onclick = () => navigate('watch', data);
-      
-      listContainer.appendChild(card);
-    });
-    
-    if (renderedItems.size === 0) {
-      listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No anime found yet. Please upload content.</p>";
+    // 1. Skeleton Loader Injection (Same as before)
+    // ... (Skeleton code remains here) ...
+    listContainer.innerHTML = ""; 
+    let skeletonHTML = '';
+    for(let i=0; i<8; i++) {
+        skeletonHTML += `
+          <div class="card skeleton-loader">
+            <div class="thumb skeleton-loader" style="height:270px; margin-bottom:8px; border-radius:10px;"></div>
+            <div class="skeleton-loader" style="height:16px; width:90%; margin-bottom:2px;"></div>
+            <div class="skeleton-loader" style="height:14px; width:60%;"></div>
+          </div>
+        `;
     }
-  });
+    listContainer.innerHTML = skeletonHTML; 
+    
+    // 2. Data Fetching and Storing (Fetching only once)
+    db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+        
+        allAnimeData = []; // Reset global data array
+        const renderedItems = new Set(); 
+        
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
+
+            if (!renderedItems.has(uniqueKey)) {
+                renderedItems.add(uniqueKey);
+                allAnimeData.push(data); // Store unique item data globally
+            }
+        });
+        
+        // Initial render of all items
+        filterAnimeList(""); 
+    });
+}
+
+// New function to filter and render the list
+function filterAnimeList(query) {
+    const listContainer = document.getElementById('animeList');
+    listContainer.innerHTML = ""; // Clear existing list/skeleton
+
+    const filteredData = allAnimeData.filter(data => {
+        const titleMatch = data.title.toLowerCase().includes(query);
+        const seriesIdMatch = data.seriesId ? data.seriesId.toLowerCase().includes(query) : false;
+        return titleMatch || seriesIdMatch;
+    });
+
+    if (filteredData.length === 0) {
+        listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No results found for your search.</p>";
+        return;
+    }
+
+    filteredData.forEach((data) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const displayTitle = data.seriesId || data.title;
+        // Assuming you have a 'year' field or use a truncated part of description for year
+        const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
+
+
+        card.innerHTML = `
+            <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x270/000/fff?text=No+Image'">
+            <h3>${displayTitle}</h3>
+            <p class="meta">${displayYear}</p>
+        `;
+        
+        card.onclick = () => navigate('watch', data);
+        listContainer.appendChild(card);
+    });
 }
 
 // --- 5. SLIDER LOGIC (Trending List Dikhana - Naya Function) ---
