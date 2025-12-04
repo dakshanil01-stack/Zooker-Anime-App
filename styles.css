@@ -95,6 +95,7 @@ button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradie
     margin-bottom: 5px;
     background: #333;
     color: #fff;
+    
     border: none;
     padding: 8px 12px;
     cursor: pointer;
@@ -104,4 +105,13 @@ button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradie
 .episode-list button.active {
     background: #bb86fc;
     color: #000;
+}
+.card img {
+    /* Yeh zaroori hai! */
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 8px;
 }
