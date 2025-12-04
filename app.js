@@ -52,44 +52,64 @@ function navigate(pageId, data = null) {
   }
     
   if (pageId === 'watch' && data) setupPlayer(data);
+  
+  // Navigate hone par mobile menus band kar do
+  closeSidebar();
+  closeUserMenu();
 }
 
 
 // --- 3. AUTHENTICATION (Login/Signup/Logout) ---
 
 /**
- * Authentication state ko check karta hai aur navigation bar mein links dikhata hai.
- * Upload link aur Admin link sirf 'ADMIN' displayName wale users ko dikhti hai.
+ * Authentication state ko check karta hai aur navigation bar mein links/menu dikhata hai.
  */
 function checkLoginStatus() {
   auth.onAuthStateChanged(user => {
     const authLink = document.getElementById('authLink');
     const logoutBtn = document.getElementById('logoutBtn');
     const uploadLink = document.getElementById('uploadLink');
-    // 🔥 Admin Link Variable 🔥
     const adminLink = document.getElementById('adminLink'); 
+    
+    // 🔥 MOBILE USER MENU LOGIC 🔥
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+        if (user) {
+            // Logged in user menu content
+            userMenu.innerHTML = `
+                <a href="#" onclick="navigate('home');">Home</a>
+                <a href="#" onclick="navigate('upload');" style="display: ${user.displayName === 'ADMIN' ? 'block' : 'none'};">Upload</a>
+                <a href="#" onclick="navigate('admin');" style="display: ${user.displayName === 'ADMIN' ? 'block' : 'none'};">Admin</a>
+                <a href="#" onclick="logoutUser();">Logout</a>
+            `;
+        } else {
+            // Logged out user menu content
+            userMenu.innerHTML = `
+                <a href="#" onclick="navigate('login');">Login</a>
+                <a href="#" onclick="navigate('signup');">Sign Up</a>
+            `;
+        }
+    }
+    // 🔥 END MOBILE USER MENU LOGIC 🔥
 
     if (user) {
-      // User logged in है
+      // User logged in है (Desktop Nav)
       authLink.style.display = 'none';
       logoutBtn.style.display = 'inline';
       
-      // Admin Check
+      // Admin Check (Desktop Nav)
       if(user.displayName === 'ADMIN') {
         uploadLink.style.display = 'inline';
-        // 🔥 Admin Link Visible 🔥
         adminLink.style.display = 'inline'; 
       } else {
         uploadLink.style.display = 'none'; 
-        // 🔥 Non-admin users के लिए Admin link hidden 🔥
         adminLink.style.display = 'none';
       }
     } else {
-      // User logged out है
+      // User logged out है (Desktop Nav)
       authLink.style.display = 'inline';
       logoutBtn.style.display = 'none';
       uploadLink.style.display = 'none';
-      // 🔥 Logged out users के लिए hidden 🔥
       adminLink.style.display = 'none'; 
     }
   });
@@ -629,10 +649,86 @@ function deleteContent(docId, title) {
     }
 }
 
+// 🔥 --- 9. MOBILE UI LOGIC --- 🔥
 
-// --- 9. INITIALIZATION (Window Load Fix) ---
-// Window.onload को सिर्फ एक बार use किया गया है.
+/**
+ * Mobile Sidebar Menu खोलता है।
+ */
+function openSidebar() {
+    document.getElementById("sidebarMenu").style.width = "250px"; 
+    document.getElementById("sidebarOverlay").style.display = "block";
+    closeUserMenu(); // Make sure user menu is closed
+}
+
+/**
+ * Mobile Sidebar Menu बंद करता है।
+ */
+function closeSidebar() {
+    const sidebar = document.getElementById("sidebarMenu");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (sidebar && overlay) {
+        sidebar.style.width = "0";
+        overlay.style.display = "none";
+    }
+}
+
+/**
+ * Mobile User Menu dropdown को खोलता/बंद करता है।
+ */
+function toggleUserMenu() {
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+        // Toggle the display
+        const isHidden = userMenu.style.display === 'none' || userMenu.style.display === '';
+        
+        if (isHidden) {
+            // Close sidebar before opening user menu
+            closeSidebar(); 
+            userMenu.style.display = 'block';
+        } else {
+            userMenu.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Mobile User Menu dropdown को बंद करता है।
+ */
+function closeUserMenu() {
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+        userMenu.style.display = 'none';
+    }
+}
+
+/**
+ * Section तक smooth scroll करता है।
+ */
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        // Search bar aur header ke size ke liye offset
+        const offset = 110; 
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = section.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+        closeSidebar();
+    }
+}
+
+
+// --- 10. INITIALIZATION (Window Load Fix and Event Listeners) ---
 window.onload = () => {
     checkLoginStatus();
     navigate('home');  
+    
+    // 🔥 Attach Mobile UI Event Listeners 🔥
+    document.getElementById('menuToggle').addEventListener('click', openSidebar);
+    document.getElementById('userToggle').addEventListener('click', toggleUserMenu);
 };
