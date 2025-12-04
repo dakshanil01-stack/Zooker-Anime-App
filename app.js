@@ -28,7 +28,7 @@ function navigate(pageId, data = null) {
   // Agar Home page hai toh dono functions call karo (Sahi Logic)
   if (pageId === 'home') {
     loadAnimeList();
-    loadTrendingSlider(); // 🚨 Yahan Naya Slider Function Call Ho Raha Hai
+    loadTrendingSlider();
   }
   
   // Agar Watch page hai toh player setup karo
@@ -55,7 +55,6 @@ function checkLoginStatus() {
       authLink.style.display = 'none';
       logoutBtn.style.display = 'inline';
       
-      // Check agar wo ADMIN hai (Humne signup ke waqt naam me store kiya tha simple tareeke ke liye)
       if(user.displayName === 'ADMIN') {
         uploadLink.style.display = 'inline';
       }
@@ -69,7 +68,6 @@ function checkLoginStatus() {
 }
 
 // Signup Function
-// Signup Function (Naya aur zyada reliable code)
 function handleSignup(e) {
   e.preventDefault();
   const email = document.getElementById('signEmail').value;
@@ -79,20 +77,17 @@ function handleSignup(e) {
   auth.createUserWithEmailAndPassword(email, pass)
     .then((userCredential) => {
       if(isAdmin) {
-        // Hum profile update ka wait kar rahe hain (Promise chaining)
         return userCredential.user.updateProfile({ displayName: "ADMIN" })
           .then(() => userCredential); 
       }
       return userCredential;
     })
     .then(() => {
-      // Profile update hone ke baad, hum user ko logout kar denge 
-      // taaki woh dobara login karein aur naya ADMIN status load ho.
       return auth.signOut(); 
     })
     .then(() => {
       alert("Admin Account Successfully Created! Please use the Login button now.");
-      navigate('login'); // Ab login page par bhejenge
+      navigate('login');
     })
     .catch((error) => alert("Error: " + error.message));
 }
@@ -106,7 +101,7 @@ function handleLogin(e) {
   auth.signInWithEmailAndPassword(email, pass)
     .then((userCredential) => {
       alert("Welcome back!");
-      navigate('home'); // Login ke baad home pe bhej do
+      navigate('home');
     })
     .catch((error) => alert("Error: " + error.message));
 }
@@ -135,9 +130,9 @@ function handleUpload(e) {
 
   db.collection("animes").add({
     title: title,
-    seriesId: seriesId, // Naya field
-    season: season,     // Naya field
-    episode: episode,   // Naya field
+    seriesId: seriesId, 
+    season: season,     
+    episode: episode,   
     image: image,
     videoUrl: video,
     description: desc,
@@ -145,7 +140,7 @@ function handleUpload(e) {
   })
   .then(() => {
     alert(`Episode ${episode} of Series ${seriesId} Upload Successful!`);
-    e.target.reset(); // Form clear karo
+    e.target.reset();
   })
   .catch((error) => alert("Upload Failed: " + error.message));
 }
@@ -156,10 +151,8 @@ function loadAnimeList() {
   
   const renderedItems = new Set();
   
-  // 🚨 1. Purana content hatao
+  // 1. Skeleton Loader Injection
   listContainer.innerHTML = ""; 
-  
-  // 🚨 2. Skeleton Loader Code Jodein (Grid ke liye) 🚨
   let skeletonHTML = '';
   for(let i=0; i<8; i++) {
     skeletonHTML += `
@@ -171,45 +164,43 @@ function loadAnimeList() {
     `;
   }
   listContainer.innerHTML = skeletonHTML; 
-  // ------------------------------------------
   
+  // 2. Data Fetching and Rendering
   db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
     
-    // Yahan hum pehle skeleton ko clear karte hain
-    listContainer.innerHTML = ""; 
+    listContainer.innerHTML = ""; // Skeleton Clear 
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       
-      // Agar seriesId hai toh use unique key banao, warna title ko banao
-      const uniqueKey = data.seriesId || data.title; 
+      // FIX: Ensure uniqueKey is robust. Use seriesId if present, else use title
+      const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
 
-      // Agar yeh item pehle hi render ho chuka hai, toh skip karo
+      // Skip duplicates
       if (renderedItems.has(uniqueKey)) {
           return;
       }
-      
-      // Item ko rendered list mein daalo
       renderedItems.add(uniqueKey);
 
-      // Card HTML banao
+      // Card HTML creation
       const card = document.createElement('div');
       card.className = 'card';
       
-      // Zaroori: Image mein 'thumb' class jodo aur Title mein thoda badlav karo
+      // Display Series ID (if present) or Title
+      const displayTitle = data.seriesId || data.title;
+
       card.innerHTML = `
-        <img class="thumb" src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/200/000/fff?text=No+Image'">
-        <h3>${data.seriesId || data.title}</h3>
+        <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/200/000/fff?text=No+Image'">
+        <h3>${displayTitle}</h3>
         <p class="meta">${data.description ? data.description.substring(0, 50) + '...' : 'No description provided'}</p>
       `;
       
-      // Click karne par Watch page pe le jao
       card.onclick = () => navigate('watch', data);
       
       listContainer.appendChild(card);
     });
     
-    // Agar koi data nahi mila toh message dikhao
+    // Handle no content
     if (renderedItems.size === 0) {
       listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No anime found yet. Please upload content.</p>";
     }
@@ -220,44 +211,46 @@ function loadAnimeList() {
 function loadTrendingSlider() {
     const sliderContainer = document.getElementById('trendingSlider');
     
-    // 🚨 Skeleton Loader Code Jodein (Slider ke liye) 🚨
+    // 1. Skeleton Loader Injection
     let sliderSkeleton = '';
     for(let i=0; i<4; i++) {
-        // Slider card ka naya structure (CSS se match karta hua)
         sliderSkeleton += `<div class="slider-card skeleton-loader">
             <div class="skeleton-loader" style="width:130px; height:100%; border-radius:8px;"></div>
             <div class="skeleton-loader" style="height:20px; flex-grow:1; align-self:center;"></div>
         </div>`;
     }
     sliderContainer.innerHTML = sliderSkeleton;
-    // ------------------------------------------
-
     
-    // Sirf top 5 latest items fetch karo
+    
+    // 2. Data Fetching and Rendering
     db.collection("animes").orderBy("timestamp", "desc").limit(5).get().then((querySnapshot) => {
-        sliderContainer.innerHTML = ""; // Data aane par skeleton hatao
+        sliderContainer.innerHTML = ""; // Skeleton Clear
         
-        const renderedItems = new Set(); // Duplicates se bachne ke liye
+        const renderedItems = new Set(); 
         
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            const uniqueKey = data.seriesId || data.title;
             
-            // Duplicate series ko skip karein
+            // FIX: Ensure uniqueKey is robust.
+            const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
+
+            // Skip duplicates
             if (renderedItems.has(uniqueKey)) {
                 return;
             }
             renderedItems.add(uniqueKey);
 
-            // Slider Item (Card) HTML banao
+            // Slider Item (Card) HTML creation
             const slide = document.createElement('div');
             slide.className = 'slider-card';
+            
+            const displayTitle = data.seriesId || data.title;
+
             slide.innerHTML = `
-                <img src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/250/111/fff?text=Trending'">
-                <h4>${data.seriesId || data.title}</h4>
+                <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/250/111/fff?text=Trending'">
+                <h4>${displayTitle}</h4>
             `;
             
-            // Click karne par Watch page pe le jao
             slide.onclick = () => navigate('watch', data);
             
             sliderContainer.appendChild(slide);
@@ -273,12 +266,10 @@ function setupPlayer(data) {
   
   let videoSrc = data.videoUrl;
   
-  // Mixed Content Fix
   if (videoSrc.startsWith('http:')) {
       videoSrc = videoSrc.replace('http:', 'https:');
   }
 
-  // Video Source Set Karo (jo episode click hua hai woh play hoga)
   document.getElementById('videoPlayer').src = videoSrc;
 
   // --- Episode Listing Logic ---
@@ -315,37 +306,29 @@ function setupPlayer(data) {
         for (const seasonTitle in episodesBySeason) {
             const episodes = episodesBySeason[seasonTitle];
             
-            // Season Heading / Title
             const seasonHeading = document.createElement('h4');
-            seasonHeading.className = 'season-heading'; // CSS ke liye naya class
+            seasonHeading.className = 'season-heading';
             seasonHeading.innerText = seasonTitle;
             listContainer.appendChild(seasonHeading);
             
-            // Episode Buttons Container
             const episodeButtonsContainer = document.createElement('div');
             episodeButtonsContainer.className = 'episode-buttons-container';
             listContainer.appendChild(episodeButtonsContainer);
 
-            // Har Season ke liye Episode Buttons banao
             episodes.forEach((epData) => {
                 const epButton = document.createElement('button');
-                epButton.innerText = `E${epData.episode}`; // Sirf Episode number dikhayein
+                epButton.innerText = `E${epData.episode}`;
                 
-                // Current episode ko highlight karein
                 if (epData.videoUrl === data.videoUrl) {
                     epButton.classList.add('active');
                 }
                 
-                // Button click event
                 epButton.onclick = () => {
-                   // Video URL ko https mein badlein (safety ke liye)
                    let newSrc = epData.videoUrl.startsWith('http:') ? epData.videoUrl.replace('http:', 'https:') : epData.videoUrl;
                    
-                   // Player update
                    document.getElementById('videoPlayer').src = newSrc;
                    document.getElementById('watchTitle').innerText = epData.title;
                    
-                   // Active button change karein
                    document.querySelectorAll('.episode-buttons-container button').forEach(btn => btn.classList.remove('active'));
                    epButton.classList.add('active');
                 };
