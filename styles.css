@@ -1,6 +1,7 @@
-/* Variables and general styles (assuming they are correct) */
+/* Variables and general styles */
 :root {
     --bg: #0c1520;
+    --bg-light: #151f2b; /* Added for card/auth backgrounds */
     --card: rgba(255, 255, 255, 0.08); 
     --text: #ffffff;
     --muted: #94a3b8;
@@ -15,7 +16,7 @@ body {
     color: var(--text);
     font-family: sans-serif;
     margin: 0;
-    padding-top: 60px; /* Header ke liye space */
+    padding-top: 60px; /* 🔥 FIX: Fixed Header ke liye space 🔥 */
 }
 a {
     color: var(--accent);
@@ -30,7 +31,7 @@ a:hover {
     max-width: 1200px;
     margin: auto;
 }
-/* General input/button styles (assuming they are correct) */
+/* General input/button styles */
 input, textarea, button {
     font-family: inherit;
     font-size: 1rem;
@@ -93,7 +94,7 @@ input, textarea, button {
     color: var(--muted);
 }
 
-/* --- 3. GRID & CARD STYLES (UPDATED for MAX Image Height) --- */
+/* --- 3. GRID & CARD STYLES (UPDATED) --- */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
@@ -107,7 +108,6 @@ input, textarea, button {
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.05);
     transition: transform 0.2s, box-shadow 0.3s;
-    /* Card ki minimum height image ke hisaab se adjust ki */
     min-height: 330px; 
     text-align: left;
 }
@@ -118,32 +118,32 @@ input, textarea, button {
 }
 .thumb, .card img {
     width: 100%;
-    /* Image ki height aur badhayi */
     height: 270px; 
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    margin-bottom: 8px; /* Text area ko compact karne ke liye margin kam kiya */
+    margin-bottom: 8px;
 }
 .card h3{
     font-weight:600;
     font-size:16px;
-    margin: 0 0 2px 0; /* Margin bahut kam kiya */
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .card p.meta{
     color:var(--muted);
     font-size:14px;
-    margin: 0; /* Description/Year ke liye margin hataya */
+    margin: 0;
 }
-/* Note: Description abhi bhi app.js se aa raha hai, jise hum hamesha hide nahi kar sakte. 
-   Lekin yeh CSS se text area compact ho jayega. */
 
-/* --- 4. AUTH & UPLOAD CARD STYLES (Assuming they are correct) --- */
+/* --- 4. AUTH & UPLOAD CARD STYLES --- */
 .auth-card, .upload-card {
     max-width: 400px;
     margin: 50px auto;
     padding: 30px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    background: var(--bg-light); /* Changed to use variable */
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -175,7 +175,7 @@ input, textarea, button {
     margin-top: 15px;
 }
 
-/* --- 5. WATCH PAGE STYLES (Assuming they are correct) --- */
+/* --- 5. WATCH PAGE STYLES --- */
 .watch-container {
     margin-top: 20px;
 }
@@ -234,7 +234,7 @@ input, textarea, button {
 }
 
 
-/* --- 6. SLIDER STYLES (Mobile Layout Fixes Retained) --- */
+/* --- 6. SLIDER STYLES (FIXED) --- */
 .slider-wrapper h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -247,19 +247,17 @@ input, textarea, button {
     scroll-snap-type: x mandatory; 
     gap: 20px;
     padding-bottom: 25px;
-    flex-wrap: nowrap !important; /* Fix: Vertical stack ko rokne ke liye */
+    /* Removed flex-wrap: nowrap !important; as it is the default for flex */
 }
 .trending-slider::-webkit-scrollbar { display: none; }
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
 
 .slider-card {
-    /* Horizontal Layout ke liye zaroori */
-    flex-shrink: 0 !important;   
-    width: 280px !important;     
+    flex-shrink: 0; /* Ensures cards stay horizontal */
+    width: 280px;     
     height: 150px;
     display: flex;
-    /* Baki styles */
-    background: var(--card);
+    background: var(--bg-light); /* Changed to use variable */
     border-radius: 12px;
     padding: 10px;
     text-align: left;
@@ -291,7 +289,7 @@ input, textarea, button {
 }
 
 
-/* --- 7. SKELETON LOADER STYLES (Assuming they are correct) --- */
+/* --- 7. SKELETON LOADER STYLES --- */
 .skeleton-loader {
     animation: pulse-bg 1.5s infinite;
     border-radius: 4px;
@@ -303,10 +301,56 @@ input, textarea, button {
 }
 
 
-/* --- 8. MEDIA QUERIES --- */
+/* --- 8. PAGINATION CONTROLS STYLES (Center the Block) --- */
+.pagination-controls {
+    max-width: 500px; 
+    margin: 40px auto; /* Block ko center kiya */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Optional styles (if not using Tailwind classes in HTML): */
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: 12px;
+}
+.pagination-controls button {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: bold;
+    padding: 8px 15px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.pagination-controls #pageInfo {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+
+/* --- 9. MEDIA QUERIES --- */
+@media (max-width: 768px) {
+    .site-header {
+        padding: 10px;
+    }
+    .site-header nav a {
+        margin-left: 10px;
+        font-size: 0.9rem;
+    }
+    .container {
+        padding: 10px;
+    }
+    .hero {
+        padding: 20px;
+        margin-top: 10px;
+    }
+}
+
 @media (max-width: 600px) {
-    /* ... (Other header/hero adjustments) ... */
-    
     /* Grid setting (2 cards per line) */
     .grid{
         grid-template-columns: 1fr 1fr; 
@@ -314,46 +358,30 @@ input, textarea, button {
     }
     
     .card{
-        /* Mobile Card Height ko Image ke hisaab se adjust kiya */
         min-height: 250px; 
         padding: 6px; 
     }
     
     .thumb, .card img {
-        /* Mobile Image height aur badhayi */
         height: 180px; 
         border-radius: 6px;
-        margin-bottom: 4px; /* Margin kam kiya */
+        margin-bottom: 4px;
     }
 
     .card h3{
-        font-size: 13px; /* Font size chota kiya */
+        font-size: 13px;
         margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
     .card p.meta{
         font-size: 11px;
-        color: var(--muted);
-        margin: 0; /* Margin hataya */
-        /* Agar aapko sirf Name aur Year chahiye, toh description (agar woh p.meta mein hai) ko hide rakha ja sakta hai */
-        /* display: none; */ 
+        margin: 0;
     }
-}
-/* --- 8. PAGINATION CONTROLS STYLES (To Center the Block) --- */
-.pagination-controls {
-    /* 1. Max width maintain rakhi */
-    max-width: 500px; 
-    
-    /* 2. Block ko center kiya (MUST HAVE for horizontal centering) */
-    margin: 40px auto; 
 
-    /* 3. Ensure Flex properties are applied correctly (HTML se copy kiya gaya) */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    /* (Optional) Ye classes (bg-gray-900, border, shadow) HTML mein hain, 
-       lekin yahan bhi rakhi ja sakti hain agar aap HTML se hatana chahte hain */
+    .slider-card {
+        width: 250px; /* Slider cards ko thoda chota kiya */
+        height: 140px;
+    }
+    .slider-card img {
+        width: 120px;
+    }
 }
