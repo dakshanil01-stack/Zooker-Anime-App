@@ -144,21 +144,20 @@ button:hover {
 }
 
 
-/* --- 6. SLIDER STYLES --- */
-/* --- 6. SLIDER STYLES (UPDATED FOR LAYOUT FIX) --- */
+/* --- 6. SLIDER STYLES (FINAL LAYOUT FIX) --- */
 .slider-wrapper h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: white;
 }
 
 .trending-slider {
-    display: flex; /* Horizontal arrangement ke liye */
-    overflow-x: scroll; /* Scrollability ke liye */
-    scroll-snap-type: x mandatory; 
-    gap: 20px;
-    padding-bottom: 25px;
-    /* Yeh zaroori hai agar koi flex-wrap property problem kar rahi ho */
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory; 
+    gap: 20px;
+    padding-bottom: 25px;
+    /* YAHAN ZAROORI FIX: Wrap hone se rokein */
     flex-wrap: nowrap !important;
 }
 
@@ -166,47 +165,45 @@ button:hover {
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
 
 .slider-card {
-    /* **FINAL FIXES:** Horizontal hone ke liye yeh properties pakki honi chahiye */
-    flex-shrink: 0 !important;  /* Isi wajah se vertical stack hota hai. Fix kiya! */
-    width: 280px !important;     /* Fixed width zaroori hai */
-    height: 150px;
-    display: flex;           /* Content ko side-by-side rakhega */
-
-    /* Baki styles */
-    background: var(--card); 
-    border-radius: 12px;
-    padding: 10px;
-    text-align: left;
-    cursor: pointer;
-    scroll-snap-align: start;
-    transition: transform 0.2s, background 0.2s;
+    /* **FINAL FIXES:** Horizontal hone ke liye yeh teen lines zaroori hain */
+    flex-shrink: 0 !important;   /* Card ko chota hone se zabardasti rokta hai */
+    width: 280px !important;     /* Fixed width zabardasti set karta hai */
+    display: flex;               /* Content ko side-by-side rakhega */
+    
+    /* Baki styles */
+    height: 150px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 0.2s, background 0.2s;
 }
 
 .slider-card:hover {
-    transform: scale(1.02);
-    background: rgba(15, 23, 32, 0.7);
+    transform: scale(1.02);
+    background: rgba(15, 23, 32, 0.7);
 }
 
 .slider-card img {
-    width: 130px; 
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 0;
-    margin-right: 10px;
+    width: 130px; 
+    height: 100%; 
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
+    margin-right: 10px;
 }
 
 .slider-card h4 {
-    flex-grow: 1;
-    align-self: center;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-grow: 1;
+    align-self: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
 
 /* --- 7. FOOTER & NOTES --- */
 .site-footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
