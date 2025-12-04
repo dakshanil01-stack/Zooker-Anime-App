@@ -414,7 +414,7 @@ input, textarea, button {
 
     padding:10px;
 
-    position:relative;
+    position:absolute;
 
     overflow:hidden;
 
