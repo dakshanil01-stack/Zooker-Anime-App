@@ -25,8 +25,11 @@ function navigate(pageId, data = null) {
   const clone = template.content.cloneNode(true);
   view.appendChild(clone);
 
-  // Agar Home page hai toh data fetch karo
-  if (pageId === 'home') loadAnimeList();
+  // Agar Home page hai toh dono functions call karo (Sahi Logic)
+  if (pageId === 'home') {
+    loadAnimeList();
+    loadTrendingSlider(); // 🚨 Yahan Naya Slider Function Call Ho Raha Hai
+  }
   
   // Agar Watch page hai toh player setup karo
   if (pageId === 'watch' && data) setupPlayer(data);
@@ -146,6 +149,7 @@ function handleUpload(e) {
   })
   .catch((error) => alert("Upload Failed: " + error.message));
 }
+
 // Read Function (Ab Series aur Movies ko sirf ek baar dikhayega)
 function loadAnimeList() {
   const listContainer = document.getElementById('animeList');
@@ -178,7 +182,7 @@ function loadAnimeList() {
       card.innerHTML = `
         <img class="thumb" src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/200/000/fff?text=No+Image'">
         <h3>${data.seriesId || data.title}</h3>
-        <p class="meta">${data.description.substring(0, 50)}...</p>
+        <p class="meta">${data.description ? data.description.substring(0, 50) + '...' : 'No description provided'}</p>
       `;
       
       // Click karne par Watch page pe le jao
@@ -188,7 +192,8 @@ function loadAnimeList() {
     });
   });
 }
-// --- 5. SLIDER LOGIC (Trending List Dikhana) ---
+
+// --- 5. SLIDER LOGIC (Trending List Dikhana - Naya Function) ---
 function loadTrendingSlider() {
     const sliderContainer = document.getElementById('trendingSlider');
     
@@ -223,6 +228,8 @@ function loadTrendingSlider() {
         });
     });
 }
+
+
 // Player Setup (Ab Series ke episodes ko Season ke hisaab se group karke dikhayega)
 function setupPlayer(data) {
   document.getElementById('watchTitle').innerText = data.title;
