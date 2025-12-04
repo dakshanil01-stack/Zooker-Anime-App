@@ -341,3 +341,8 @@ input, textarea, button {
         /* display: none; */ 
     }
 }
+.pagination-controls {
+            max-width: 500px; /* Controls ko chota rakho */
+            margin-left: auto;
+            margin-right: auto;
+}
