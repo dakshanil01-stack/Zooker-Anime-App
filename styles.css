@@ -233,3 +233,14 @@ button:hover {
         padding: 6px 10px;
     }
 }
+/* --- SKELETON LOADER ANIMATION --- */
+@keyframes pulse-bg {
+  0% { background-color: rgba(255, 255, 255, 0.05); }
+  50% { background-color: rgba(255, 255, 255, 0.1); }
+  100% { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+.skeleton-loader {
+    animation: pulse-bg 1.5s infinite;
+    border-radius: 10px;
+}
