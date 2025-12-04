@@ -1,150 +1,237 @@
-/* --- 1. ROOT & FONT --- */
-:root{
-  --bg:#02070e; /* Deep dark background */
-  --card:#0f1720;
-  --accent:#00fff0;
-  --accent2:#ff00ff;
-  --glass: rgba(255,255,255,0.05); /* Thoda zyada visible glass effect */
-  --muted:#9aa3b2;
-  --radius:14px;
+/* Variables and general styles (assuming they are correct) */
+:root {
+    --bg: #0c1520;
+    --card: rgba(255, 255, 255, 0.08); 
+    --text: #ffffff;
+    --muted: #94a3b8;
+    --accent: #00ffeb; /* Teal */
+    --accent2: #00c7ff; /* Lighter Blue */
 }
-/* Ensure Inter font is available */
-/* Agar yeh line kaam na kare toh HTML mein link jodein */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-
-*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-
-/* --- 2. BASE STYLES --- */
-html,body,#app{
-    height:100%;
-    margin:0;
-    /* Deep dark smooth gradient */
-    background: linear-gradient(180deg, #02070e 0%, #050b13 100%); 
-    color:white;
+* {
+    box-sizing: border-box;
 }
-.site-header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:transparent;position:sticky;top:0;backdrop-filter:blur(6px);z-index:3}
-.brand{font-weight:800;letter-spacing:6px;font-size:20px;color:var(--accent);text-shadow:0 0 14px rgba(0,255,240,0.12)}
-nav a{margin-left:14px;text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px; transition: color 0.3s, box-shadow 0.3s;}
-nav a:hover{color:white;box-shadow:0 0 18px rgba(0,255,240,0.08)}
-.container{padding:28px;min-height:70vh;}
-.hero{padding:28px;background:linear-gradient(90deg, rgba(0,255,240,0.03), rgba(255,0,255,0.03));border-radius:12px;margin-bottom:18px}
-.hero h1{margin:0 0 6px 0;font-size:28px;color:var(--accent);text-shadow:0 0 18px rgba(0,255,240,0.12)}
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: sans-serif;
+    margin: 0;
+    padding-top: 60px; /* Header ke liye space */
+}
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: var(--accent2);
+}
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+/* General input/button styles (assuming they are correct) */
+input, textarea, button {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
 
-/* --- 3. GRID & CARD STYLES --- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.05); transition: transform 0.2s, box-shadow 0.3s;}
+/* --- 1. HEADER & FOOTER STYLES (UPDATED) --- */
+.site-header {
+    background: rgba(12, 21, 32, 0.95);
+    backdrop-filter: blur(8px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-right: 20px;
+}
+.site-header nav a {
+    margin-left: 15px;
+    font-weight: 500;
+    color: var(--muted);
+}
+.site-header nav a:hover {
+    color: var(--text);
+}
+.site-footer {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 40px;
+}
+
+/* --- 2. HERO SECTION --- */
+.hero {
+    background: linear-gradient(90deg, #1f364d, #0c1520);
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 2.5rem;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+.hero p {
+    color: var(--muted);
+}
+
+/* --- 3. GRID & CARD STYLES (UPDATED for Vertical Layout) --- */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+}
+.card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:12px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.05);
+    transition: transform 0.2s, box-shadow 0.3s;
+    min-height: 320px; /* Minimum height thodi aur badhayi */
+    text-align: left;
+}
 .card:hover {
-    transform: translateY(-4px); /* Card hover par thoda upar uthega */
-    box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); /* Card par soft glow */
+    transform: translateY(-4px); 
+    box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); 
     cursor: pointer;
 }
 .thumb, .card img {
     width: 100%;
-    height: 140px;
+    /* Image height ko Vertical Card ke liye fix kiya */
+    height: 250px; 
     object-fit: cover;
     border-radius: 10px;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
-.title{font-weight:600;font-size:15px}
-.meta{color:var(--muted);font-size:13px;margin-top:6px}
-.play-btn{position:absolute;right:12px;bottom:12px;background:linear-gradient(90deg,var(--accent),var(--accent2));padding:8px 12px;border-radius:999px;color:#021018;font-weight:700;border:none;cursor:pointer;box-shadow:0 6px 30px rgba(0,255,240,0.08)}
-.watch .player-wrap{margin-top:12px;background:var(--glass);padding:8px;border-radius:10px}
-.back-btn{background:transparent;border:none;color:var(--muted);cursor:pointer; font-size: 1rem; padding: 5px 0; transition: color 0.2s;}
-.back-btn:hover{color:white;}
+.card h3{
+    font-weight:600;
+    font-size:16px;
+    margin: 5px 0;
+}
+.card p.meta{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:6px;
+}
 
-
-/* --- 4. FORM & BUTTON STYLES (Glassy/Neon Focus) --- */
-.auth-card,.upload-card{max-width:720px;margin:0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:25px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)}
-
-input, select, textarea { 
+/* --- 4. AUTH & UPLOAD CARD STYLES (Assuming they are correct) --- */
+.auth-card, .upload-card {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.auth-card h2, .upload-card h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+.auth-card form input, .upload-card form input, .upload-card form textarea {
     width: 100%;
-    padding: 12px; /* Padding increased */
-    margin: 8px 0;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 255, 240, 0.1); /* Neon-ish border */
-    background: rgba(255, 255, 255, 0.05); /* Translucent background */
-    color: white;
-    transition: all 0.3s ease; 
-    font-size: 1rem;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-input:focus, textarea:focus {
-    outline: none;
-    border-color: var(--accent); /* Focus hone par bright border */
-    box-shadow: 0 0 10px rgba(0, 255, 240, 0.3); /* Neon glow */
-}
-
-button{
-    padding: 12px 18px; /* Padding increased */
-    border-radius: 10px;
-    border: none;
-    background: linear-gradient(90deg,var(--accent),var(--accent2));
-    color:#021018;
-    font-weight:700;
-    cursor:pointer;
-    transition: transform 0.2s, box-shadow 0.3s;
-}
-button:hover {
-    transform: translateY(-2px); /* Hover par thoda upar uthao */
-    box-shadow: 0 5px 20px rgba(0, 255, 240, 0.3); /* Neon shadow on hover */
-}
-
-
-/* --- 5. WATCH PAGE STYLES --- */
-.watch-container { 
-    max-width: 900px; 
-    margin: 0 auto;   
-    padding: 20px 0;
-}
-.video-wrapper iframe {
+.auth-card form button, .upload-card form button {
     width: 100%;
-    aspect-ratio: 16 / 9; /* Video player ka perfect ratio */
-    border-radius: 10px;
-    background: #000;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #0c1520;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.auth-card form button:hover, .upload-card form button:hover {
+    opacity: 0.9;
+}
+.auth-card p, .upload-card p {
+    text-align: center;
+    margin-top: 15px;
 }
 
-/* Season/Episode List */
-.season-heading {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: var(--accent);
-    border-bottom: 2px solid rgba(0, 255, 240, 0.1);
-    padding-bottom: 5px;
+/* --- 5. WATCH PAGE STYLES (Assuming they are correct) --- */
+.watch-container {
+    margin-top: 20px;
+}
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: black;
+    border-radius: 12px;
+}
+#videoPlayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+#watchTitle {
+    color: var(--accent2);
+    margin-top: 15px;
+}
+#watchDesc {
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+.episode-list h3, .episode-list h4 {
+    margin-top: 20px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
 }
 .episode-buttons-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
 }
 .episode-buttons-container button {
-    width: auto;
-    padding: 8px 12px;
-    background: #333;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.episode-buttons-container button:hover {
+    background: rgba(0, 255, 240, 0.3);
 }
 .episode-buttons-container button.active {
-    background: var(--accent);
-    color: #021018; 
-}
-/* Purane Episode List styles */
-.episode-list {
-    margin-top: 20px;
-    padding: 10px;
-    border-top: 1px solid #333;
-}
-.episode-list h3 {
-    color: var(--accent); /* Heading color */
+    background: var(--accent);
+    color: #0c1520;
+    font-weight: bold;
 }
 
 
-/* --- 6. SLIDER STYLES (FINAL LAYOUT FIX) --- */
+/* --- 6. SLIDER STYLES (Mobile Layout Fixes Retained) --- */
 .slider-wrapper h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -157,34 +244,30 @@ button:hover {
     scroll-snap-type: x mandatory; 
     gap: 20px;
     padding-bottom: 25px;
-    /* YAHAN ZAROORI FIX: Wrap hone se rokein */
-    flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important; /* Fix: Vertical stack ko rokne ke liye */
 }
-
 .trending-slider::-webkit-scrollbar { display: none; }
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
 
 .slider-card {
-    /* **FINAL FIXES:** Horizontal hone ke liye yeh teen lines zaroori hain */
-    flex-shrink: 0 !important;   /* Card ko chota hone se zabardasti rokta hai */
-    width: 280px !important;     /* Fixed width zabardasti set karta hai */
-    display: flex;               /* Content ko side-by-side rakhega */
-    
-    /* Baki styles */
+    /* Horizontal Layout ke liye zaroori */
+    flex-shrink: 0 !important;   
+    width: 280px !important;     
     height: 150px;
+    display: flex;
+    /* Baki styles */
     background: var(--card);
     border-radius: 12px;
     padding: 10px;
+    text-align: left;
     cursor: pointer;
     scroll-snap-align: start;
     transition: transform 0.2s, background 0.2s;
 }
-
 .slider-card:hover {
     transform: scale(1.02);
     background: rgba(15, 23, 32, 0.7);
 }
-
 .slider-card img {
     width: 130px; 
     height: 100%; 
@@ -193,7 +276,6 @@ button:hover {
     margin-bottom: 0;
     margin-right: 10px;
 }
-
 .slider-card h4 {
     flex-grow: 1;
     align-self: center;
@@ -205,49 +287,33 @@ button:hover {
     text-overflow: ellipsis;
 }
 
-/* --- 7. FOOTER & NOTES --- */
-.site-footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
-.note{font-size:13px;color:var(--muted);margin-top:6px}
 
-
-/* --- 8. MEDIA QUERIES (Responsiveness Improved) --- */
-@media (max-width: 600px) {
-    .site-header {
-        padding: 14px 18px;
-    }
-    
-    .container {
-        padding: 18px;
-    }
-
-    .hero h1 {
-        font-size: 24px;
-    }
-    
-    /* Grid columns ko mobile par adjust karein */
-    .grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-    }
-
-    .thumb, .card img {
-        height: 120px; /* Card image height mobile par kam karein */
-    }
-
-    /* Navigation links aur buttons ko mobile friendly banayein */
-    nav a, button {
-        font-size: 14px;
-        padding: 6px 10px;
-    }
-}
-/* --- SKELETON LOADER ANIMATION --- */
-@keyframes pulse-bg {
-  0% { background-color: rgba(255, 255, 255, 0.05); }
-  50% { background-color: rgba(255, 255, 255, 0.1); }
-  100% { background-color: rgba(255, 255, 255, 0.05); }
-}
-
+/* --- 7. SKELETON LOADER STYLES (Assuming they are correct) --- */
 .skeleton-loader {
     animation: pulse-bg 1.5s infinite;
-    border-radius: 10px;
+    border-radius: 4px;
+}
+@keyframes pulse-bg {
+    0% { background-color: rgba(255, 255, 255, 0.05); }
+    50% { background-color: rgba(255, 255, 255, 0.1); }
+    100% { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+
+/* --- 8. MEDIA QUERIES --- */
+@media (max-width: 600px) {
+    .site-header {
+        padding: 10px;
+    }
+    .site-header .brand {
+        font-size: 1.3rem;
+    }
+    .site-header nav a {
+        margin-left: 10px;
+        font-size: 0.9rem;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+    /* Ensure no styles here break the horizontal slider! */
 }
