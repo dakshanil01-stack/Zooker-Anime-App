@@ -1,113 +1,44 @@
-/* Season Heading ko alag look dein */
-.season-heading {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: var(--accent); /* Aapka neon color */
-    border-bottom: 2px solid rgba(0, 255, 240, 0.1);
-    padding-bottom: 5px;
-}
-
-/* Episode buttons ko ek line mein rakhein */
-.episode-buttons-container {
-    display: flex;
-    flex-wrap: wrap; /* Jab screen choti ho to wrap ho jaye */
-    gap: 10px; /* Buttons ke beech thoda space */
-    margin-bottom: 20px;
-}
-
-/* Purane .episode-list button rules ko adjust karein */
-.episode-buttons-container button {
-    /* ismein aapki purani button styling lagegi, jaise padding, color etc */
-    width: auto;
-    padding: 8px 12px;
-    background: #333;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.episode-buttons-container button.active {
-    background: var(--accent); /* Active button ke liye accent color */
-    color: #021018; 
-}
-/* Neon-inspired responsive styles */
+/* --- 1. ROOT & FONT --- */
 :root{
-  --bg:#0b0f17;
+  --bg:#02070e; /* Deep dark background */
   --card:#0f1720;
   --accent:#00fff0;
   --accent2:#ff00ff;
-  --glass: rgba(255,255,255,0.03);
+  --glass: rgba(255,255,255,0.05); /* Thoda zyada visible glass effect */
   --muted:#9aa3b2;
   --radius:14px;
 }
+/* Ensure Inter font is available */
+/* Agar yeh line kaam na kare toh HTML mein link jodein */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-html,body,#app{height:100%;margin:0;background:linear-gradient(180deg,#05060a 0%, #07111a 100%);color:white;}
+
+/* --- 2. BASE STYLES --- */
+html,body,#app{
+    height:100%;
+    margin:0;
+    /* Deep dark smooth gradient */
+    background: linear-gradient(180deg, #02070e 0%, #050b13 100%); 
+    color:white;
+}
 .site-header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:transparent;position:sticky;top:0;backdrop-filter:blur(6px);z-index:3}
 .brand{font-weight:800;letter-spacing:6px;font-size:20px;color:var(--accent);text-shadow:0 0 14px rgba(0,255,240,0.12)}
-nav a{margin-left:14px;text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px}
+nav a{margin-left:14px;text-decoration:none;color:var(--muted);padding:8px 12px;border-radius:8px; transition: color 0.3s, box-shadow 0.3s;}
 nav a:hover{color:white;box-shadow:0 0 18px rgba(0,255,240,0.08)}
 .container{padding:28px;min-height:70vh;}
 .hero{padding:28px;background:linear-gradient(90deg, rgba(0,255,240,0.03), rgba(255,0,255,0.03));border-radius:12px;margin-bottom:18px}
 .hero h1{margin:0 0 6px 0;font-size:28px;color:var(--accent);text-shadow:0 0 18px rgba(0,255,240,0.12)}
+
+/* --- 3. GRID & CARD STYLES --- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
-.thumb{width:100%;height:140px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
-.title{font-weight:600;font-size:15px}
-.meta{color:var(--muted);font-size:13px;margin-top:6px}
-.play-btn{position:absolute;right:12px;bottom:12px;background:linear-gradient(90deg,var(--accent),var(--accent2));padding:8px 12px;border-radius:999px;color:#021018;font-weight:700;border:none;cursor:pointer;box-shadow:0 6px 30px rgba(0,255,240,0.08)}
-.watch .player-wrap{margin-top:12px;background:var(--glass);padding:8px;border-radius:10px}
-.back{background:transparent;border:none;color:var(--muted);cursor:pointer}
-.auth-card,.upload-card{max-width:720px;margin:0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-input,select{width:100%;padding:10px;margin:8px 0;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:white}
-button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#021018;font-weight:700;cursor:pointer}
-.site-footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
-.note{font-size:13px;color:var(--muted);margin-top:6px}
-@media (max-width:600px){
-  .hero h1{font-size:20px}
-  .thumb{height:120px}
-}
-/* --- styles.css mein yeh do rules jodein --- */
-
-/* 1. Watch Container ko center aur max-width dein */
-.watch-container { 
-    max-width: 900px; /* Content ki zyada se zyada width */
-    margin: 0 auto;   /* Page ke beech mein laane ke liye */
-    padding: 20px 0;
-}
-
-/* 2. Episode list ke liye styling (Aage use hoga) */
-.episode-list {
-    margin-top: 20px;
-    padding: 10px;
-    border-top: 1px solid #333;
-}
-
-.episode-list h3 {
-    color: #bb86fc;
-}
-
-.episode-list button {
-    width: auto;
-    margin-right: 10px;
-    margin-bottom: 5px;
-    background: #333;
-    color: #fff;
-    
-    border: none;
-    padding: 8px 12px;
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.05); transition: transform 0.2s, box-shadow 0.3s;}
+.card:hover {
+    transform: translateY(-4px); /* Card hover par thoda upar uthega */
+    box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); /* Card par soft glow */
     cursor: pointer;
-    font-size: 0.9rem;
 }
-
-.episode-list button.active {
-    background: #bb86fc;
-    color: #000;
-}
-.card img {
-    /* Yeh zaroori hai! */
+.thumb, .card img {
     width: 100%;
     height: 140px;
     object-fit: cover;
@@ -115,56 +46,181 @@ button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradie
     display: block;
     margin-bottom: 8px;
 }
-/* --- SLIDER STYLES --- */
+.title{font-weight:600;font-size:15px}
+.meta{color:var(--muted);font-size:13px;margin-top:6px}
+.play-btn{position:absolute;right:12px;bottom:12px;background:linear-gradient(90deg,var(--accent),var(--accent2));padding:8px 12px;border-radius:999px;color:#021018;font-weight:700;border:none;cursor:pointer;box-shadow:0 6px 30px rgba(0,255,240,0.08)}
+.watch .player-wrap{margin-top:12px;background:var(--glass);padding:8px;border-radius:10px}
+.back-btn{background:transparent;border:none;color:var(--muted);cursor:pointer; font-size: 1rem; padding: 5px 0; transition: color 0.2s;}
+.back-btn:hover{color:white;}
 
-.slider-wrapper h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: white;
-}
 
-.trending-slider {
-    /* Main Slider Container: Horizontal Scroll enable karega */
-    display: flex;
-    overflow-x: scroll; /* Scrollbar dikhayega */
-    scroll-snap-type: x mandatory; /* Smooth scrolling ke liye */
-    gap: 15px;
-    padding-bottom: 20px; /* Scrollbar ke liye space */
-}
+/* --- 4. FORM & BUTTON STYLES (Glassy/Neon Focus) --- */
+.auth-card,.upload-card{max-width:720px;margin:0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:25px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)}
 
-/* Scrollbar ko hide karein (sirf modern browsers ke liye) */
-.trending-slider::-webkit-scrollbar {
-    display: none;
-}
-.trending-slider {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-.slider-card {
-    /* Har Slide Item ki fixed width */
-    flex-shrink: 0; /* Important: Isse items shrink nahi honge */
-    width: 160px; /* Card ki fixed width */
-    background: var(--card); 
-    border-radius: 12px;
-    padding: 8px;
-    text-align: center;
-    cursor: pointer;
-    scroll-snap-align: start; /* Item ko start mein snap karega */
-}
-
-.slider-card img {
+input, select, textarea { 
     width: 100%;
-    height: 100px; 
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 6px;
+    padding: 12px; /* Padding increased */
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 240, 0.1); /* Neon-ish border */
+    background: rgba(255, 255, 255, 0.05); /* Translucent background */
+    color: white;
+    transition: all 0.3s ease; 
+    font-size: 1rem;
 }
 
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent); /* Focus hone par bright border */
+    box-shadow: 0 0 10px rgba(0, 255, 240, 0.3); /* Neon glow */
+}
+
+button{
+    padding: 12px 18px; /* Padding increased */
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#021018;
+    font-weight:700;
+    cursor:pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+button:hover {
+    transform: translateY(-2px); /* Hover par thoda upar uthao */
+    box-shadow: 0 5px 20px rgba(0, 255, 240, 0.3); /* Neon shadow on hover */
+}
+
+
+/* --- 5. WATCH PAGE STYLES --- */
+.watch-container { 
+    max-width: 900px; 
+    margin: 0 auto;   
+    padding: 20px 0;
+}
+.video-wrapper iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Video player ka perfect ratio */
+    border-radius: 10px;
+    background: #000;
+}
+
+/* Season/Episode List */
+.season-heading {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: var(--accent);
+    border-bottom: 2px solid rgba(0, 255, 240, 0.1);
+    padding-bottom: 5px;
+}
+.episode-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.episode-buttons-container button {
+    width: auto;
+    padding: 8px 12px;
+    background: #333;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.episode-buttons-container button.active {
+    background: var(--accent);
+    color: #021018; 
+}
+/* Purane Episode List styles */
+.episode-list {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #333;
+}
+.episode-list h3 {
+    color: var(--accent); /* Heading color */
+}
+
+
+/* --- 6. SLIDER STYLES --- */
+.slider-wrapper h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: white;
+}
+.trending-slider {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory; 
+    gap: 15px;
+    padding-bottom: 20px;
+}
+.trending-slider::-webkit-scrollbar { display: none; }
+.trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
+.slider-card {
+    flex-shrink: 0; 
+    width: 160px;
+    background: var(--card); 
+    border-radius: 12px;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 0.2s;
+}
+.slider-card:hover {
+    transform: scale(1.05);
+}
+.slider-card img {
+    width: 100%;
+    height: 100px; 
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
 .slider-card h4 {
-    font-size: 0.9rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Agar title bada ho toh ... dikhayega */
+    font-size: 0.9rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* --- 7. FOOTER & NOTES --- */
+.site-footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+
+
+/* --- 8. MEDIA QUERIES (Responsiveness Improved) --- */
+@media (max-width: 600px) {
+    .site-header {
+        padding: 14px 18px;
+    }
+    
+    .container {
+        padding: 18px;
+    }
+
+    .hero h1 {
+        font-size: 24px;
+    }
+    
+    /* Grid columns ko mobile par adjust karein */
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .thumb, .card img {
+        height: 120px; /* Card image height mobile par kam karein */
+    }
+
+    /* Navigation links aur buttons ko mobile friendly banayein */
+    nav a, button {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
 }
