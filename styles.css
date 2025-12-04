@@ -412,7 +412,7 @@ input, textarea, button {
 
     border-radius:12px;
 
-    padding:12px;
+    padding:10px;
 
     position:relative;
 
@@ -422,7 +422,7 @@ input, textarea, button {
 
     transition: transform 0.2s, box-shadow 0.3s;
 
-    min-height: 300px; 
+    min-height: 280px; 
 
     text-align: center;
 
