@@ -13,6 +13,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+// Global variable to store all fetched data once (Search ke liye zaroori)
+let allAnimeData = []; 
+
 // --- 2. ROUTING (Page badalne ka system) ---
 function navigate(pageId, data = null) {
   const view = document.getElementById('view');
@@ -27,15 +30,13 @@ function navigate(pageId, data = null) {
   if (pageId === 'home') {
     loadAnimeList();
     loadTrendingSlider();
+    // Search bar har home load par initialize hona chahiye
+    initializeSearchBar();
   }
   
   if (pageId === 'watch' && data) setupPlayer(data);
 }
 
-window.onload = () => {
-  checkLoginStatus();
-  navigate('home');
-};
 
 // --- 3. AUTHENTICATION (Login/Signup/Logout) ---
 function checkLoginStatus() {
@@ -104,6 +105,7 @@ function logoutUser() {
 }
 
 // --- 4. DATABASE (Upload & Read) ---
+
 function handleUpload(e) {
   e.preventDefault();
   
@@ -133,16 +135,12 @@ function handleUpload(e) {
   .catch((error) => alert("Upload Failed: " + error.message));
 }
 
-// Global variable to store all fetched data once
-let allAnimeData = []; 
-
-// app.js (SECTION 4. DATABASE के अंदर)
 
 // Load function (Will be called only once on page load to fetch and store data)
 function loadAnimeList() {
     const listContainer = document.getElementById('animeList');
     
-    // 1. Skeleton Loader Injection (Same as before)
+    // 1. Skeleton Loader Injection
     listContainer.innerHTML = ""; 
     let skeletonHTML = '';
     for(let i=0; i<8; i++) {
@@ -178,7 +176,7 @@ function loadAnimeList() {
     });
 }
 
-// New function to filter and render the list
+// New function to filter and render the list (Search ke liye use hoga)
 function filterAnimeList(query) {
     const listContainer = document.getElementById('animeList');
     listContainer.innerHTML = ""; // Clear existing list/skeleton
@@ -199,7 +197,6 @@ function filterAnimeList(query) {
         card.className = 'card';
         
         const displayTitle = data.seriesId || data.title;
-        // Assuming you have a 'year' field or use a truncated part of description for year
         const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
 
 
@@ -213,62 +210,7 @@ function filterAnimeList(query) {
         listContainer.appendChild(card);
     });
 }
-    // 2. Data Fetching and Storing (Fetching only once)
-    db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-        
-        allAnimeData = []; // Reset global data array
-        const renderedItems = new Set(); 
-        
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
 
-            if (!renderedItems.has(uniqueKey)) {
-                renderedItems.add(uniqueKey);
-                allAnimeData.push(data); // Store unique item data globally
-            }
-        });
-        
-        // Initial render of all items
-        filterAnimeList(""); 
-    });
-}
-
-// New function to filter and render the list
-function filterAnimeList(query) {
-    const listContainer = document.getElementById('animeList');
-    listContainer.innerHTML = ""; // Clear existing list/skeleton
-
-    const filteredData = allAnimeData.filter(data => {
-        const titleMatch = data.title.toLowerCase().includes(query);
-        const seriesIdMatch = data.seriesId ? data.seriesId.toLowerCase().includes(query) : false;
-        return titleMatch || seriesIdMatch;
-    });
-
-    if (filteredData.length === 0) {
-        listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No results found for your search.</p>";
-        return;
-    }
-
-    filteredData.forEach((data) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        const displayTitle = data.seriesId || data.title;
-        // Assuming you have a 'year' field or use a truncated part of description for year
-        const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
-
-
-        card.innerHTML = `
-            <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x270/000/fff?text=No+Image'">
-            <h3>${displayTitle}</h3>
-            <p class="meta">${displayYear}</p>
-        `;
-        
-        card.onclick = () => navigate('watch', data);
-        listContainer.appendChild(card);
-    });
-}
 
 // --- 5. SLIDER LOGIC (Trending List Dikhana - Naya Function) ---
 function loadTrendingSlider() {
@@ -307,7 +249,7 @@ function loadTrendingSlider() {
             const displayTitle = data.seriesId || data.title;
 
             slide.innerHTML = `
-                <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/130x150/111/fff?text=Trending'">
+                <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/130x150/111/fff?text=Image+Error'">
                 <h4>${displayTitle}</h4>
             `;
             
@@ -402,6 +344,7 @@ function setupPlayer(data) {
     listContainer.innerHTML = `<p>This is a standalone episode and is not part of a series.</p>`;
   }
 }
+
 // --- 6. SEARCH FUNCTIONALITY ---
 
 function initializeSearchBar() {
@@ -423,9 +366,10 @@ function initializeSearchBar() {
     }
 }
 
-// Ensure the search bar is initialized when the page loads
+// --- 7. INITIALIZATION (Window Load Fix) ---
+// Window.onload ko sirf ek baar use kiya gaya hai.
 window.onload = () => {
     checkLoginStatus();
-    navigate('home');
-    initializeSearchBar(); // Call the new initializer
+    navigate('home'); 
+    // initializeSearchBar() call ab navigate('home') ke andar ho raha hai.
 };
