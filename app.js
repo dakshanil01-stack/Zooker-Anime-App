@@ -171,65 +171,98 @@ function loadAnimeList() {
       listContainer.appendChild(card);
     });
   }); }
-// Player Setup (Ab Series ke episodes bhi dikhayega)
+// Player Setup (Ab Series ke episodes ko Season ke hisaab se group karke dikhayega)
 function setupPlayer(data) {
   document.getElementById('watchTitle').innerText = data.title;
   document.getElementById('watchDesc').innerText = data.description;
   
   let videoSrc = data.videoUrl;
+  
   // Mixed Content Fix
   if (videoSrc.startsWith('http:')) {
       videoSrc = videoSrc.replace('http:', 'https:');
   }
+
+  // Video Source Set Karo (jo episode click hua hai woh play hoga)
   document.getElementById('videoPlayer').src = videoSrc;
 
   // --- Episode Listing Logic ---
   const listContainer = document.getElementById('episodeListContainer');
   
-  // Safety check: Agar container nahi mila toh ruk jao
   if (!listContainer) return; 
 
-  listContainer.innerHTML = ''; 
+  listContainer.innerHTML = '<h3>Loading Episodes...</h3>'; // Loading message
 
   if (data.seriesId) {
-    // Agar seriesId hai, toh saare episodes ko fetch karo
-    listContainer.innerHTML = '<h3>Loading Episodes...</h3>';
-
+    
     db.collection("animes")
-      .where("seriesId", "==", data.seriesId) // <--- Query sirf matching seriesId ko dhoondhegi
+      .where("seriesId", "==", data.seriesId)
       .orderBy("season", "asc")
       .orderBy("episode", "asc")
       .get()
       .then((querySnapshot) => {
-        listContainer.innerHTML = `<h3>${data.seriesId} - Episodes:</h3>`;
         
+        // 1. Episodes ko Season ke hisaab se group karein (Map ka use karke)
+        const episodesBySeason = {};
         querySnapshot.forEach((doc) => {
-          const epData = doc.data();
-          
-          const epButton = document.createElement('button');
-          epButton.innerText = `S${epData.season} E${epData.episode}`;
-          
-          // Current episode ko highlight karein
-          if (epData.title === data.title) {
-              epButton.classList.add('active');
-          }
-          
-          // Button click karne par video badlein
-          epButton.onclick = () => {
-             let newSrc = epData.videoUrl.startsWith('http:') ? epData.videoUrl.replace('http:', 'https:') : epData.videoUrl;
-             document.getElementById('videoPlayer').src = newSrc;
-             document.getElementById('watchTitle').innerText = epData.title;
-             
-             // Active button change karein
-             document.querySelectorAll('.episode-list button').forEach(btn => btn.classList.remove('active'));
-             epButton.classList.add('active');
-          };
-          
-          listContainer.appendChild(epButton);
+            const epData = doc.data();
+            const seasonKey = `Season ${epData.season}`;
+            
+            if (!episodesBySeason[seasonKey]) {
+                episodesBySeason[seasonKey] = [];
+            }
+            episodesBySeason[seasonKey].push(epData);
         });
+
+        // 2. Rendering: Grouped data ko display karein
+        listContainer.innerHTML = `<h3>${data.seriesId} - Full Series:</h3>`; // Top heading
+
+        for (const seasonTitle in episodesBySeason) {
+            const episodes = episodesBySeason[seasonTitle];
+            
+            // Season Heading / Title
+            const seasonHeading = document.createElement('h4');
+            seasonHeading.className = 'season-heading'; // CSS ke liye naya class
+            seasonHeading.innerText = seasonTitle;
+            listContainer.appendChild(seasonHeading);
+            
+            // Episode Buttons Container
+            const episodeButtonsContainer = document.createElement('div');
+            episodeButtonsContainer.className = 'episode-buttons-container';
+            listContainer.appendChild(episodeButtonsContainer);
+
+            // Har Season ke liye Episode Buttons banao
+            episodes.forEach((epData) => {
+                const epButton = document.createElement('button');
+                epButton.innerText = `E${epData.episode}`; // Sirf Episode number dikhayein
+                
+                // Current episode ko highlight karein
+                if (epData.videoUrl === data.videoUrl) {
+                    epButton.classList.add('active');
+                }
+                
+                // Button click event
+                epButton.onclick = () => {
+                   // Video URL ko https mein badlein (safety ke liye)
+                   let newSrc = epData.videoUrl.startsWith('http:') ? epData.videoUrl.replace('http:', 'https:') : epData.videoUrl;
+                   
+                   // Player update
+                   document.getElementById('videoPlayer').src = newSrc;
+                   document.getElementById('watchTitle').innerText = epData.title;
+                   
+                   // Active button change karein
+                   document.querySelectorAll('.episode-buttons-container button').forEach(btn => btn.classList.remove('active'));
+                   epButton.classList.add('active');
+                };
+                
+                episodeButtonsContainer.appendChild(epButton);
+            });
+        }
       })
       .catch(error => {
           listContainer.innerHTML = `<p>Error loading episodes: ${error.message}</p>`;
       });
+  } else {
+    listContainer.innerHTML = `<p>This is a standalone episode and is not part of a series.</p>`;
   }
 }
