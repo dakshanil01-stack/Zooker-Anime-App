@@ -15,54 +15,134 @@
 
   <div id="app">
     <header class="site-header">
-      
-        <div class="mobile-controls">
-            <button id="menuToggle" class="icon-btn"><i class="fas fa-bars"></i></button>
-        </div>
+      
+        <div class="mobile-controls">
+            <button id="menuToggle" class="icon-btn"><i class="fas fa-bars"></i></button>
+        </div>
 
       <div class="brand">ZOOKER</div>
       
             <nav id="desktopNav">
         <a href="#" onclick="navigate('home')">Home</a>
         <a href="#" id="uploadLink" onclick="navigate('upload')" style="display:none;">Upload</a> 
-        <a href="#" id="adminLink" onclick="navigate('admin')" style="display:none;">Admin</a> 
+        <a href="#" id="adminLink" onclick="navigate('admin')" style="display:none;">Admin</a> 
         <a href="#" id="authLink" onclick="navigate('login')">Login</a>
         <a href="#" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</a>
       </nav>
 
-        <div class="mobile-controls">
-            <button id="userToggle" class="icon-btn"><i class="fas fa-user-circle"></i></button>
-        </div>
+        <div class="mobile-controls">
+            <button id="userToggle" class="icon-btn"><i class="fas fa-user-circle"></i></button>
+        </div>
     </header>
-    
-    <div id="sidebarMenu" class="sidebar">
-        <a href="#" onclick="navigate('home'); closeSidebar();">Home</a>
-        <a href="#trending" onclick="scrollToSection('trending'); closeSidebar();">Trending</a>
-        <a href="#popular" onclick="scrollToSection('popular'); closeSidebar();">Popular</a>
-        <a href="#about" onclick="closeSidebar();">About</a>
-        </div>
-    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    
+    <div id="sidebarMenu" class="sidebar">
+        <a href="#" onclick="navigate('home'); closeSidebar();">Home</a>
+        <a href="#trending" onclick="scrollToSection('trending'); closeSidebar();">Trending</a>
+        <a href="#popular" onclick="scrollToSection('popular'); closeSidebar();">Popular</a>
+        <a href="#about" onclick="closeSidebar();">About</a>
+        </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <div id="userMenu" class="user-menu-dropdown">
-        </div>
-        <div id="searchBarContainer" class="search-bar-container">
+    <div id="userMenu" class="user-menu-dropdown">
+        </div>
+        <div id="searchBarContainer" class="search-bar-container">
         <input type="text" id="searchBar" placeholder="Search Anime & Movies..." />
     </div>
 
     <main id="view" class="container"></main>
-    
-    <div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
-        <button id="prevBtn" onclick="goToPreviousPage()" disabled 
+    
+<template id="tpl-home">
+        <div id="trending" class="section">
+            <h2>🔥 Trending Now</h2>
+            <div id="trendingSlider" class="slider-container">
+                </div>
+        </div>
+        
+        <div id="popular" class="section">
+            <h2>⭐ All Anime & Movies</h2>
+            <div id="animeList" class="card-grid">
+                </div>
+        </div>
+    </template>
+
+    <template id="tpl-login">
+        <div class="auth-box">
+            <h2>Login to Zooker</h2>
+            <form id="loginForm" class="auth-form"> 
+                <input type="email" id="loginEmail" placeholder="Email" required />
+                <input type="password" id="loginPass" placeholder="Password" required />
+                <button type="submit" class="cta-btn">Login</button>
+                <p>Don't have an account? <a href="#" onclick="navigate('signup')">Sign Up</a></p>
+            </form>
+        </div>
+    </template>
+
+    <template id="tpl-signup">
+        <div class="auth-box">
+            <h2>Create Account</h2>
+            <form id="signupForm" class="auth-form">
+                <input type="email" id="signEmail" placeholder="Email" required />
+                <input type="password" id="signPass" placeholder="Password" required />
+                <button type="submit" class="cta-btn">Sign Up</button>
+                <p>Already have an account? <a href="#" onclick="navigate('login')">Login</a></p>
+            </form>
+        </div>
+    </template>
+
+    <template id="tpl-upload">
+        <div class="upload-container">
+            <h2>Upload New Content</h2>
+            <form id="uploadForm" class="upload-form">
+                <input type="text" id="u_title" placeholder="Full Title (e.g., Attack on Titan S4 E12)" required />
+                <input type="text" id="u_seriesId" placeholder="Series ID (e.g., Attack On Titan)" required />
+                <div class="flex-row">
+                    <input type="number" id="u_season" placeholder="Season No." value="1" min="1" required />
+                    <input type="number" id="u_episode" placeholder="Episode No." value="1" min="1" required />
+                </div>
+                <input type="url" id="u_image" placeholder="Image URL (Poster/Thumbnail)" required />
+                <input type="url" id="u_video" placeholder="Video URL (Embed Link)" required />
+                <textarea id="u_desc" placeholder="Description / Synopsis / Year (e.g., 2023)" required></textarea>
+                <button type="submit" class="cta-btn">Submit Upload</button>
+            </form>
+        </div>
+    </template>
+
+    <template id="tpl-watch">
+        <div class="watch-page">
+            <div class="video-player-container">
+                <iframe id="videoPlayer" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="watch-details">
+                <h1 id="watchTitle">Loading Title...</h1>
+                <p id="watchDesc">Loading description...</p>
+            </div>
+
+            <div id="episodeListContainer" class="episode-list-container">
+                </div>
+        </div>
+    </template>
+
+    <template id="tpl-admin">
+        <div class="admin-page">
+            <h2>Admin Content Management</h2>
+            <div id="adminContentList" class="admin-list">
+                </div>
+        </div>
+    </template>
+
+    <div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
+        <button id="prevBtn" onclick="goToPreviousPage()" disabled 
                 class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
             Previous
-        </button>
-        <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
-        <button id="nextBtn" onclick="goToNextPage()" 
+        </button>
+        <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
+        <button id="nextBtn" onclick="goToNextPage()" 
                 class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
             Next
-        </button>
-    </div>
-        <footer class="site-footer">
+        </button>
+    </div>
+        <footer class="site-footer">
       <p>Made for Anime Lovers ♥</p>
     </footer>
   </div>
