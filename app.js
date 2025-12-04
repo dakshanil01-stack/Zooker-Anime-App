@@ -90,26 +90,23 @@ function handleSignup(e) {
 
 function handleLogin(e) {
   e.preventDefault();
-  // Hum yahan kisi bhi pichle error message ko saaf karne ke liye clearAuthErrors() ko bhi call kar sakte hain agar aapne woh function banaya ho.
+  // अगर आप clearAuthErrors का इस्तेमाल कर रहे हैं, तो उसे यहां कॉल करें
   
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
 
   auth.signInWithEmailAndPassword(email, pass)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      
-      // 🔥 Zaroori Check: Sirf 'ADMIN' displayName wale users ko rehne den
-      if (user.displayName === 'ADMIN') {
-        alert("Welcome back, Admin!");
-        navigate('home');
-      } else {
-        // Agar user ADMIN nahi hai, toh turant logout kar do
-        return auth.signOut().then(() => {
-          alert("Error: Access Denied. Only authorized admin accounts can log in.");
-        });
-      }
+    .then(() => {
+      // ✅ SUCCESS: कोई Admin चेक नहीं। सभी users अब login कर पाएंगे।
+      alert("Welcome back!");
+      // checkLoginStatus() अब तय करेगा कि Upload link दिखानी है या नहीं।
+      navigate('home'); 
     })
+    .catch((error) => {
+      // Error handling logic (जैसा आपने सेट किया है)
+      alert("Error: " + error.message);
+    });
+}
     .catch((error) => {
       // Yeh aapki purani error handling line hai
       alert("Error: " + error.message);
