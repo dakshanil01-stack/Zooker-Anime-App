@@ -20,30 +20,24 @@ function navigate(pageId, data = null) {
   
   if (!template) return;
   
-  // View clear karke naya content daalo
   view.innerHTML = "";
   const clone = template.content.cloneNode(true);
   view.appendChild(clone);
 
-  // Agar Home page hai toh dono functions call karo (Sahi Logic)
   if (pageId === 'home') {
     loadAnimeList();
     loadTrendingSlider();
   }
   
-  // Agar Watch page hai toh player setup karo
   if (pageId === 'watch' && data) setupPlayer(data);
 }
 
-// Shuru mein Home page dikhao
 window.onload = () => {
   checkLoginStatus();
   navigate('home');
 };
 
 // --- 3. AUTHENTICATION (Login/Signup/Logout) ---
-
-// Check user login hai ya nahi
 function checkLoginStatus() {
   auth.onAuthStateChanged(user => {
     const authLink = document.getElementById('authLink');
@@ -51,7 +45,6 @@ function checkLoginStatus() {
     const uploadLink = document.getElementById('uploadLink');
 
     if (user) {
-      // User logged in hai
       authLink.style.display = 'none';
       logoutBtn.style.display = 'inline';
       
@@ -59,7 +52,6 @@ function checkLoginStatus() {
         uploadLink.style.display = 'inline';
       }
     } else {
-      // Koi logged in nahi
       authLink.style.display = 'inline';
       logoutBtn.style.display = 'none';
       uploadLink.style.display = 'none';
@@ -67,7 +59,6 @@ function checkLoginStatus() {
   });
 }
 
-// Signup Function
 function handleSignup(e) {
   e.preventDefault();
   const email = document.getElementById('signEmail').value;
@@ -92,7 +83,6 @@ function handleSignup(e) {
     .catch((error) => alert("Error: " + error.message));
 }
 
-// Login Function
 function handleLogin(e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
@@ -106,7 +96,6 @@ function handleLogin(e) {
     .catch((error) => alert("Error: " + error.message));
 }
 
-// Logout Function
 function logoutUser() {
   auth.signOut().then(() => {
     alert("Logged out");
@@ -115,7 +104,6 @@ function logoutUser() {
 }
 
 // --- 4. DATABASE (Upload & Read) ---
-// Upload Function (Sirf Admin kar payega)
 function handleUpload(e) {
   e.preventDefault();
   
@@ -148,18 +136,17 @@ function handleUpload(e) {
 // Read Function (Ab Series aur Movies ko sirf ek baar dikhayega)
 function loadAnimeList() {
   const listContainer = document.getElementById('animeList');
-  
   const renderedItems = new Set();
   
-  // 1. Skeleton Loader Injection
+  // 1. Skeleton Loader Injection (UPDATED FOR VERTICAL CARD SIZE)
   listContainer.innerHTML = ""; 
   let skeletonHTML = '';
   for(let i=0; i<8; i++) {
     skeletonHTML += `
       <div class="card skeleton-loader">
-        <div class="thumb skeleton-loader" style="height:140px; margin-bottom:8px;"></div>
-        <div class="skeleton-loader" style="height:15px; width:80%; margin-bottom:5px;"></div>
-        <div class="skeleton-loader" style="height:12px; width:60%;"></div>
+        <div class="thumb skeleton-loader" style="height:250px; margin-bottom:10px; border-radius:10px;"></div>
+        <div class="skeleton-loader" style="height:16px; width:90%; margin-bottom:5px;"></div>
+        <div class="skeleton-loader" style="height:14px; width:60%;"></div>
       </div>
     `;
   }
@@ -173,24 +160,20 @@ function loadAnimeList() {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       
-      // FIX: Ensure uniqueKey is robust. Use seriesId if present, else use title
       const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
 
-      // Skip duplicates
       if (renderedItems.has(uniqueKey)) {
           return;
       }
       renderedItems.add(uniqueKey);
 
-      // Card HTML creation
       const card = document.createElement('div');
       card.className = 'card';
       
-      // Display Series ID (if present) or Title
       const displayTitle = data.seriesId || data.title;
 
       card.innerHTML = `
-        <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/200/000/fff?text=No+Image'">
+        <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x250/000/fff?text=No+Image'">
         <h3>${displayTitle}</h3>
         <p class="meta">${data.description ? data.description.substring(0, 50) + '...' : 'No description provided'}</p>
       `;
@@ -200,7 +183,6 @@ function loadAnimeList() {
       listContainer.appendChild(card);
     });
     
-    // Handle no content
     if (renderedItems.size === 0) {
       listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No anime found yet. Please upload content.</p>";
     }
@@ -231,23 +213,20 @@ function loadTrendingSlider() {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             
-            // FIX: Ensure uniqueKey is robust.
             const uniqueKey = data.seriesId ? data.seriesId.trim().toUpperCase() : data.title.trim().toUpperCase();
 
-            // Skip duplicates
             if (renderedItems.has(uniqueKey)) {
                 return;
             }
             renderedItems.add(uniqueKey);
 
-            // Slider Item (Card) HTML creation
             const slide = document.createElement('div');
             slide.className = 'slider-card';
             
             const displayTitle = data.seriesId || data.title;
 
             slide.innerHTML = `
-                <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/250/111/fff?text=Trending'">
+                <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/130x150/111/fff?text=Trending'">
                 <h4>${displayTitle}</h4>
             `;
             
@@ -288,7 +267,6 @@ function setupPlayer(data) {
       .get()
       .then((querySnapshot) => {
         
-        // 1. Episodes ko Season ke hisaab se group karein (Map ka use karke)
         const episodesBySeason = {};
         querySnapshot.forEach((doc) => {
             const epData = doc.data();
@@ -300,7 +278,6 @@ function setupPlayer(data) {
             episodesBySeason[seasonKey].push(epData);
         });
 
-        // 2. Rendering: Grouped data ko display karein
         listContainer.innerHTML = `<h3>${data.seriesId} - Full Series:</h3>`; // Top heading
 
         for (const seasonTitle in episodesBySeason) {
