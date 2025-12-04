@@ -14,15 +14,15 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // Global variable to store all fetched data once (Search ke liye zaroori)
-let allAnimeData = []; 
+let allAnimeData = [];
 
 // --- 2. ROUTING (Page badalne ka system) ---
 function navigate(pageId, data = null) {
   const view = document.getElementById('view');
   const template = document.getElementById(`tpl-${pageId}`);
-  
+    
   if (!template) return;
-  
+    
   view.innerHTML = "";
   const clone = template.content.cloneNode(true);
   view.appendChild(clone);
@@ -33,12 +33,17 @@ function navigate(pageId, data = null) {
     // Search bar har home load par initialize hona chahiye
     initializeSearchBar();
   }
-  
+    
   if (pageId === 'watch' && data) setupPlayer(data);
 }
 
 
 // --- 3. AUTHENTICATION (Login/Signup/Logout) ---
+
+/**
+ * Authentication state ko check karta hai aur navigation bar mein links dikhata hai.
+ * Upload link sirf 'ADMIN' displayName wale users ko dikhti hai.
+ */
 function checkLoginStatus() {
   auth.onAuthStateChanged(user => {
     const authLink = document.getElementById('authLink');
@@ -46,13 +51,18 @@ function checkLoginStatus() {
     const uploadLink = document.getElementById('uploadLink');
 
     if (user) {
+      // User logged in hai
       authLink.style.display = 'none';
       logoutBtn.style.display = 'inline';
       
+      // Admin Check: Agar displayName 'ADMIN' hai, toh Upload link dikhao
       if(user.displayName === 'ADMIN') {
         uploadLink.style.display = 'inline';
+      } else {
+        uploadLink.style.display = 'none'; // Non-admin users ke liye chhupa do
       }
     } else {
+      // User logged out hai
       authLink.style.display = 'inline';
       logoutBtn.style.display = 'none';
       uploadLink.style.display = 'none';
@@ -60,59 +70,60 @@ function checkLoginStatus() {
   });
 }
 
+/**
+ * Naye user ko register karta hai (Standard User Signup).
+ * Admin checkbox aur logic ab hata diya gaya hai.
+ */
 function handleSignup(e) {
   e.preventDefault();
   
-  // Agar aapne pichli baar ki better error handling lagayi hai, toh is line ko uncomment karein
+  // Error Handling: agar implemented ho toh yahan clear karein
   // if (typeof clearAuthErrors === 'function') clearAuthErrors(); 
   
   const email = document.getElementById('signEmail').value;
   const pass = document.getElementById('signPass').value;
-  // Admin Checkbox ka reference aur logic ab hata diya gaya hai
   
   auth.createUserWithEmailAndPassword(email, pass)
     .then(() => {
-      // Profile update ki zaroorat nahi hai, seedhe sign out karke login page par bhej do
+      // Signup ke baad seedhe sign out karke login page par bhej do.
       return auth.signOut(); 
     })
     .then(() => {
-      alert("Signup Successful! Please use the Login button now."); // Generic success message
+      alert("Signup Successful! Please use the Login button now."); 
       navigate('login');
     })
     .catch((error) => {
-      // Alert se error dikhana (agar behtar handling nahi hai)
       alert("Error: " + error.message); 
-      
-      // Agar aapne behtar error handling lagayi hai, toh is line ko use karein:
+      // Error Handling: agar implemented ho toh yahan display karein
       // if (typeof displayAuthError === 'function') displayAuthError('signup-error', error.message);
     });
 }
 
+/**
+ * Existing user ko login karta hai (Sabhi users allowed hain).
+ * Pichla Admin check remove kar diya gaya hai taki naye users login kar sakein.
+ */
 function handleLogin(e) {
   e.preventDefault();
-  // अगर आप clearAuthErrors का इस्तेमाल कर रहे हैं, तो उसे यहां कॉल करें
+  
+  // Error Handling: agar implemented ho toh yahan clear karein
+  // if (typeof clearAuthErrors === 'function') clearAuthErrors(); 
   
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
 
   auth.signInWithEmailAndPassword(email, pass)
     .then(() => {
-      // ✅ SUCCESS: कोई Admin चेक नहीं। सभी users अब login कर पाएंगे।
+      // ✅ SUCCESS: Sabhi users successfully login kar sakte hain.
+      // checkLoginStatus() ab upload link ko control karega.
       alert("Welcome back!");
-      // checkLoginStatus() अब तय करेगा कि Upload link दिखानी है या नहीं।
       navigate('home'); 
     })
     .catch((error) => {
-      // Error handling logic (जैसा आपने सेट किया है)
+      // Login error ko handle karein
       alert("Error: " + error.message);
-    });
-}
-    .catch((error) => {
-      // Yeh aapki purani error handling line hai
-      alert("Error: " + error.message);
-      
-      // Agar aapne pichle baar ki behtar error handling lagayi hai, toh yahan yeh aayega:
-      // displayAuthError('login-error', error.message);
+      // Error Handling: agar implemented ho toh yahan display karein
+      // if (typeof displayAuthError === 'function') displayAuthError('login-error', error.message);
     });
 }
 
@@ -139,9 +150,9 @@ function handleUpload(e) {
 
   db.collection("animes").add({
     title: title,
-    seriesId: seriesId, 
-    season: season,     
-    episode: episode,   
+    seriesId: seriesId,  
+    season: season,      
+    episode: episode,    
     image: image,
     videoUrl: video,
     description: desc,
@@ -160,7 +171,7 @@ function loadAnimeList() {
     const listContainer = document.getElementById('animeList');
     
     // 1. Skeleton Loader Injection
-    listContainer.innerHTML = ""; 
+    listContainer.innerHTML = "";  
     let skeletonHTML = '';
     for(let i=0; i<8; i++) {
         skeletonHTML += `
@@ -171,13 +182,13 @@ function loadAnimeList() {
           </div>
         `;
     }
-    listContainer.innerHTML = skeletonHTML; 
+    listContainer.innerHTML = skeletonHTML;  
     
     // 2. Data Fetching and Storing (Fetching only once)
     db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
         
         allAnimeData = []; // Reset global data array
-        const renderedItems = new Set(); 
+        const renderedItems = new Set();  
         
         querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -186,12 +197,12 @@ function loadAnimeList() {
             if (!renderedItems.has(uniqueKey)) {
                 renderedItems.add(uniqueKey);
                 // Data ko global array me store karein
-                allAnimeData.push(data); 
+                allAnimeData.push(data);  
             }
         });
         
         // Initial render of all items
-        filterAnimeList(""); 
+        filterAnimeList("");  
     });
 }
 
@@ -216,6 +227,7 @@ function filterAnimeList(query) {
         card.className = 'card';
         
         const displayTitle = data.seriesId || data.title;
+        // Year ko description se nikalne ka logic
         const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
 
 
@@ -250,7 +262,7 @@ function loadTrendingSlider() {
     db.collection("animes").orderBy("timestamp", "desc").limit(5).get().then((querySnapshot) => {
         sliderContainer.innerHTML = ""; // Skeleton Clear
         
-        const renderedItems = new Set(); 
+        const renderedItems = new Set();  
         
         querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -296,7 +308,7 @@ function setupPlayer(data) {
   // --- Episode Listing Logic ---
   const listContainer = document.getElementById('episodeListContainer');
   
-  if (!listContainer) return; 
+  if (!listContainer) return;  
 
   listContainer.innerHTML = '<h3>Loading Episodes...</h3>'; // Loading message
 
@@ -344,10 +356,10 @@ function setupPlayer(data) {
                 
                 epButton.onclick = () => {
                    let newSrc = epData.videoUrl.startsWith('http:') ? epData.videoUrl.replace('http:', 'https:') : epData.videoUrl;
-                   
+                    
                    document.getElementById('videoPlayer').src = newSrc;
                    document.getElementById('watchTitle').innerText = epData.title;
-                   
+                    
                    document.querySelectorAll('.episode-buttons-container button').forEach(btn => btn.classList.remove('active'));
                    epButton.classList.add('active');
                 };
@@ -371,7 +383,7 @@ function initializeSearchBar() {
     
     // Check if search bar exists on the current page (only on home page)
     if (searchBar) {
-        // Debounce: हर कीस्ट्रोक पर नहीं, बल्कि टाइपिंग रुकने पर सर्च करेगा
+        // Debounce: Har keystroke par nahi, balki typing rukne par search karega
         let timeout = null;
         
         searchBar.addEventListener('input', function() {
@@ -389,6 +401,6 @@ function initializeSearchBar() {
 // Window.onload ko sirf ek baar use kiya gaya hai.
 window.onload = () => {
     checkLoginStatus();
-    navigate('home'); 
+    navigate('home');  
     // initializeSearchBar() call ab navigate('home') ke andar ho raha hai.
 };
