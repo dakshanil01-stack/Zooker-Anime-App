@@ -414,7 +414,7 @@ input, textarea, button {
 
     padding:10px;
 
-    position:fixed;
+    position:relative;
 
     overflow:hidden;
 
@@ -425,6 +425,7 @@ input, textarea, button {
     min-height: 280px; 
 
     text-align: center;
+    display:flex;
 
 }
 
