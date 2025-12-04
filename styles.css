@@ -305,49 +305,39 @@ input, textarea, button {
 
 /* --- 8. MEDIA QUERIES --- */
 @media (max-width: 600px) {
-    /* Header adjustments */
-    .site-header {
-        padding: 8px;
-    }
-    .site-header .brand {
-        font-size: 1.2rem;
-    }
-    .site-header nav a {
-        margin-left: 8px;
-        font-size: 0.8rem;
-    }
-    .hero h1 {
-        font-size: 1.8rem;
-    }
+    /* ... (Other header/hero adjustments) ... */
     
-    /* 🔥 FINAL FIX: Anime List Grid Cards (Mobile View) 🔥 */
+    /* Grid setting (2 cards per line) */
     .grid{
-        /* ZAROORI: Grid columns ko fixed 2 columns mein set kiya, taaki sirf 2 cards dikhein. */
         grid-template-columns: 1fr 1fr; 
-        gap:15px; /* Gap thoda badhaya */
+        gap:10px;
     }
     
     .card{
-        /* Card ki height thodi aur badhayi taki image achhe se fit ho */
-        min-height: 280px; 
-        padding: 8px; 
+        /* Mobile Card Height ko Image ke hisaab se adjust kiya */
+        min-height: 250px; 
+        padding: 6px; 
     }
     
     .thumb, .card img {
-        /* Image height ko 2 cards per line ke liye set kiya */
+        /* Mobile Image height aur badhayi */
         height: 180px; 
-        border-radius: 8px;
-        margin-bottom: 8px;
+        border-radius: 6px;
+        margin-bottom: 4px; /* Margin kam kiya */
     }
 
     .card h3{
-        font-size: 14px;
+        font-size: 13px; /* Font size chota kiya */
+        margin: 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
     .card p.meta{
-        /* Description hide rakha taki card clean aur compact dikhe */
-        display: none; 
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0; /* Margin hataya */
+        /* Agar aapko sirf Name aur Year chahiye, toh description (agar woh p.meta mein hai) ko hide rakha ja sakta hai */
+        /* display: none; */ 
     }
 }
