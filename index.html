@@ -30,6 +30,19 @@
     </header>
 
     <main id="view" class="container"></main>
+    <!-- 🔥 PAGINATION CONTROLS (Footer se pehle) 🔥 -->
+<div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
+    <button id="prevBtn" onclick="goToPreviousPage()" disabled 
+            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+        Previous
+    </button>
+    <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
+    <button id="nextBtn" onclick="goToNextPage()" 
+            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+        Next
+    </button>
+</div>
+<!-- 🔥 END PAGINATION CONTROLS 🔥 -->
 
     <footer class="site-footer">
       <p>Made for Anime Lovers ♥</p>
@@ -110,20 +123,6 @@
       </form>
     </section>
 </template>
-  <!-- 🔥 PAGINATION CONTROLS (Footer se pehle) 🔥 -->
-<div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
-    <button id="prevBtn" onclick="goToPreviousPage()" disabled 
-            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-        Previous
-    </button>
-    <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
-    <button id="nextBtn" onclick="goToNextPage()" 
-            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-        Next
-    </button>
-</div>
-<!-- 🔥 END PAGINATION CONTROLS 🔥 -->
-
   <script src="app.js"></script>
 </body>
 </html>
