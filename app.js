@@ -188,6 +188,41 @@ function loadAnimeList() {
     });
   });
 }
+// --- 5. SLIDER LOGIC (Trending List Dikhana) ---
+function loadTrendingSlider() {
+    const sliderContainer = document.getElementById('trendingSlider');
+    
+    // Sirf top 5 latest items fetch karo
+    db.collection("animes").orderBy("timestamp", "desc").limit(5).get().then((querySnapshot) => {
+        sliderContainer.innerHTML = ""; // Purana loading text hatao
+        
+        const renderedItems = new Set(); // Duplicates se bachne ke liye
+        
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const uniqueKey = data.seriesId || data.title;
+            
+            // Duplicate series ko skip karein
+            if (renderedItems.has(uniqueKey)) {
+                return;
+            }
+            renderedItems.add(uniqueKey);
+
+            // Slider Item (Card) HTML banao
+            const slide = document.createElement('div');
+            slide.className = 'slider-card';
+            slide.innerHTML = `
+                <img src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/250/111/fff?text=Trending'">
+                <h4>${data.seriesId || data.title}</h4>
+            `;
+            
+            // Click karne par Watch page pe le jao
+            slide.onclick = () => navigate('watch', data);
+            
+            sliderContainer.appendChild(slide);
+        });
+    });
+}
 // Player Setup (Ab Series ke episodes ko Season ke hisaab se group karke dikhayega)
 function setupPlayer(data) {
   document.getElementById('watchTitle').innerText = data.title;
