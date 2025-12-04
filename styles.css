@@ -463,6 +463,8 @@ input, textarea, button {
     gap: 15px; 
 
     padding-bottom: 25px;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
 
 }
 
