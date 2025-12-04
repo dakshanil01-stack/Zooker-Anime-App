@@ -154,38 +154,47 @@ button:hover {
     display: flex;
     overflow-x: scroll;
     scroll-snap-type: x mandatory; 
-    gap: 15px;
-    padding-bottom: 20px;
+    gap: 20px;
+    padding-bottom: 25px;
 }
 .trending-slider::-webkit-scrollbar { display: none; }
 .trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
 .slider-card {
     flex-shrink: 0; 
-    width: 160px;
+    width: 280px;
     background: var(--card); 
     border-radius: 12px;
-    padding: 8px;
-    text-align: center;
+    padding: 10px;
+    text-align: left;
     cursor: pointer;
     scroll-snap-align: start;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.2s;
+    height: 150px;
+    display: flex;
 }
 .slider-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02); /* Thoda kam scale */
+    background: rgba(15, 23, 32, 0.7); /* Hover par thoda dark ho jaye */
 }
 .slider-card img {
-    width: 100%;
-    height: 100px; 
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 6px;
+    /* Image ko left mein rakho */
+    width: 130px; 
+    height: 100%; /* Height poora use karein */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
+    margin-right: 10px; /* Title se doori */
 }
 .slider-card h4 {
-    font-size: 0.9rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* Title ko image ke side mein rakho */
+    flex-grow: 1; /* Baki space title use karega */
+    align-self: center; /* Beech mein rakhega */
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: normal; /* Title wrap ho sakta hai */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
