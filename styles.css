@@ -1,4 +1,38 @@
+/* Season Heading ko alag look dein */
+.season-heading {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: var(--accent); /* Aapka neon color */
+    border-bottom: 2px solid rgba(0, 255, 240, 0.1);
+    padding-bottom: 5px;
+}
 
+/* Episode buttons ko ek line mein rakhein */
+.episode-buttons-container {
+    display: flex;
+    flex-wrap: wrap; /* Jab screen choti ho to wrap ho jaye */
+    gap: 10px; /* Buttons ke beech thoda space */
+    margin-bottom: 20px;
+}
+
+/* Purane .episode-list button rules ko adjust karein */
+.episode-buttons-container button {
+    /* ismein aapki purani button styling lagegi, jaise padding, color etc */
+    width: auto;
+    padding: 8px 12px;
+    background: #333;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.episode-buttons-container button.active {
+    background: var(--accent); /* Active button ke liye accent color */
+    color: #021018; 
+}
 /* Neon-inspired responsive styles */
 :root{
   --bg:#0b0f17;
