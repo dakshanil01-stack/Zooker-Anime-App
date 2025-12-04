@@ -115,3 +115,56 @@ button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradie
     display: block;
     margin-bottom: 8px;
 }
+/* --- SLIDER STYLES --- */
+
+.slider-wrapper h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.trending-slider {
+    /* Main Slider Container: Horizontal Scroll enable karega */
+    display: flex;
+    overflow-x: scroll; /* Scrollbar dikhayega */
+    scroll-snap-type: x mandatory; /* Smooth scrolling ke liye */
+    gap: 15px;
+    padding-bottom: 20px; /* Scrollbar ke liye space */
+}
+
+/* Scrollbar ko hide karein (sirf modern browsers ke liye) */
+.trending-slider::-webkit-scrollbar {
+    display: none;
+}
+.trending-slider {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.slider-card {
+    /* Har Slide Item ki fixed width */
+    flex-shrink: 0; /* Important: Isse items shrink nahi honge */
+    width: 160px; /* Card ki fixed width */
+    background: var(--card); 
+    border-radius: 12px;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    scroll-snap-align: start; /* Item ko start mein snap karega */
+}
+
+.slider-card img {
+    width: 100%;
+    height: 100px; 
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.slider-card h4 {
+    font-size: 0.9rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Agar title bada ho toh ... dikhayega */
+}
