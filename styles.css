@@ -478,7 +478,7 @@ input, textarea, button {
 
     flex-direction: column; justify-content: flex-start; background: var(--bg-light); 
 
-    border-radius: 12px; padding: 8px; text-align: center; cursor: pointer;
+    border-radius: 5px; padding: 8px; text-align: center; cursor: pointer;
 
     scroll-snap-align: start; transition: transform 0.2s, background 0.2s;
 
