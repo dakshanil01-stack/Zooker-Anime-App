@@ -154,12 +154,30 @@ function handleUpload(e) {
 function loadAnimeList() {
   const listContainer = document.getElementById('animeList');
   
-  // Is Set ka use karke hum track rakhenge ki kaun si series/movie pehle hi render ho chuki hai
   const renderedItems = new Set();
   
+  // 🚨 1. Purana content hatao
+  listContainer.innerHTML = ""; 
+  
+  // 🚨 2. Skeleton Loader Code Jodein (Grid ke liye) 🚨
+  let skeletonHTML = '';
+  for(let i=0; i<8; i++) {
+    skeletonHTML += `
+      <div class="card skeleton-loader">
+        <div class="thumb skeleton-loader" style="height:140px; margin-bottom:8px;"></div>
+        <div class="skeleton-loader" style="height:15px; width:80%; margin-bottom:5px;"></div>
+        <div class="skeleton-loader" style="height:12px; width:60%;"></div>
+      </div>
+    `;
+  }
+  listContainer.innerHTML = skeletonHTML; 
+  // ------------------------------------------
+  
   db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-    listContainer.innerHTML = ""; // Purana loading text hatao
     
+    // Yahan hum pehle skeleton ko clear karte hain
+    listContainer.innerHTML = ""; 
+
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       
@@ -190,6 +208,11 @@ function loadAnimeList() {
       
       listContainer.appendChild(card);
     });
+    
+    // Agar koi data nahi mila toh message dikhao
+    if (renderedItems.size === 0) {
+      listContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 50px 0;'>No anime found yet. Please upload content.</p>";
+    }
   });
 }
 
@@ -197,9 +220,22 @@ function loadAnimeList() {
 function loadTrendingSlider() {
     const sliderContainer = document.getElementById('trendingSlider');
     
+    // 🚨 Skeleton Loader Code Jodein (Slider ke liye) 🚨
+    let sliderSkeleton = '';
+    for(let i=0; i<4; i++) {
+        // Slider card ka naya structure (CSS se match karta hua)
+        sliderSkeleton += `<div class="slider-card skeleton-loader">
+            <div class="skeleton-loader" style="width:130px; height:100%; border-radius:8px;"></div>
+            <div class="skeleton-loader" style="height:20px; flex-grow:1; align-self:center;"></div>
+        </div>`;
+    }
+    sliderContainer.innerHTML = sliderSkeleton;
+    // ------------------------------------------
+
+    
     // Sirf top 5 latest items fetch karo
     db.collection("animes").orderBy("timestamp", "desc").limit(5).get().then((querySnapshot) => {
-        sliderContainer.innerHTML = ""; // Purana loading text hatao
+        sliderContainer.innerHTML = ""; // Data aane par skeleton hatao
         
         const renderedItems = new Set(); // Duplicates se bachne ke liye
         
