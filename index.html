@@ -15,6 +15,12 @@
   <div id="app">
     <header class="site-header">
       <div class="brand">ZOOKER</div>
+      
+      <div style="flex-grow: 1; max-width: 400px; margin: 0 20px;">
+          <input type="text" id="searchBar" placeholder="Search Anime & Movies..." 
+                 style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0, 255, 240, 0.1); background: rgba(255, 255, 255, 0.05); color: white;">
+      </div>
+
       <nav>
         <a href="#" onclick="navigate('home')">Home</a>
         <a href="#" id="uploadLink" onclick="navigate('upload')" style="display:none;">Upload</a> 
@@ -39,13 +45,11 @@
     <section class="slider-wrapper">
     <h2>🔥 Trending Now</h2>
     <div id="trendingSlider" class="trending-slider">
-        <p>Loading trending...</p>
-    </div>
+        </div>
 </section>
     
     <section id="animeList" class="grid">
-      <p>Loading content...</p>
-    </section>
+      </section>
 </template>
 
 <template id="tpl-watch">
