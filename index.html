@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zooker — Anime & Movies</title>
   <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -14,127 +15,57 @@
 
   <div id="app">
     <header class="site-header">
+      
+        <div class="mobile-controls">
+            <button id="menuToggle" class="icon-btn"><i class="fas fa-bars"></i></button>
+        </div>
+
       <div class="brand">ZOOKER</div>
       
-            <nav>
+            <nav id="desktopNav">
         <a href="#" onclick="navigate('home')">Home</a>
         <a href="#" id="uploadLink" onclick="navigate('upload')" style="display:none;">Upload</a> 
         <a href="#" id="adminLink" onclick="navigate('admin')" style="display:none;">Admin</a> 
         <a href="#" id="authLink" onclick="navigate('login')">Login</a>
         <a href="#" id="logoutBtn" style="display:none;" onclick="logoutUser()">Logout</a>
       </nav>
-    </header>
 
-    <div id="searchBarContainer" class="search-bar-container">
-        <input type="text" id="searchBar" placeholder="Search Anime & Movies..." />
-    </div>
-        <main id="view" class="container"></main>
+        <div class="mobile-controls">
+            <button id="userToggle" class="icon-btn"><i class="fas fa-user-circle"></i></button>
+        </div>
+    </header>
+    
+    <div id="sidebarMenu" class="sidebar">
+        <a href="#" onclick="navigate('home'); closeSidebar();">Home</a>
+        <a href="#trending" onclick="scrollToSection('trending'); closeSidebar();">Trending</a>
+        <a href="#popular" onclick="scrollToSection('popular'); closeSidebar();">Popular</a>
+        <a href="#about" onclick="closeSidebar();">About</a>
+        </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <div id="userMenu" class="user-menu-dropdown">
+        </div>
+        <div id="searchBarContainer" class="search-bar-container">
+        <input type="text" id="searchBar" placeholder="Search Anime & Movies..." />
+    </div>
+
+    <main id="view" class="container"></main>
     
     <div id="paginationControls" class="pagination-controls flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl">
-    <button id="prevBtn" onclick="goToPreviousPage()" disabled 
-            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-        Previous
-    </button>
-    <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
-    <button id="nextBtn" onclick="goToNextPage()" 
-            class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-        Next
-    </button>
-</div>
-    <footer class="site-footer">
+        <button id="prevBtn" onclick="goToPreviousPage()" disabled 
+                class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+            Previous
+        </button>
+        <span id="pageInfo" class="text-lg font-mono text-red-400 px-4">Page 1</span>
+        <button id="nextBtn" onclick="goToNextPage()" 
+                class="px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+            Next
+        </button>
+    </div>
+        <footer class="site-footer">
       <p>Made for Anime Lovers ♥</p>
     </footer>
   </div>
-
-<template id="tpl-home">
-    <section class="hero">
-      <h1>Stream Free Anime & Movies</h1>
-      <p>Welcome To Our Site</p>
-    </section>
-    
-    <section class="slider-wrapper">
-    <h2>🔥 Trending Now</h2>
-    <div id="trendingSlider" class="trending-slider">
-        </div>
-</section>
-    
-    <section id="animeList" class="grid">
-      </section>
-</template>
-
-<template id="tpl-watch">
-    <section class="watch-container">
-      <button class="back-btn" onclick="navigate('home')">← Back to Home</button>
-      <div class="video-wrapper">
-        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-      </div>
-      <h2 id="watchTitle">Title Loading...</h2>
-      <p id="watchDesc">Description</p>
-      
-      <div id="episodeListContainer" class="episode-list"></div>
-
-    </section>
-</template>
-
-<template id="tpl-login">
-    <section class="auth-card">
-      <h2>Login</h2>
-      <form onsubmit="handleLogin(event)">
-        <input id="loginEmail" type="email" placeholder="Email" required />
-        <input id="loginPass" type="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
-      <p>New here? <a href="#" onclick="navigate('signup')">Create An Account</a></p>
-    </section>
-</template>
-
-<template id="tpl-signup">
-    <section class="auth-card">
-      <h2>Sign Up</h2>
-      <form onsubmit="handleSignup(event)">
-        <input id="signEmail" type="email" placeholder="Email" required />
-        <input id="signPass" type="password" placeholder="Password" required />
-        <label style="display:flex; align-items:center; gap:10px; margin:10px 0;"> 
-        </label>
-        <button type="submit">Create Account</button>
-      </form>
-      <p>Already have an account? <a href="#" onclick="navigate('login')">Login</a></p>
-    </section>
-</template>
-
-<template id="tpl-upload">
-    <section class="upload-card">
-      <h2>Upload New Anime</h2>
-      <form onsubmit="handleUpload(event)">
-        <input id="u_title" placeholder="Full Title (e.g., Attack on Titan S1 E1)" required />
-        <input id="u_seriesId" placeholder="Series ID (e.g., AttackOnTitan)" required />
-        <input id="u_season" type="number" placeholder="Season Number (e.g., 1)" required />
-        <input id="u_episode" type="number" placeholder="Episode Number (e.g., 1)" required />
-        
-        <hr style="border-color:#444; margin: 15px 0;">
-        
-        <input id="u_image" placeholder="Cover Image URL (Series Image)" required />
-        <input id="u_video" placeholder="Video/Iframe URL (This Episode's Link)" required />
-        <textarea id="u_desc" placeholder="Short Description"></textarea>
-        <button type="submit">Upload Episode to Database</button>
-      </form>
-    </section>
-</template>
-
-<template id="tpl-admin">
-    <div class="container">
-        <div class="auth-card">
-            <h2>⚙️ Admin Content Management</h2>
-            <p style="color: var(--muted); text-align: center;">View, Edit (Coming Soon), or Delete existing content.</p>
-            <div id="adminContentList" style="margin-top: 20px;">
-                <p style="text-align: center;">Loading Content...</p>
-            </div>
-            <p style="margin-top: 20px; text-align: center;">
-                <a href="#" onclick="navigate('upload')">Go to Upload New Content</a>
-            </p>
-        </div>
-    </div>
-</template>
 
   <script src="app.js"></script>
 </body>
