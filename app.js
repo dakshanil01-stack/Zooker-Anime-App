@@ -62,26 +62,30 @@ function checkLoginStatus() {
 
 function handleSignup(e) {
   e.preventDefault();
+  
+  // Agar aapne pichli baar ki better error handling lagayi hai, toh is line ko uncomment karein
+  // if (typeof clearAuthErrors === 'function') clearAuthErrors(); 
+  
   const email = document.getElementById('signEmail').value;
   const pass = document.getElementById('signPass').value;
-  const isAdmin = document.getElementById('isAdmin').checked;
-
+  // Admin Checkbox ka reference aur logic ab hata diya gaya hai
+  
   auth.createUserWithEmailAndPassword(email, pass)
-    .then((userCredential) => {
-      if(isAdmin) {
-        return userCredential.user.updateProfile({ displayName: "ADMIN" })
-          .then(() => userCredential); 
-      }
-      return userCredential;
-    })
     .then(() => {
+      // Profile update ki zaroorat nahi hai, seedhe sign out karke login page par bhej do
       return auth.signOut(); 
     })
     .then(() => {
-      alert("Admin Account Successfully Created! Please use the Login button now.");
+      alert("Signup Successful! Please use the Login button now."); // Generic success message
       navigate('login');
     })
-    .catch((error) => alert("Error: " + error.message));
+    .catch((error) => {
+      // Alert se error dikhana (agar behtar handling nahi hai)
+      alert("Error: " + error.message); 
+      
+      // Agar aapne behtar error handling lagayi hai, toh is line ko use karein:
+      // if (typeof displayAuthError === 'function') displayAuthError('signup-error', error.message);
+    });
 }
 
 function handleLogin(e) {
