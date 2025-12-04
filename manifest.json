@@ -1,0 +1,9 @@
+
+{
+  "short_name": "Zooker",
+  "name": "Zooker - Neon Media",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#07111a",
+  "theme_color": "#00fff0"
+}
