@@ -177,25 +177,26 @@ function setupPlayer(data) {
   document.getElementById('watchDesc').innerText = data.description;
   
   let videoSrc = data.videoUrl;
-  
   // Mixed Content Fix
   if (videoSrc.startsWith('http:')) {
       videoSrc = videoSrc.replace('http:', 'https:');
   }
-
-  // Video Source Set Karo
   document.getElementById('videoPlayer').src = videoSrc;
 
   // --- Episode Listing Logic ---
   const listContainer = document.getElementById('episodeListContainer');
-  listContainer.innerHTML = ''; // Pehle container ko clear karo
+  
+  // Safety check: Agar container nahi mila toh ruk jao
+  if (!listContainer) return; 
+
+  listContainer.innerHTML = ''; 
 
   if (data.seriesId) {
     // Agar seriesId hai, toh saare episodes ko fetch karo
     listContainer.innerHTML = '<h3>Loading Episodes...</h3>';
 
     db.collection("animes")
-      .where("seriesId", "==", data.seriesId)
+      .where("seriesId", "==", data.seriesId) // <--- Query sirf matching seriesId ko dhoondhegi
       .orderBy("season", "asc")
       .orderBy("episode", "asc")
       .get()
@@ -208,19 +209,18 @@ function setupPlayer(data) {
           const epButton = document.createElement('button');
           epButton.innerText = `S${epData.season} E${epData.episode}`;
           
-          // Agar yeh current episode hai, toh use highlight karo
+          // Current episode ko highlight karein
           if (epData.title === data.title) {
               epButton.classList.add('active');
           }
           
-          // Button click karne par naya video load karo
+          // Button click karne par video badlein
           epButton.onclick = () => {
-             // Sirf player ka source badlo, page refresh nahi
              let newSrc = epData.videoUrl.startsWith('http:') ? epData.videoUrl.replace('http:', 'https:') : epData.videoUrl;
              document.getElementById('videoPlayer').src = newSrc;
              document.getElementById('watchTitle').innerText = epData.title;
              
-             // Active class change karo
+             // Active button change karein
              document.querySelectorAll('.episode-list button').forEach(btn => btn.classList.remove('active'));
              epButton.classList.add('active');
           };
