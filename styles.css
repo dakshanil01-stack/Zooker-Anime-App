@@ -1,38 +1,311 @@
-// app.js (Example logic - आपको इसे अपने मौजूदा code में डालना होगा)
+/* Variables and general styles */
+:root {
+    --bg: #0c1520;
+    --bg-light: #151f2b; 
+    --card: rgba(255, 255, 255, 0.08); 
+    --text: #ffffff;
+    --muted: #94a3b8;
+    --accent: #00ffeb; /* Teal */
+    --accent2: #00c7ff; /* Lighter Blue */
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: sans-serif;
+    margin: 0;
+    /* Mobile: Header (50px) + Search bar (approx 50px) = 100px total padding */
+    padding-top: 105px; 
+}
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: var(--accent2);
+}
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+input, textarea, button {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
 
-function updateNavForAuthState(user) {
-    const authLink = document.getElementById('authLink');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userMenu = document.getElementById('userMenu'); // Get the user menu div
+/* ----------------------------------------------------- */
+/* --- 1. HEADER & NAVIGATION STYLES (Mobile First) --- */
+/* ----------------------------------------------------- */
+.site-header {
+    background: rgba(12, 21, 32, 0.98); 
+    backdrop-filter: blur(8px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Brand ko center mein rakhega */
+    align-items: center;
+    padding: 10px 15px;
+    z-index: 1001; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    height: 50px; /* Header ki fixed height */
+}
+.brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    flex-grow: 1; /* Center karne ke liye */
+    text-align: center;
+}
+/* Hide desktop nav by default (Mobile First) */
+#desktopNav {
+    display: none;
+}
+.mobile-controls {
+    flex-shrink: 0;
+}
+.icon-btn {
+    background: none;
+    color: var(--text);
+    padding: 5px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.icon-btn:hover {
+    color: var(--accent);
+}
+.site-footer {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 40px;
+}
 
-    if (user) {
-        // User is logged in
-        authLink.style.display = 'none';
-        logoutBtn.style.display = 'block';
+/* ----------------------------------------------------- */
+/* --- 2. MOBILE SIDEBAR MENU (Hamburger) --- */
+/* ----------------------------------------------------- */
+.sidebar {
+    height: 100%;
+    width: 0; /* Default hidden */
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    background-color: var(--bg); 
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.3s;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: var(--text);
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.sidebar a:hover {
+    background-color: var(--bg-light);
+    color: var(--accent);
+}
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1999;
+    display: none; /* Default hidden */
+}
 
-        // 🔥 FIX: Populate the user menu dropdown with dynamic links
-        userMenu.innerHTML = `
-            <a href="#" id="uploadLinkMobile" onclick="navigate('upload'); closeUserMenu();">Upload</a>
-            <a href="#" id="adminLinkMobile" onclick="navigate('admin'); closeUserMenu();">Admin</a>
-            <a href="#" onclick="logoutUser(); closeUserMenu();">Logout</a>
-        `;
-        
-        // Ensure that upload/admin links are also visible on desktop nav if user is admin/uploader
-        document.getElementById('uploadLink').style.display = 'block';
-        if (user.isAdmin) { /* Assuming user has an isAdmin property */
-            document.getElementById('adminLink').style.display = 'block';
-        }
+/* ----------------------------------------------------- */
+/* --- 3. MOBILE USER MENU DROPDOWN (Top Right) --- */
+/* ----------------------------------------------------- */
+.user-menu-dropdown {
+    position: fixed;
+    top: 50px; /* Header ke theek neeche */
+    right: 15px;
+    background-color: var(--bg-light);
+    min-width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+    padding: 10px 0;
+    display: none; /* Default hidden */
+}
+.user-menu-dropdown a {
+    color: var(--text);
+    padding: 8px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.95rem;
+}
+.user-menu-dropdown a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--accent);
+}
 
-    } else {
-        // User is logged out
-        authLink.style.display = 'block';
-        logoutBtn.style.display = 'none';
-        document.getElementById('uploadLink').style.display = 'none';
-        document.getElementById('adminLink').style.display = 'none';
-        
-        // User menu only shows auth links if logged out
-        userMenu.innerHTML = `<a href="#" onclick="navigate('login'); closeUserMenu();">Login</a>`;
+/* ----------------------------------------------------- */
+/* --- 4. SEARCH BAR CONTAINER (Fixed below Header) --- */
+/* ----------------------------------------------------- */
+.search-bar-container {
+    position: fixed;
+    top: 50px; /* Header height ke barabar */
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+    padding: 8px 15px; /* Padding kam kiya */
+    background: var(--bg); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-bar-container input#searchBar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto; 
+    display: block;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    padding: 8px 15px;
+    font-size: 1rem;
+}
+
+/* ----------------------------------------------------- */
+/* --- 5. HERO, GRID, CARD, SLIDER STYLES (Retained) --- */
+/* ----------------------------------------------------- */
+.hero {
+    background: linear-gradient(90deg, #1f364d, #0c1520);
+    padding: 30px; 
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.hero h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 8px; }
+.hero p { color: var(--muted); font-size: 1rem; }
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:20px;
+}
+.card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:12px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.05);
+    transition: transform 0.2s, box-shadow 0.3s;
+    min-height: 300px; 
+    text-align: left;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); cursor: pointer; }
+.thumb, .card img {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 6px;
+}
+.card h3{ font-weight:600; font-size:15px; margin: 0 0 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card p.meta{ color:var(--muted); font-size:13px; margin: 0; }
+
+.trending-slider {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory; 
+    gap: 15px; 
+    padding-bottom: 25px;
+}
+.trending-slider::-webkit-scrollbar { display: none; }
+.trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
+.slider-card {
+    flex-shrink: 0; width: 140px; height: 250px; display: flex;
+    flex-direction: column; justify-content: flex-start; background: var(--bg-light); 
+    border-radius: 12px; padding: 8px; text-align: center; cursor: pointer;
+    scroll-snap-align: start; transition: transform 0.2s, background 0.2s;
+}
+.slider-card:hover { transform: scale(1.02); background: rgba(15, 23, 32, 0.7); }
+.slider-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 5px; margin-right: 0; }
+.slider-card h4 { flex-grow: 0; font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ... (Auth, Upload, Watch, Pagination styles here) ... */
+/* ----------------------------------------------------- */
+/* --- 6. MEDIA QUERIES (Desktop Overrides) --- */
+/* ----------------------------------------------------- */
+@media (min-width: 768px) {
+    /* Desktop: Body padding only for header (header and search bar in one fixed section) */
+    body {
+        padding-top: 115px; /* Revert to Desktop padding */
     }
-    // Set the display to none initially if not already done in JS logic
-    userMenu.style.display = 'none'; 
+    .site-header {
+        height: auto; /* Remove fixed height */
+        padding: 10px 20px;
+    }
+    /* Hide mobile controls on desktop */
+    .mobile-controls {
+        display: none;
+    }
+    /* Show desktop nav on desktop */
+    #desktopNav {
+        display: flex;
+        gap: 15px;
+    }
+    #desktopNav a {
+        font-size: 1rem;
+    }
+    /* Search bar container position for Desktop */
+    .search-bar-container {
+        top: 60px; /* Desktop Header height ke neeche */
+        padding: 10px 20px;
+    }
+
+    /* Hide mobile menus */
+    .sidebar, .sidebar-overlay, .user-menu-dropdown {
+        display: none !important;
+    }
+}
+
+/* ----------------------------------------------------- */
+/* --- 7. MOBILE OVERRIDES (Max Width 600px) --- */
+/* ----------------------------------------------------- */
+@media (max-width: 600px) {
+    /* Grid setting (2 cards per line) */
+    .grid{
+        grid-template-columns: 1fr 1fr; 
+        gap:10px;
+    }
+    
+    .card{
+        min-height: 250px; 
+        padding: 6px; 
+    }
+    
+    .thumb, .card img {
+        height: 180px; 
+        border-radius: 6px;
+        margin-bottom: 4px;
+    }
+
+    .card h3{
+        font-size: 13px;
+    }
+    .card p.meta{
+        font-size: 11px;
+    }
 }
