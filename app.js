@@ -86,15 +86,33 @@ function handleSignup(e) {
 
 function handleLogin(e) {
   e.preventDefault();
+  // Hum yahan kisi bhi pichle error message ko saaf karne ke liye clearAuthErrors() ko bhi call kar sakte hain agar aapne woh function banaya ho.
+  
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
 
   auth.signInWithEmailAndPassword(email, pass)
     .then((userCredential) => {
-      alert("Welcome back!");
-      navigate('home');
+      const user = userCredential.user;
+      
+      // 🔥 Zaroori Check: Sirf 'ADMIN' displayName wale users ko rehne den
+      if (user.displayName === 'ADMIN') {
+        alert("Welcome back, Admin!");
+        navigate('home');
+      } else {
+        // Agar user ADMIN nahi hai, toh turant logout kar do
+        return auth.signOut().then(() => {
+          alert("Error: Access Denied. Only authorized admin accounts can log in.");
+        });
+      }
     })
-    .catch((error) => alert("Error: " + error.message));
+    .catch((error) => {
+      // Yeh aapki purani error handling line hai
+      alert("Error: " + error.message);
+      
+      // Agar aapne pichle baar ki behtar error handling lagayi hai, toh yahan yeh aayega:
+      // displayAuthError('login-error', error.message);
+    });
 }
 
 function logoutUser() {
