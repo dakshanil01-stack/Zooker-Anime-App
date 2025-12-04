@@ -146,23 +146,39 @@ function handleUpload(e) {
   })
   .catch((error) => alert("Upload Failed: " + error.message));
 }
-// Read Function (Home page pe list dikhana)
+// Read Function (Ab Series aur Movies ko sirf ek baar dikhayega)
 function loadAnimeList() {
   const listContainer = document.getElementById('animeList');
+  
+  // Is Set ka use karke hum track rakhenge ki kaun si series/movie pehle hi render ho chuki hai
+  const renderedItems = new Set();
   
   db.collection("animes").orderBy("timestamp", "desc").get().then((querySnapshot) => {
     listContainer.innerHTML = ""; // Purana loading text hatao
     
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      const id = doc.id;
+      
+      // Agar seriesId hai toh use unique key banao, warna title ko banao
+      const uniqueKey = data.seriesId || data.title; 
+
+      // Agar yeh item pehle hi render ho chuka hai, toh skip karo
+      if (renderedItems.has(uniqueKey)) {
+          return;
+      }
+      
+      // Item ko rendered list mein daalo
+      renderedItems.add(uniqueKey);
 
       // Card HTML banao
       const card = document.createElement('div');
       card.className = 'card';
+      
+      // Zaroori: Image mein 'thumb' class jodo aur Title mein thoda badlav karo
       card.innerHTML = `
-        <img src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/200'">
-        <h3>${data.title}</h3>
+        <img class="thumb" src="${data.image}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/200/000/fff?text=No+Image'">
+        <h3>${data.seriesId || data.title}</h3>
+        <p class="meta">${data.description.substring(0, 50)}...</p>
       `;
       
       // Click karne par Watch page pe le jao
@@ -170,7 +186,8 @@ function loadAnimeList() {
       
       listContainer.appendChild(card);
     });
-  }); }
+  });
+}
 // Player Setup (Ab Series ke episodes ko Season ke hisaab se group karke dikhayega)
 function setupPlayer(data) {
   document.getElementById('watchTitle').innerText = data.title;
