@@ -35,7 +35,7 @@ a:hover {
 }
 .section h2 {
     font-size: 1.5rem;
-    margin-top: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 input, textarea, button {
@@ -79,14 +79,21 @@ input, textarea, button {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--accent);
-    flex-grow: 1; 
+    /* FLEX GROW हटा दिया ताकि ब्रांड बीच में रहे, कंट्रोल्स साइड में */
+    flex-grow: 0;
     text-align: center;
+    position: absolute; /* BRAND को सेंटर में लाने के लिए */
+    left: 50%;
+    transform: translateX(-50%);
 }
+
+/* 🔥 FIX: Mobile par desktop nav ko pakka hide karna */
 #desktopNav {
     display: none;
 }
 .mobile-controls {
     flex-shrink: 0;
+    z-index: 1002; /* Button ko sabse upar rakhne ke liye */
 }
 .icon-btn {
     background: none;
@@ -95,6 +102,7 @@ input, textarea, button {
     font-size: 1.4rem;
     cursor: pointer;
     transition: color 0.2s;
+    border: none; /* Button border hataya */
 }
 .icon-btn:hover {
     color: var(--accent);
@@ -197,10 +205,32 @@ input, textarea, button {
 }
 
 /* ----------------------------------------------------- */
-/* --- 4. GRID, CARD, SLIDER STYLES (FIXED) --- */
+/* --- 4. HERO SECTION (Jise aapne screenshot me dikhaya) --- */
+/* ----------------------------------------------------- */
+.hero {
+    /* Hero CSS add kiya */
+    background: linear-gradient(90deg, #1f364d, #0c1520);
+    padding: 30px; 
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.hero h1 { 
+    font-size: 2.2rem; 
+    color: var(--accent); 
+    margin-bottom: 8px; 
+    font-weight: 800; /* Bold kiya */
+}
+.hero p { 
+    color: var(--muted); 
+    font-size: 1rem; 
+}
+
+
+/* ----------------------------------------------------- */
+/* --- 5. GRID, CARD, SLIDER STYLES (Fixed) --- */
 /* ----------------------------------------------------- */
 
-/* 🚀 FIX 1: Slider Container */
 .slider-container {
     display: flex;
     overflow-x: scroll;
@@ -211,7 +241,6 @@ input, textarea, button {
 .slider-container::-webkit-scrollbar { display: none; }
 .slider-container { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 🚀 FIX 2: Card Grid (All Anime & Movies) */
 .card-grid {
     display: grid;
     /* Mobile: Default 2 cards per row (approx 150px min width) */
@@ -222,12 +251,12 @@ input, textarea, button {
 .card {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
     border-radius: 12px;
-    padding: 8px; /* Padding kam kiya */
+    padding: 8px;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: transform 0.2s, box-shadow 0.3s;
-    min-height: 280px; /* Height adjust kiya */
+    min-height: 280px; 
     text-align: left;
     cursor: pointer;
 }
@@ -238,7 +267,7 @@ input, textarea, button {
 
 .thumb, .card img {
     width: 100%;
-    height: 200px; /* Mobile Card Image Height */
+    height: 200px;
     object-fit: cover;
     border-radius: 8px;
     display: block;
@@ -261,7 +290,7 @@ input, textarea, button {
 
 .slider-card {
     flex-shrink: 0; 
-    width: 120px; /* Trending Card Width adjust kiya */
+    width: 120px;
     height: auto; 
     display: flex;
     flex-direction: column; 
@@ -280,7 +309,7 @@ input, textarea, button {
 }
 .slider-card img { 
     width: 100%; 
-    height: 160px; /* Trending Card Image Height adjust kiya */
+    height: 160px;
     object-fit: cover; 
     border-radius: 8px; 
     margin-bottom: 5px; 
@@ -298,7 +327,7 @@ input, textarea, button {
 
 
 /* ----------------------------------------------------- */
-/* --- 5. AUTH & UPLOAD FORM STYLES --- */
+/* --- 6. AUTH & UPLOAD FORM STYLES --- */
 /* ----------------------------------------------------- */
 .auth-box, .upload-container {
     max-width: 400px;
@@ -345,7 +374,7 @@ input, textarea, button {
 }
 
 /* ----------------------------------------------------- */
-/* --- 6. WATCH PAGE STYLES --- */
+/* --- 7. WATCH PAGE STYLES --- */
 /* ----------------------------------------------------- */
 .watch-page {
     padding: 0 0 20px 0;
@@ -353,7 +382,6 @@ input, textarea, button {
 .video-player-container {
     position: relative;
     width: 100%;
-    /* 16:9 Aspect Ratio (56.25%) */
     padding-top: 56.25%; 
     background: #000;
     margin-bottom: 20px;
@@ -418,10 +446,9 @@ input, textarea, button {
 }
 
 /* ----------------------------------------------------- */
-/* --- 7. PAGINATION & ADMIN STYLES --- */
+/* --- 8. PAGINATION & ADMIN STYLES --- */
 /* ----------------------------------------------------- */
 .pagination-controls {
-    /* Tailwind classes used in HTML (flex justify-center items-center my-8 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl) */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -440,6 +467,7 @@ input, textarea, button {
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
+    border-radius: 8px; /* Added border radius for consistency */
 }
 .pagination-controls button:hover:not(:disabled) {
     background: #c9174b;
@@ -484,40 +512,50 @@ input, textarea, button {
 .admin-list .edit-btn {
     background: var(--accent2);
     color: var(--bg);
+    border-radius: 6px;
 }
 .admin-list .delete-btn {
     background: red;
     color: white;
+    border-radius: 6px;
 }
 
 
 /* ----------------------------------------------------- */
-/* --- 8. DESKTOP MEDIA QUERY (min-width: 768px) --- */
+/* --- 9. DESKTOP MEDIA QUERY (min-width: 768px) --- */
 /* ----------------------------------------------------- */
 @media (min-width: 768px) {
     body {
-        padding-top: 75px; /* Desktop Header + Search bar ke liye thoda kam padding */
+        padding-top: 75px; 
     }
     .site-header {
         height: auto;
         padding: 8px 20px;
-        /* Search bar aur header ko ek line mein laane ke liye */
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        /* Brand - Nav - SearchBar */
+        grid-template-columns: 1fr auto 1fr; 
+        position: fixed; /* Header ko fix rakha */
     }
     .brand {
         text-align: left;
         grid-column: 1;
+        position: static; /* Position static kiya */
+        transform: none; /* Transform hataya */
     }
+    /* 🔥 FIX: Desktop nav ko pakka show karna */
     #desktopNav {
         grid-column: 2;
         display: flex;
         align-items: center;
+        gap: 15px;
+    }
+    #desktopNav a {
+        font-size: 1rem;
     }
     .mobile-controls {
         display: none;
     }
-    /* Search bar ko desktop nav ke paas shift kiya */
+    
     .search-bar-container {
         position: static;
         top: auto;
@@ -535,13 +573,13 @@ input, textarea, button {
         padding: 5px 10px;
         font-size: 0.9rem;
     }
+
     .sidebar, .sidebar-overlay, .user-menu-dropdown {
         display: none !important;
     }
 
     /* Desktop Grid Overrides */
     .card-grid {
-        /* Desktop: 4 cards per row */
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
         gap: 20px;
     }
@@ -550,7 +588,7 @@ input, textarea, button {
         padding: 12px;
     }
     .thumb, .card img {
-        height: 270px; /* Desktop Card Image Height */
+        height: 270px;
     }
     .card h3 {
         font-size: 16px;
