@@ -16,8 +16,8 @@ body {
     color: var(--text);
     font-family: sans-serif;
     margin: 0;
-    /* 70px ki padding di, jismein header ke neeche ka content show ho */
-    padding-top: 70px; 
+    /* Header (60px) + Search bar (approx 55px) ke liye total padding */
+    padding-top: 115px; 
 }
 a {
     color: var(--accent);
@@ -41,52 +41,45 @@ input, textarea, button {
     border: none;
 }
 
-/* --- 1. HEADER & FOOTER STYLES (Fixed Nav Overlap) --- */
+/* ----------------------------------------------------- */
+/* --- 1. HEADER & FOOTER STYLES (Cleaned up) --- */
+/* ----------------------------------------------------- */
 .site-header {
-    background: rgba(12, 21, 32, 0.98); /* Opaque background */
+    background: rgba(12, 21, 32, 0.98); 
     backdrop-filter: blur(8px);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     display: flex;
-    /* Space between brand, search and nav */
     justify-content: space-between; 
     align-items: center;
     padding: 10px 20px;
-    z-index: 1000;
+    z-index: 1001; /* Header ko top par rakha */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 .brand {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--accent);
-    flex-shrink: 0; /* Ensures brand name doesn't shrink */
+    flex-shrink: 0; 
     margin-right: 15px;
 }
 .site-header nav {
-    /* Nav ko compact rakha */
     display: flex;
-    gap: 8px; /* Links ke beech ki jagah kam ki */
+    gap: 8px; 
     flex-shrink: 0;
     margin-left: 15px;
 }
 .site-header nav a {
-    /* Margins removed, gap is used */
     margin-left: 0; 
-    font-size: 0.9rem; /* Font size thoda chota kiya for compactness */
+    font-size: 0.9rem; 
     font-weight: 500;
     color: var(--muted);
 }
 .site-header nav a:hover {
     color: var(--text);
 }
-/* Search bar container ki width manage ki */
-.site-header div[style*="flex-grow: 1"] {
-    max-width: 350px; /* Max width kam ki */
-    flex-grow: 1;
-}
-
 .site-footer {
     padding: 20px;
     text-align: center;
@@ -95,29 +88,58 @@ input, textarea, button {
     margin-top: 40px;
 }
 
-/* --- 2. HERO SECTION (Compacted) --- */
+/* ----------------------------------------------------- */
+/* --- 2. SEARCH BAR CONTAINER (Fixed below Header) --- */
+/* ----------------------------------------------------- */
+.search-bar-container {
+    position: fixed;
+    top: 60px; /* Header height ke barabar */
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+    padding: 10px 20px;
+    background: var(--bg); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-bar-container input#searchBar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto; 
+    display: block;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    padding: 10px 15px;
+    font-size: 1.05rem;
+}
+
+/* ----------------------------------------------------- */
+/* --- 3. HERO SECTION (Compacted) --- */
+/* ----------------------------------------------------- */
 .hero {
-    /* Padding kam kiya (40px se 30px kiya) */
-    padding: 30px; 
+    background: linear-gradient(90deg, #1f364d, #0c1520);
+    padding: 30px; /* Compacted */
     border-radius: 12px;
     margin-bottom: 30px;
     text-align: center;
-    background: linear-gradient(90deg, #1f364d, #0c1520);
 }
 .hero h1 {
-    font-size: 2.2rem; /* Font size kam kiya */
+    font-size: 2.2rem; 
     color: var(--accent);
-    margin-bottom: 8px; /* Margin kam kiya */
+    margin-bottom: 8px; 
 }
 .hero p {
     color: var(--muted);
     font-size: 1rem;
 }
 
-/* --- 3. GRID & CARD STYLES --- */
+/* ----------------------------------------------------- */
+/* --- 4. GRID & CARD STYLES (Compacted) --- */
+/* ----------------------------------------------------- */
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); /* Min Card size kam kiya */
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); /* Min Card size thoda kam kiya */
     gap:20px;
 }
 .card{
@@ -128,7 +150,7 @@ input, textarea, button {
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.05);
     transition: transform 0.2s, box-shadow 0.3s;
-    min-height: 300px; /* Overall min height kam kiya */
+    min-height: 300px; 
     text-align: left;
 }
 .card:hover {
@@ -146,7 +168,7 @@ input, textarea, button {
 }
 .card h3{
     font-weight:600;
-    font-size:15px; /* Font size thoda kam kiya */
+    font-size:15px; 
     margin: 0 0 2px 0;
     white-space: nowrap;
     overflow: hidden;
@@ -154,11 +176,13 @@ input, textarea, button {
 }
 .card p.meta{
     color:var(--muted);
-    font-size:13px; /* Font size thoda kam kiya */
+    font-size:13px; 
     margin: 0;
 }
 
-/* --- 4. AUTH & UPLOAD CARD STYLES --- */
+/* ----------------------------------------------------- */
+/* --- 5. AUTH & UPLOAD CARD STYLES --- */
+/* ----------------------------------------------------- */
 .auth-card, .upload-card {
     max-width: 400px;
     margin: 50px auto;
@@ -195,7 +219,9 @@ input, textarea, button {
     margin-top: 15px;
 }
 
-/* --- 5. WATCH PAGE STYLES --- */
+/* ----------------------------------------------------- */
+/* --- 6. WATCH PAGE STYLES --- */
+/* ----------------------------------------------------- */
 .watch-container {
     margin-top: 20px;
 }
@@ -254,7 +280,9 @@ input, textarea, button {
 }
 
 
-/* --- 6. SLIDER STYLES (Compacted and Fixed Alignment) --- */
+/* ----------------------------------------------------- */
+/* --- 7. SLIDER STYLES (Compacted Vertical Look) --- */
+/* ----------------------------------------------------- */
 .slider-wrapper h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -265,7 +293,7 @@ input, textarea, button {
     display: flex;
     overflow-x: scroll;
     scroll-snap-type: x mandatory; 
-    gap: 15px; /* Gap kam kiya */
+    gap: 15px; 
     padding-bottom: 25px;
 }
 .trending-slider::-webkit-scrollbar { display: none; }
@@ -273,11 +301,10 @@ input, textarea, button {
 
 .slider-card {
     flex-shrink: 0; 
-    /* Width kam kiya aur height badhayi for vertical image look */
     width: 140px;     
     height: 250px; 
     display: flex;
-    flex-direction: column; /* Content vertical kiya */
+    flex-direction: column; 
     justify-content: flex-start;
     background: var(--bg-light); 
     border-radius: 12px;
@@ -292,7 +319,6 @@ input, textarea, button {
     background: rgba(15, 23, 32, 0.7);
 }
 .slider-card img {
-    /* Image ko full card width diya */
     width: 100%; 
     height: 200px; 
     object-fit: cover;
@@ -302,7 +328,7 @@ input, textarea, button {
 }
 .slider-card h4 {
     flex-grow: 0;
-    font-size: 0.9rem; /* Font size chota kiya */
+    font-size: 0.9rem; 
     font-weight: 600;
     margin: 0;
     white-space: nowrap;
@@ -311,7 +337,9 @@ input, textarea, button {
 }
 
 
-/* --- 7. SKELETON LOADER STYLES --- */
+/* ----------------------------------------------------- */
+/* --- 8. SKELETON LOADER STYLES --- */
+/* ----------------------------------------------------- */
 .skeleton-loader {
     animation: pulse-bg 1.5s infinite;
     border-radius: 4px;
@@ -323,7 +351,9 @@ input, textarea, button {
 }
 
 
-/* --- 8. PAGINATION CONTROLS STYLES --- */
+/* ----------------------------------------------------- */
+/* --- 9. PAGINATION CONTROLS STYLES --- */
+/* ----------------------------------------------------- */
 .pagination-controls {
     max-width: 500px; 
     margin: 40px auto; 
@@ -353,14 +383,16 @@ input, textarea, button {
 }
 
 
-/* --- 9. MEDIA QUERIES --- */
+/* ----------------------------------------------------- */
+/* --- 10. MEDIA QUERIES (Mobile Fixes) --- */
+/* ----------------------------------------------------- */
 @media (max-width: 768px) {
     .site-header {
         padding: 10px;
     }
     .site-header nav a {
         margin-left: 10px;
-        font-size: 0.8rem; /* Mobile par Nav links aur choti ki */
+        font-size: 0.8rem; 
     }
     .container {
         padding: 10px;
@@ -370,18 +402,29 @@ input, textarea, button {
         margin-top: 10px;
     }
     .hero h1 {
-        font-size: 1.8rem; /* Mobile Hero Title size */
-    }
-    .slider-card {
-        width: 120px; /* Mobile par slider cards aur choti ki */
-        height: 220px;
-    }
-    .slider-card img {
-        height: 170px;
+        font-size: 1.8rem; 
     }
 }
 
 @media (max-width: 600px) {
+    /* Mobile body padding: Header (~50px) + Search bar (~50px) */
+    body {
+        padding-top: 105px;
+    }
+    /* Mobile Header height/padding */
+    .site-header {
+        padding: 8px 10px;
+    }
+
+    /* Mobile Search Bar Positioning */
+    .search-bar-container {
+        top: 48px; /* Mobile header height ke theek neeche */
+        padding: 8px 10px;
+    }
+    .search-bar-container input#searchBar {
+        padding: 8px 12px;
+    }
+    
     /* Grid setting (2 cards per line) */
     .grid{
         grid-template-columns: 1fr 1fr; 
@@ -407,17 +450,12 @@ input, textarea, button {
         font-size: 11px;
         margin: 0;
     }
-    /* Header Stack fix (Mobile) */
-    .site-header {
-        flex-wrap: wrap; /* Elements ko next line mein aane diya */
+
+    .slider-card {
+        width: 120px; 
+        height: 220px;
     }
-    .site-header div[style*="flex-grow: 1"] {
-        order: 3; /* Search bar ko neeche laya */
-        width: 100%;
-        max-width: 100%;
-        margin-top: 10px;
-    }
-    .site-header nav {
-        order: 2; /* Nav ko side mein rakha */
+    .slider-card img {
+        height: 170px;
     }
 }
