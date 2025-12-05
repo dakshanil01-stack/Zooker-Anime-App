@@ -279,7 +279,7 @@ input, textarea, button {
 .thumb, .card img {
     width: 100%; /* Card ke andar 100% width use karein */
     max-width: 160px; /* Max size set karein */
-    height: 250px; 
+    height: 300px; 
     object-fit: cover;
     border-radius: 10px;
     display: block;
