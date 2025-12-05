@@ -1,12 +1,12 @@
 // 🔥 --- 1. FIREBASE INITIALIZATION AND CONFIGURATION --- 🔥
 // Replace with your actual Firebase config
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+    authDomain: "zookeranime.firebaseapp.com",
+    projectId: "zookeranime",
+    storageBucket: "zookeranime.firebasestorage.app",
+    messagingSenderId: "440126522624",
+    appId: "1:440126522624:web:abcd13f6715bda85721fe5"
 };
 
 // Initialize Firebase
