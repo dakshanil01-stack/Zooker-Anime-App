@@ -64,7 +64,23 @@
                 </div>
         </div>
     </template>
-
+<template id="tpl-edit">
+    <div class="upload-container">
+        <h2>Edit Content: <span id="edit-doc-id-display" style="font-size: 0.8em; color: var(--muted);"></span></h2>
+        <form id="editForm" class="upload-form">
+            <input type="hidden" id="e_docId" /> <input type="text" id="e_title" placeholder="Full Title (e.g., Attack on Titan S4 E12)" required />
+            <input type="text" id="e_seriesId" placeholder="Series ID (e.g., Attack On Titan)" required />
+            <div class="flex-row">
+                <input type="number" id="e_season" placeholder="Season No." value="1" min="1" required />
+                <input type="number" id="e_episode" placeholder="Episode No." value="1" min="1" required />
+            </div>
+            <input type="url" id="e_image" placeholder="Image URL (Poster/Thumbnail)" required />
+            <input type="url" id="e_video" placeholder="Video URL (Embed Link)" required />
+            <textarea id="e_desc" placeholder="Description / Synopsis / Year (e.g., 2023)" required></textarea>
+            <button type="submit" class="cta-btn">Save Changes</button>
+        </form>
+    </div>
+</template>
     <template id="tpl-login">
         <div class="auth-box">
             <h2>Login to Zooker</h2>
