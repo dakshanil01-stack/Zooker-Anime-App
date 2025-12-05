@@ -213,16 +213,20 @@ function handleUpload(e) {
   const season = parseInt(document.getElementById('u_season').value);
   const episode = parseInt(document.getElementById('u_episode').value);
   
+  // 🔥 FIX 1: Image field ko optional banaya, agar seriesId hai toh.
   const image = document.getElementById('u_image').value;
   const video = document.getElementById('u_video').value;
   const desc = document.getElementById('u_desc').value;
+
+  // Agar seriesId diya gaya hai aur image nahi di gayi, toh 'series-placeholder' use karein
+  const finalImage = (seriesId && !image) ? 'SERIES_PLACEHOLDER' : image;
 
   db.collection("animes").add({
     title: title,
     seriesId: seriesId,  
     season: season,     
     episode: episode,   
-    image: image,
+    image: finalImage, // Updated image field
     videoUrl: video,
     description: desc,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -328,31 +332,62 @@ function loadAnimeList(page = 1) {
   });
 }
 
-// 🔥 NEW: Unique Series/Movie Data निकालने के लिए फ़ंक्शन 🔥
+// 🔥 NEW: Unique Series/Movie Data निकालने के लिए फ़ंक्शन (Image Logic Updated) 🔥
 function getUniqueSeriesHeads(dataArray) {
     const uniqueMap = new Map();
 
     dataArray.forEach(data => {
-        // Unique Key: SeriesID ko prioritize karein, agar nahi hai toh Title ko
         const uniqueKey = (data.seriesId || data.title).trim().toUpperCase();
+        const currentData = { ...data };
         
-        // Map में केवल एक ही uniqueKey वाला item होगा।
-        // हम उस item को रखते हैं जिसका Timestamp सबसे नया है (latest upload)
-        // Note: timestamp Firebase object hai, isliye compare karne se pehle use check karein
         const currentTimestamp = data.timestamp ? (data.timestamp.seconds || 0) : 0;
         const existingData = uniqueMap.get(uniqueKey);
         const existingTimestamp = existingData ? (existingData.timestamp ? (existingData.timestamp.seconds || 0) : 0) : 0;
         
-        if (!existingData || currentTimestamp > existingTimestamp) {
-            uniqueMap.set(uniqueKey, data);
+        if (!existingData) {
+            // New series: Store it
+            uniqueMap.set(uniqueKey, currentData);
+        } else {
+            // Existing series: Update if current is newer (to keep latest episode as the head)
+            if (currentTimestamp > existingTimestamp) {
+                uniqueMap.set(uniqueKey, currentData);
+            }
+            
+            // 🔥 FIX 1 PART 2: Series ka poster preserve karna.
+            // Agar latest entry mein image 'SERIES_PLACEHOLDER' hai, 
+            // aur old entry mein valid image thi, toh old image use karo.
+            if (existingData.image && existingData.image !== 'SERIES_PLACEHOLDER' && currentData.image === 'SERIES_PLACEHOLDER') {
+                uniqueMap.get(uniqueKey).image = existingData.image;
+            }
         }
     });
 
-    // Map से Array वापस करें
-    return Array.from(uniqueMap.values());
+    // Final check for 'SERIES_PLACEHOLDER' and replacing it with the actual poster
+    // Hum maan rahe hain ki agar kisi ek episode mein bhi image di gayi hai, toh woh series poster hai.
+    const finalMap = new Map();
+    
+    // Step 1: Sabse pehle unique keys ko latest data se set karo
+    Array.from(uniqueMap.values()).forEach(data => {
+        const key = (data.seriesId || data.title).trim().toUpperCase();
+        finalMap.set(key, data);
+    });
+
+    // Step 2: Pure allAnimeData mein ghoom kar series poster dhoondo.
+    dataArray.forEach(data => {
+        const key = (data.seriesId || data.title).trim().toUpperCase();
+        const headData = finalMap.get(key);
+        
+        // Agar head data ka image placeholder hai, aur is current episode mein valid image hai.
+        if (headData && (headData.image === 'SERIES_PLACEHOLDER' || headData.image === '') && data.image && data.image !== 'SERIES_PLACEHOLDER') {
+            headData.image = data.image; // Use the first found valid image as poster
+            finalMap.set(key, headData);
+        }
+    });
+    
+    return Array.from(finalMap.values());
 }
 
-// Card Rendering Logic
+// Card Rendering Logic (Click handler updated)
 function renderAnimeCards(dataArray, container) {
   dataArray.forEach((data) => {
     const card = document.createElement('div');
@@ -361,14 +396,22 @@ function renderAnimeCards(dataArray, container) {
     const displayTitle = data.seriesId || data.title;
     const displayYear = data.year || (data.description ? data.description.substring(0, 4) : '—');
 
+    // Image URL ko check karo, agar 'SERIES_PLACEHOLDER' hai toh generic placeholder dikhao.
+    const imageSource = (data.image === 'SERIES_PLACEHOLDER' || !data.image) 
+                        ? 'https://via.placeholder.com/220x270/000/fff?text=No+Image' 
+                        : data.image;
+
     card.innerHTML = `
-        <img class="thumb" src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x270/000/fff?text=No+Image'">
+        <img class="thumb" src="${imageSource}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/220x270/000/fff?text=No+Image'">
         <h3>${displayTitle}</h3>
         <p class="meta">${displayYear}</p>
     `;
         
-    // Watch page par navigate karte waqt poora data bhejein
-    card.onclick = () => navigate('watch', data); 
+    // 🔥 FIX 2: Watch page par navigate karne ke liye naya logic
+    card.onclick = () => {
+        const seriesIdentifier = data.seriesId || data.title;
+        findAndPlayFirstEpisode(seriesIdentifier);
+    }; 
     container.appendChild(card);
   });
 }
@@ -402,7 +445,7 @@ function filterAnimeList(query) {
 }
 
 
-// --- 5. SLIDER LOGIC (unchanged) ---
+// --- 5. SLIDER LOGIC (Click handler updated) ---
 function loadTrendingSlider() {
     // ... (logic remains the same) ...
   const sliderContainer = document.getElementById('trendingSlider');
@@ -436,15 +479,24 @@ function loadTrendingSlider() {
 
         const slide = document.createElement('div');
         slide.className = 'slider-card';
+        
+        // Image Check
+        const imageSource = (data.image === 'SERIES_PLACEHOLDER' || !data.image) 
+                            ? 'https://via.placeholder.com/130x150/111/fff?text=Image+Error' 
+                            : data.image;
             
         const displayTitle = data.seriesId || data.title;
 
         slide.innerHTML = `
-            <img src="${data.image}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/130x150/111/fff?text=Image+Error'">
+            <img src="${imageSource}" alt="${displayTitle}" onerror="this.src='https://via.placeholder.com/130x150/111/fff?text=Image+Error'">
             <h4>${displayTitle}</h4>
         `;
             
-        slide.onclick = () => navigate('watch', data);
+        // 🔥 FIX 2: Slider click par bhi first episode
+        slide.onclick = () => {
+            const seriesIdentifier = data.seriesId || data.title;
+            findAndPlayFirstEpisode(seriesIdentifier);
+        };
             
         sliderContainer.appendChild(slide);
     });
@@ -606,7 +658,7 @@ function goToPreviousPage() {
 }
 
 
-// 🔥 --- 8. ADMIN MANAGEMENT LOGIC (Edit button updated) --- 🔥
+// 🔥 --- 8. ADMIN MANAGEMENT LOGIC (unchanged) --- 🔥
 
 /**
  * Firestore से सभी सामग्री लोड करता है और एडमिन पैनल में दिखाता है।
@@ -702,7 +754,7 @@ function deleteContent(docId, title) {
     }
 }
 
-// 🔥 --- 8.1. CONTENT EDIT LOGIC (NEW FUNCTIONS) --- 🔥
+// 🔥 --- 8.1. CONTENT EDIT LOGIC (unchanged) --- 🔥
 
 /**
  * Content को Firestore से fetch करता है और Edit form में fill करता है।
@@ -735,7 +787,10 @@ function loadContentForEdit(docId) {
             document.getElementById('e_seriesId').value = data.seriesId || '';
             document.getElementById('e_season').value = data.season || 1;
             document.getElementById('e_episode').value = data.episode || 1;
-            document.getElementById('e_image').value = data.image || '';
+            
+            // 🔥 Image Field Logic: 'SERIES_PLACEHOLDER' ko empty string se replace karein
+            document.getElementById('e_image').value = (data.image === 'SERIES_PLACEHOLDER') ? '' : (data.image || '');
+
             document.getElementById('e_video').value = data.videoUrl || '';
             document.getElementById('e_desc').value = data.description || '';
 
@@ -763,12 +818,18 @@ function handleUpdate(e) {
     submitBtn.disabled = true;
     submitBtn.innerText = 'Saving...';
 
+    const seriesId = document.getElementById('e_seriesId').value;
+    const image = document.getElementById('e_image').value;
+    
+    // 🔥 FIX 1: Update ke time bhi check karein
+    const finalImage = (seriesId && !image) ? 'SERIES_PLACEHOLDER' : image;
+    
     const updatedData = {
         title: document.getElementById('e_title').value,
-        seriesId: document.getElementById('e_seriesId').value,
+        seriesId: seriesId,
         season: parseInt(document.getElementById('e_season').value),
         episode: parseInt(document.getElementById('e_episode').value),
-        image: document.getElementById('e_image').value,
+        image: finalImage, // Updated image field
         videoUrl: document.getElementById('e_video').value,
         description: document.getElementById('e_desc').value,
         updatedTimestamp: firebase.firestore.FieldValue.serverTimestamp() // Update time store karein
@@ -792,6 +853,57 @@ function handleUpdate(e) {
             alert("Update Failed: " + error.message);
             submitBtn.disabled = false;
             submitBtn.innerText = 'Save Changes';
+        });
+}
+
+
+// 🔥 --- 8.2. FIRST EPISODE REDIRECTION LOGIC (NEW FUNCTION) --- 🔥
+
+/**
+ * Series ID के आधार पर Season 1, Episode 1 का data ढूँढता है और उसे play करता है।
+ * @param {string} seriesIdentifier - Series का ID या Title
+ */
+function findAndPlayFirstEpisode(seriesIdentifier) {
+    
+    // User को feedback देने के लिए screen clear कर दो
+    document.getElementById('view').innerHTML = '<h3 style="text-align:center; padding: 50px; color: var(--accent);">Loading Series...</h3>';
+
+    // 1. Series ID/Title के आधार पर Query set करें
+    let query;
+    const isSeries = seriesIdentifier.length > 0 && seriesIdentifier.toUpperCase() !== seriesIdentifier; // Simple guess
+
+    if (isSeries) {
+        // Series है, तो S1 E1 ढूँढो
+        query = db.collection("animes")
+            .where("seriesId", "==", seriesIdentifier)
+            .orderBy("season", "asc")
+            .orderBy("episode", "asc")
+            .limit(1);
+    } else {
+        // Standalone Movie/Episode है, तो Title से ढूँढो (जो कि latest upload में मौजूद है)
+        query = db.collection("animes")
+            .where("title", "==", seriesIdentifier)
+            .limit(1);
+    }
+    
+    // 2. Query Execute करें
+    query.get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                const firstEpisodeData = querySnapshot.docs[0].data();
+                // DocId is necessary for subsequent episode loading on watch page
+                firstEpisodeData.docId = querySnapshot.docs[0].id; 
+                
+                // First Episode मिल गया, अब watch page पर navigate करो
+                navigate('watch', firstEpisodeData);
+            } else {
+                alert("Error: Episode/Series data not found.");
+                navigate('home');
+            }
+        })
+        .catch(error => {
+            alert("Error finding first episode: " + error.message);
+            navigate('home');
         });
 }
 
