@@ -1,7 +1,7 @@
 // 🔥 --- 1. FIREBASE INITIALIZATION AND CONFIGURATION --- 🔥
 // Replace with your actual Firebase config
 const firebaseConfig = {
-    apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
   authDomain: "zookeranime.firebaseapp.com",
   projectId: "zookeranime",
   storageBucket: "zookeranime.firebasestorage.app",
