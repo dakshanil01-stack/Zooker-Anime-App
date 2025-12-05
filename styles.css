@@ -312,7 +312,7 @@ input, textarea, button {
 .slider-container::-webkit-scrollbar { display: none; }
 
 .slider-card {
-    flex-shrink: 0; width: 150px; height: 250px; display: flex;
+    flex-shrink: 0; width: 150px; height: 210px; display: flex;
     flex-direction: column; justify-content: flex-start; background: var(--bg-light); 
     border-radius: 12px; padding: 8px; text-align: center; cursor: pointer;
     scroll-snap-align: start; transition: transform 0.2s, background 0.2s;
