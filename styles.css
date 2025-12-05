@@ -1,623 +1,661 @@
 /* Variables and general styles */
 
 :root {
-
     --bg: #0c1520;
-
     --bg-light: #151f2b; 
-
     --card: rgba(255, 255, 255, 0.08); 
-
     --text: #ffffff;
-
     --muted: #94a3b8;
-
     --accent: #00ffeb; /* Teal */
-
     --accent2: #00c7ff; /* Lighter Blue */
-
 }
 
 * {
-
     box-sizing: border-box;
-
 }
 
 body {
-
     background: var(--bg);
-
     color: var(--text);
-
-    font-family: sans-serif;
-
+    font-family: 'Inter', sans-serif; /* Thoda accha font use karein */
     margin: 0;
-
-    /* Mobile: Header (50px) + Search bar (approx 50px) = 100px total padding */
-
-    padding-top: 105px; 
-
+    padding-top: 105px; /* Mobile: Header (50px) + Search bar (approx 50px) = 100px total padding */
+    min-height: 100vh;
 }
 
 a {
-
     color: var(--accent);
-
     text-decoration: none;
-
     transition: color 0.2s;
-
 }
 
 a:hover {
-
     color: var(--accent2);
-
 }
 
 .container {
-
     padding: 20px;
-
     max-width: 1200px;
-
     margin: auto;
-
 }
 
 input, textarea, button {
-
     font-family: inherit;
-
     font-size: 1rem;
-
     padding: 10px;
-
     border-radius: 8px;
-
     border: none;
-
 }
 
-
-
-/* ----------------------------------------------------- */
-
-/* --- 1. HEADER & NAVIGATION STYLES (Mobile First) --- */
-
-/* ----------------------------------------------------- */
-
-.site-header {
-
-    background: rgba(12, 21, 32, 0.98); 
-
-    backdrop-filter: blur(8px);
-
-    position: fixed;
-
-    top: 0;
-
-    left: 0;
-
+/* --- GLOBAL BUTTON STYLES --- */
+.cta-btn {
     width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+    border-radius: 8px;
+    text-transform: uppercase;
+}
 
+.cta-btn:hover {
+    background: var(--accent2);
+}
+
+/* ----------------------------------------------------- */
+/* --- 1. HEADER & NAVIGATION STYLES (Mobile First) --- */
+/* ----------------------------------------------------- */
+.site-header {
+    background: rgba(12, 21, 32, 0.98); 
+    backdrop-filter: blur(8px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
-
-    justify-content: space-between; /* Brand ko center mein rakhega */
-
+    justify-content: space-between; 
     align-items: center;
-
     padding: 10px 15px;
-
     z-index: 1001; 
-
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-
-    height: 50px; /* Header ki fixed height */
-
+    height: 50px; 
 }
 
 .brand {
-
     font-size: 1.5rem;
-
     font-weight: 800;
-
     color: var(--accent);
-
-    flex-grow: 1; /* Center karne ke liye */
-
+    flex-grow: 1; 
     text-align: center;
-
 }
 
-/* Hide desktop nav by default (Mobile First) */
-
 #desktopNav {
-
     display: none;
-
+    align-items: center;
+}
+#desktopNav a {
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+#desktopNav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent2);
 }
 
 .mobile-controls {
-
     flex-shrink: 0;
-
 }
 
 .icon-btn {
-
     background: none;
-
     color: var(--text);
-
     padding: 5px;
-
     font-size: 1.4rem;
-
     cursor: pointer;
-
     transition: color 0.2s;
-
 }
 
 .icon-btn:hover {
-
     color: var(--accent);
-
 }
 
 .site-footer {
-
     padding: 20px;
-
     text-align: center;
-
     color: var(--muted);
-
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-
     margin-top: 40px;
-
 }
 
 
-
 /* ----------------------------------------------------- */
-
 /* --- 2. MOBILE SIDEBAR MENU (Hamburger) --- */
-
 /* ----------------------------------------------------- */
-
 .sidebar {
-
     height: 100%;
-
-    width: 0; /* Default hidden */
-
+    width: 0; 
     position: fixed;
-
     z-index: 2000;
-
     top: 0;
-
     left: 0;
-
     background-color: var(--bg); 
-
     overflow-x: hidden;
-
     padding-top: 60px;
-
     transition: 0.3s;
-
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-
 }
 
 .sidebar a {
-
     padding: 15px 25px;
-
     text-decoration: none;
-
     font-size: 1.2rem;
-
     color: var(--text);
-
     display: block;
-
     transition: 0.3s;
-
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
 }
 
 .sidebar a:hover {
-
     background-color: var(--bg-light);
-
     color: var(--accent);
-
 }
 
 .sidebar-overlay {
-
     position: fixed;
-
     top: 0;
-
     left: 0;
-
     width: 100%;
-
     height: 100%;
-
     background: rgba(0, 0, 0, 0.7);
-
     z-index: 1999;
-
-    display: none; /* Default hidden */
-
+    display: none; 
 }
 
 
-
 /* ----------------------------------------------------- */
-
 /* --- 3. MOBILE USER MENU DROPDOWN (Top Right) --- */
-
 /* ----------------------------------------------------- */
-
 .user-menu-dropdown {
-
     position: fixed;
-
-    top: 50px; /* Header ke theek neeche */
-
+    top: 50px; 
     right: 15px;
-
     background-color: var(--bg-light);
-
     min-width: 150px;
-
     border-radius: 8px;
-
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-
     z-index: 1500;
-
     padding: 10px 0;
-
-    display: none; /* Default hidden */
-
+    display: none; 
 }
 
 .user-menu-dropdown a {
-
     color: var(--text);
-
     padding: 8px 15px;
-
     text-decoration: none;
-
     display: block;
-
     font-size: 0.95rem;
-
 }
 
 .user-menu-dropdown a:hover {
-
     background-color: rgba(255, 255, 255, 0.05);
-
     color: var(--accent);
-
 }
 
 
-
 /* ----------------------------------------------------- */
-
 /* --- 4. SEARCH BAR CONTAINER (Fixed below Header) --- */
-
 /* ----------------------------------------------------- */
-
 .search-bar-container {
-
     position: fixed;
-
-    top: 50px; /* Header height ke barabar */
-
+    top: 50px; 
     left: 0;
-
     width: 100%;
-
     z-index: 1000; 
-
-    padding: 8px 15px; /* Padding kam kiya */
-
+    padding: 8px 15px; 
     background: var(--bg); 
-
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
 }
-
-
 
 .search-bar-container input#searchBar {
-
     width: 100%;
-
     max-width: 1200px;
-
     margin: 0 auto; 
-
     display: block;
-
     background: rgba(255, 255, 255, 0.05);
-
     color: var(--text);
-
     border: 1px solid var(--accent);
-
     padding: 8px 15px;
-
     font-size: 1rem;
-
+    transition: border-color 0.2s;
+}
+.search-bar-container input#searchBar:focus {
+    outline: none;
+    border-color: var(--accent2);
 }
 
 
-
 /* ----------------------------------------------------- */
-
-/* --- 5. HERO, GRID, CARD, SLIDER STYLES (Retained) --- */
-
+/* --- 5. GRID, CARD, SLIDER STYLES --- */
 /* ----------------------------------------------------- */
-
-.hero {
-
-    background: linear-gradient(90deg, #1f364d, #0c1520);
-
-    padding: 30px; 
-
-    border-radius: 12px;
-
-    margin-bottom: 30px;
-
-    text-align: center;
-
+.section h2 {
+    color: var(--accent);
+    margin-top: 35px;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    border-left: 4px solid var(--accent2);
+    padding-left: 10px;
 }
 
-.hero h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 8px; }
-
-.hero p { color: var(--muted); font-size: 1rem; }
-
-
-
-.grid{
-
+.card-grid {
     display:grid;
-
     grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-
     gap:20px;
-
 }
 
 .card{
-
     background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-
     border-radius:12px;
-
     padding:10px;
-
     position:relative;
-
     overflow:hidden;
-
     border:1px solid rgba(255,255,255,0.05);
-
     transition: transform 0.2s, box-shadow 0.3s;
-
     min-height: 280px; 
-
     text-align: center;
-
 }
 
-.card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); cursor: pointer; }
+.card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); 
+    cursor: pointer; 
+    background: var(--bg-light);
+}
 
 .thumb, .card img {
-
-    width: 140px;
-
+    width: 100%; /* Card ke andar 100% width use karein */
+    max-width: 160px; /* Max size set karein */
     height: 250px; 
-
     object-fit: cover;
-
     border-radius: 10px;
-
     display: block;
-
-    margin-bottom: 6px;
-
+    margin: 0 auto 6px auto; /* Center image */
+}
+.card h3{ 
+    font-weight:600; 
+    font-size:15px; 
+    margin: 0 0 2px 0; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+.card p.meta{ 
+    color:var(--muted); 
+    font-size:13px; 
+    margin: 0; 
 }
 
-.card h3{ font-weight:600; font-size:15px; margin: 0 0 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.card p.meta{ color:var(--muted); font-size:13px; margin: 0; }
-
-
-
-.trending-slider {
-
+/* Slider Styles */
+.slider-container {
     display: flex;
-
     overflow-x: scroll;
-
     scroll-snap-type: x mandatory; 
-
     gap: 15px; 
-
     padding-bottom: 25px;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none;
-
 }
-
-.trending-slider::-webkit-scrollbar { display: none; }
-
-.trending-slider { -ms-overflow-style: none; scrollbar-width: none; }
+.slider-container::-webkit-scrollbar { display: none; }
 
 .slider-card {
-
-    flex-shrink: 0; width: 110px; height: 220px; display: flex;
-
+    flex-shrink: 0; width: 150px; height: 250px; display: flex;
     flex-direction: column; justify-content: flex-start; background: var(--bg-light); 
-
-    border-radius: 12px; padding: 5px; text-align: center; cursor: pointer;
-
+    border-radius: 12px; padding: 8px; text-align: center; cursor: pointer;
     scroll-snap-align: start; transition: transform 0.2s, background 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.slider-card:hover { transform: scale(1.02); background: rgba(15, 23, 32, 0.7); }
+.slider-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 5px; margin-right: 0; }
+.slider-card h4 { flex-grow: 0; font-size: 1rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+
+/* --- SKELETON LOADER --- */
+.skeleton-loader {
+    animation: pulse 1.5s infinite ease-in-out;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    opacity: 0.7;
 }
 
-.slider-card:hover { transform: scale(1.02); background: rgba(15, 23, 32, 0.7); }
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
 
-.slider-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 5px; margin-right: 0; }
-
-.slider-card h4 { flex-grow: 0; font-size: 0.9rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-
-
-/* ... (Auth, Upload, Watch, Pagination styles here) ... */
 
 /* ----------------------------------------------------- */
+/* --- 6. AUTH, UPLOAD, ADMIN PAGES --- */
+/* ----------------------------------------------------- */
+.auth-box, .upload-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background: var(--bg-light); 
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--card);
+}
 
-/* --- 6. MEDIA QUERIES (Desktop Overrides) --- */
+.auth-box h2, .upload-container h2 {
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-form input, .upload-form input, .upload-form textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    resize: vertical; /* Textarea ke liye */
+}
+
+.auth-form input::placeholder, .upload-form input::placeholder, .upload-form textarea::placeholder {
+    color: var(--muted);
+}
+
+.auth-form p, .upload-form p {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.flex-row {
+    display: flex;
+    gap: 15px;
+}
+.flex-row input {
+    margin-bottom: 0;
+}
+
+/* Admin List Styles */
+.admin-page h2 {
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+.admin-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 1rem;
+}
+.admin-list li:last-child {
+    border-bottom: none;
+}
+.admin-list .button-group button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.admin-list .button-group button:hover {
+    opacity: 0.8;
+}
+.admin-list .delete-btn {
+    background: red;
+    color: white;
+}
+.admin-list .edit-btn {
+    background: var(--accent2);
+    color: var(--bg);
+}
+
 
 /* ----------------------------------------------------- */
+/* --- 7. WATCH PAGE (tpl-watch) --- */
+/* ----------------------------------------------------- */
+.watch-page {
+    padding-bottom: 50px;
+}
 
+.video-player-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    margin-bottom: 30px;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.video-player-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.watch-details h1 {
+    font-size: 2rem;
+    color: var(--accent2);
+    margin-top: 0;
+}
+
+.watch-details p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.episode-list-container h3 {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    color: var(--accent);
+    font-size: 1.5rem;
+}
+
+.season-heading {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: var(--text);
+    font-size: 1.2rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+}
+
+.episode-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.episode-buttons-container button {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.episode-buttons-container button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent2);
+}
+
+.episode-buttons-container button.active {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+}
+
+
+/* ----------------------------------------------------- */
+/* --- 8. PAGINATION CONTROLS (Custom CSS for Tailwind Classes) --- */
+/* ----------------------------------------------------- */
+.pagination-controls {
+    /* flex justify-center items-center */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* my-8 p-4 */
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    
+    /* bg-gray-900 border border-gray-700 rounded-xl shadow-2xl */
+    background: var(--bg-light); /* Custom dark background */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Custom border */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.pagination-controls button {
+    /* px-6 py-2 mx-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-150 */
+    padding: 0.5rem 1.5rem;
+    margin: 0 0.5rem;
+    background: #dc2626; /* bg-red-600 */
+    color: white;
+    font-weight: 600;
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: background 0.15s;
+    cursor: pointer;
+}
+.pagination-controls button:hover:not(:disabled) {
+    background: #b91c1c; /* hover:bg-red-700 */
+}
+.pagination-controls button:disabled {
+    /* disabled:opacity-50 disabled:cursor-not-allowed */
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-controls #pageInfo {
+    /* text-lg font-mono text-red-400 px-4 */
+    font-size: 1.125rem;
+    font-family: monospace;
+    color: #f87171; /* text-red-400 */
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+
+/* ----------------------------------------------------- */
+/* --- 9. MEDIA QUERIES (Desktop Overrides) --- */
+/* ----------------------------------------------------- */
 @media (min-width: 768px) {
-
-    /* Desktop: Body padding only for header (header and search bar in one fixed section) */
-
+    
     body {
+        padding-top: 115px; 
+    }
+    .site-header {
+        height: auto; 
+        padding: 10px 20px;
+    }
 
-        padding-top: 115px; /* Revert to Desktop padding */
+    .mobile-controls {
+        display: none;
+    }
 
+    .brand {
+        text-align: left;
+        flex-grow: 0;
+        margin-right: 30px;
+    }
+    
+    #desktopNav {
+        display: flex;
+        flex-grow: 1; /* Nav ko baki space lene de */
+        justify-content: flex-start;
+    }
+
+    .search-bar-container {
+        position: static; /* Search bar ko header ke andar hi daal diya */
+        top: auto; 
+        padding: 0;
+        border-bottom: none;
+        order: 3; /* CSS flex order use karein agar aap header mein daalna chahte hain */
+        max-width: 350px;
     }
 
     .site-header {
-
-        height: auto; /* Remove fixed height */
-
-        padding: 10px 20px;
-
+        /* Search bar ko header mein adjust karne ke liye */
+        justify-content: flex-start; 
+        gap: 20px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        height: auto;
     }
 
-    /* Hide mobile controls on desktop */
-
-    .mobile-controls {
-
-        display: none;
-
+    .search-bar-container input#searchBar {
+        margin: 0;
+        max-width: none;
     }
-
-    /* Show desktop nav on desktop */
-
-    #desktopNav {
-
-        display: flex;
-
-        gap: 15px;
-
-    }
-
-    #desktopNav a {
-
-        font-size: 1rem;
-
-    }
-
-    /* Search bar container position for Desktop */
-
-    .search-bar-container {
-
-        top: 60px; /* Desktop Header height ke neeche */
-
-        padding: 10px 20px;
-
-    }
-
-
-
-    /* Hide mobile menus */
 
     .sidebar, .sidebar-overlay, .user-menu-dropdown {
-
         display: none !important;
-
     }
-
 }
 
 
-
 /* ----------------------------------------------------- */
-
-/* --- 7. MOBILE OVERRIDES (Max Width 600px) --- */
-
+/* --- 10. MOBILE OVERRIDES (Max Width 600px) --- */
 /* ----------------------------------------------------- */
-
 @media (max-width: 600px) {
 
-    /* Grid setting (2 cards per line) */
-
-    .grid{
-
+    .card-grid{
         grid-template-columns: 1fr 1fr; 
-
         gap:10px;
-
     }
-
     
-
     .card{
-
-        min-height: 250px; 
-
+        min-height: 200px; /* Thoda chhota karein */
         padding: 6px; 
-
     }
-
     
-
     .thumb, .card img {
-
-        height: 180px; 
-
+        height: 150px; 
+        max-width: 100%;
         border-radius: 6px;
-
         margin-bottom: 4px;
-
     }
-
-
 
     .card h3{
-
-        font-size: 13px;
-
+        font-size: 12px;
     }
-
     .card p.meta{
-
-        font-size: 11px;
-
+        font-size: 10px;
     }
 
+    .video-player-container {
+        margin-left: -20px;
+        margin-right: -20px;
+        border-radius: 0;
+    }
     }
