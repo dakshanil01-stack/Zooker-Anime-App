@@ -1,60 +1,34 @@
-// --- script.js फाइल (एकीकृत कोड) ---
+// --- script.js फाइल (फाइनल वर्जन: Detail Page Redirection के साथ) ---
 
 // 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स
 const firebaseConfig = {
-  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
-  authDomain: "zookeranime.firebaseapp.com",
-  projectId: "zookeranime",
-  storageBucket: "zookeranime.firebasestorage.app",
-  messagingSenderId: "440126522624",
-  appId: "1:440126522624:web:abcd13f6715bda85721fe5"
+    apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+    authDomain: "zookeranime.firebaseapp.com",
+    projectId: "zookeranime",
+    storageBucket: "zookeranime.firebasestorage.app",
+    messagingSenderId: "440126522624",
+    appId: "1:440126522624:web:abcd13f6715bda85721fe5"
 };
 
 // 2. Firebase को Initialize करें और Firestore को प्राप्त करें
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// --- 3. Modal डिस्प्ले फंक्शन (मूवी/सीरीज डिटेल्स दिखाने के लिए) ---
-function showModal(movie) {
-    const modal = document.getElementById('movie-modal');
-    // अगर modal HTML में नहीं है, तो फ़ंक्शन को रोक दें
-    if (!modal) {
-        alert(`Title: ${movie.title} | Link: ${movie.downloadLink}`);
-        return;
-    }
+// 3. (Modal Logic को पूरी तरह से हटा दिया गया है)
 
-    const downloadLink = document.getElementById('modal-download-link');
-
-    // Modal के तत्वों में डेटा भरें
-    document.getElementById('modal-title').textContent = movie.title;
-    document.getElementById('modal-poster').src = movie.posterUrl;
-    document.getElementById('modal-date').textContent = movie.releaseDate;
-    document.getElementById('modal-description').textContent = movie.description;
-    
-    // डाउनलोड लिंक सेट करें
-    downloadLink.href = movie.downloadLink;
-    
-    // स्क्रीनशॉट सेक्शन को रीसेट करें (यदि आपने Firebase में इसे मैनेज नहीं किया है तो यह डमी रहेगा)
-    const screenshotGallery = document.getElementById('modal-screenshots');
-    if (screenshotGallery) {
-        screenshotGallery.innerHTML = `
-            <img src="https://via.placeholder.com/150x80?text=Screen+1" alt="Screenshot" class="screenshot-img">
-            <img src="https://via.placeholder.com/150x80?text=Screen+2" alt="Screenshot" class="screenshot-img">
-        `;
-    }
-
-    modal.style.display = "block"; // मॉडल को दिखाएँ
-}
-
-
-// --- 4. मूवी कार्ड बनाने का फंक्शन (अपडेटेड - अब modal को कॉल करता है) ---
+// --- 4. मूवी कार्ड बनाने का फंक्शन (अपडेटेड - अब details.html पर भेजता है) ---
 function createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card';
     
-    // नया: कार्ड पर क्लिक इवेंट Listener जोड़ें
+    // नया: कार्ड पर क्लिक इवेंट Listener जोड़ें जो USER को details.html पर भेजे
     card.addEventListener('click', () => {
-        showModal(movie); // क्लिक होने पर showModal फंक्शन को कॉल करें
+        // Doc ID को URL पैरामीटर के रूप में पास करें
+        if (movie.id) {
+            window.location.href = `details.html?id=${movie.id}`; 
+        } else {
+             alert('Error: Movie ID not found.');
+        }
     });
 
     card.innerHTML = `
@@ -85,6 +59,8 @@ function loadContentFromFirebase() {
             
             querySnapshot.forEach((doc) => {
                 const movieData = doc.data();
+                // **अत्यंत महत्वपूर्ण:** Doc ID को movieData में जोड़ें
+                movieData.id = doc.id; 
                 const newCard = createMovieCard(movieData);
                 movieGrid.appendChild(newCard);
             });
@@ -101,26 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // A. Firebase से कंटेंट लोड करें
     loadContentFromFirebase();
 
-    // B. Modal Closing Logic
-    const modal = document.getElementById('movie-modal');
-    const closeBtn = document.querySelector('.close-btn');
-    
-    // सुनिश्चित करें कि Modal और Close Button HTML में मौजूद हैं
-    if (modal && closeBtn) {
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        }
+    // B. Modal Closing Logic को हटा दिया गया है। 
+    // अब सिर्फ़ पुराना Menu और Search Logic बचा है।
 
-        // विंडो पर क्लिक करने पर मॉडल बंद करें
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    }
-
-
-    // C. पुराना Menu और Search Logic (जैसा आपने दिया था)
+    // C. पुराना Menu और Search Logic
     const menuButton = document.querySelector('.menu-button');
     const searchButton = document.querySelector('.search-button');
 
