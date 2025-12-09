@@ -2,46 +2,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('admin-login-form');
     const errorMessage = document.getElementById('error-message');
     
-    // --- यह फ्रंट-एंड में एक डेमो है। असली सुरक्षा के लिए, यह Backend Server पर होनी चाहिए। ---
-    const DEMO_USERNAME = 'admin'; 
-    const DEMO_PASSWORD = 'zookersuperadmin'; 
+    // 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स यहाँ भरें
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY_HERE",       // <-- अपनी Key यहाँ डालें
+      authDomain: "your-project-id.firebaseapp.com",
+      projectId: "your-project-id",
+      // अन्य सेटिंग्स...
+    };
+
+    // 2. Firebase को Initialize करें
+    firebase.initializeApp(firebaseConfig);
 
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const username = document.getElementById('username').value.trim();
+        const username = document.getElementById('username').value.trim(); // Username को Email के तौर पर उपयोग करेंगे
         const password = document.getElementById('password').value.trim();
         
         errorMessage.style.display = 'none';
 
-        // --- यहाँ से Backend Server से कनेक्शन शुरू होता है ---
-        
-        // एक असली एप्लीकेशन में, आप 'fetch' का उपयोग करके अपने सर्वर पर एक POST रिक्वेस्ट भेजेंगे:
-        /* fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // सर्वर ने सफलता दी: Admin Panel पर भेज दें।
-                window.location.href = 'admin.html';
-            } else {
-                // सर्वर ने विफलता दी: एरर दिखाएँ।
-                errorMessage.textContent = data.message || 'Login failed. Please check your credentials.';
-                errorMessage.style.display = 'block';
-            }
-        });
-        */
-        
-        // **डेमो के लिए (बिना सर्वर के):**
-        if (username === DEMO_USERNAME && password === DEMO_PASSWORD) {
-            alert('Login Successful! Redirecting to Admin Panel...');
-            window.location.href = 'admin.html'; // सफलता पर एडमिन पैनल पर भेजें
-        } else {
-            errorMessage.textContent = 'गलत Username या Password। कृपया पुनः प्रयास करें।';
+        if (!username || !password) {
+            errorMessage.textContent = 'Please enter both email and password.';
             errorMessage.style.display = 'block';
+            return;
         }
+
+        // 3. Firebase Email/Password से साइन-इन करें
+        firebase.auth().signInWithEmailAndPassword(username, password)
+            .then((userCredential) => {
+                // Login Successful!
+                console.log("User logged in:", userCredential.user);
+                alert('Login Successful! Redirecting to Admin Panel...');
+                // सफलता पर एडमिन पैनल पर भेजें
+                window.location.href = 'admin.html'; 
+            })
+            .catch((error) => {
+                // Login Failed!
+                let message = 'Login failed. Check your credentials.';
+                if (error.code === 'auth/user-not-found') {
+                    message = 'User not found. Check the email.';
+                } else if (error.code === 'auth/wrong-password') {
+                    message = 'Incorrect password.';
+                }
+                
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                console.error("Login error:", error.message);
+            });
     });
+
+    // 4. सुनिश्चित करें कि कोई लॉग इन नहीं है
+    firebase.auth().signOut();
 });
