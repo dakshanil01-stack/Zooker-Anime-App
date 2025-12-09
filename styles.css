@@ -1,660 +1,305 @@
-/* Variables and general styles */
-
+/* Custom properties for easy color management */
 :root {
-    --bg: #0c1520;
-    --bg-light: #151f2b; 
-    --card: rgba(255, 255, 255, 0.08); 
-    --text: #ffffff;
-    --muted: #94a3b8;
-    --accent: #00ffeb; /* Teal */
-    --accent2: #00c7ff; /* Lighter Blue */
-    --warning: #ffc107;
-    --error: #dc3545;
+    --dark-bg: #1c1c1c;
+    --dark-text: #ffffff;
+    --light-text: #aaaaaa;
+    --red-zooker: #c0392b; /* A deep red for the logo */
+
+    /* Button Colors */
+    --green-btn: #27ae60;
+    --orange-btn: #f39c12;
+    --red-btn: #e74c3c;
+    --blue-btn: #3498db;
+    --yellow-btn: #f1c40f;
+    --orange-dark-btn: #d35400;
+    --red-dark-btn: #c0392b;
+    --pink-btn: #e91e63; /* A bright pink for the download button */
+    --gold-star: #ffc107;
 }
 
+/* Basic Reset and Global Styles */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding-top: 105px; /* Fixed Header/Search offset */
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
     min-height: 100vh;
 }
 
-a {
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-a:hover {
-    color: var(--accent2);
-}
-
-.container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-}
-
-input, textarea, button {
-    font-family: inherit;
-    font-size: 1rem;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-}
-
-/* --- GLOBAL BUTTON STYLES --- */
-.cta-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    color: var(--bg);
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    border: none;
-    border-radius: 8px;
-    text-transform: uppercase;
-}
-
-.cta-btn:hover {
-    background: var(--accent2);
-}
-
-.primary-btn {
-    background: var(--accent);
-    color: var(--bg);
-    padding: 8px 15px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.primary-btn:hover {
-    background: var(--accent2);
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 1. HEADER & NAVIGATION STYLES (Mobile First) --- */
-/* ----------------------------------------------------- */
-.site-header {
-    background: rgba(12, 21, 32, 0.98); 
-    backdrop-filter: blur(8px);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 10px 15px;
-    z-index: 1001; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    height: 50px; 
-}
-
-.brand {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--accent);
-    flex-grow: 1; 
-    text-align: center;
-    cursor: pointer;
-}
-
-#desktopNav {
-    display: none;
-    align-items: center;
-}
-#desktopNav a {
-    color: var(--text);
-    padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-#desktopNav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--accent2);
-}
-
-.mobile-controls {
-    flex-shrink: 0;
-}
-
-.icon-btn {
-    background: none;
-    color: var(--text);
-    padding: 5px;
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.icon-btn:hover {
-    color: var(--accent);
-}
-
-.site-footer {
-    padding: 20px;
-    text-align: center;
-    color: var(--muted);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: 40px;
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 2. MOBILE SIDEBAR MENU (Hamburger) --- */
-/* ----------------------------------------------------- */
-.sidebar {
-    height: 100%;
-    width: 0; 
-    position: fixed;
-    z-index: 2000;
-    top: 0;
-    left: 0;
-    background-color: var(--bg); 
-    overflow-x: hidden;
-    padding-top: 60px;
-    transition: 0.3s;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.sidebar a {
-    padding: 15px 25px;
-    text-decoration: none;
-    font-size: 1.2rem;
-    color: var(--text);
-    display: block;
-    transition: 0.3s;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.sidebar a:hover {
-    background-color: var(--bg-light);
-    color: var(--accent);
-}
-
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1999;
-    display: none; 
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 3. MOBILE USER MENU DROPDOWN (Top Right) --- */
-/* ----------------------------------------------------- */
-.user-menu-dropdown {
-    position: fixed;
-    top: 50px; 
-    right: 15px;
-    background-color: var(--bg-light);
-    min-width: 150px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    z-index: 1500;
-    padding: 10px 0;
-    display: none; 
-}
-
-.user-menu-dropdown a {
-    color: var(--text);
-    padding: 8px 15px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.95rem;
-}
-
-.user-menu-dropdown a:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: var(--accent);
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 4. SEARCH BAR CONTAINER (Fixed below Header) --- */
-/* ----------------------------------------------------- */
-.search-bar-container {
-    position: fixed;
-    top: 50px; 
-    left: 0;
-    width: 100%;
-    z-index: 1000; 
-    padding: 8px 15px; 
-    background: var(--bg); 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.search-bar-container input#searchBar {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto; 
-    display: block;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text);
-    border: 1px solid var(--accent);
-    padding: 8px 15px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
-}
-.search-bar-container input#searchBar:focus {
-    outline: none;
-    border-color: var(--accent2);
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 5. GRID, CARD, SLIDER STYLES --- */
-/* ----------------------------------------------------- */
-.section h2 {
-    color: var(--accent);
-    margin-top: 35px;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    border-left: 4px solid var(--accent2);
-    padding-left: 10px;
-}
-
-.card-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border-radius:12px;
-    padding:10px;
-    position:relative;
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,0.05);
-    transition: transform 0.2s, box-shadow 0.3s;
-    min-height: 280px; 
-    text-align: center;
-}
-
-.card:hover { 
-    transform: translateY(-4px); 
-    box-shadow: 0 10px 30px rgba(0, 255, 240, 0.15); 
-    cursor: pointer; 
-    background: var(--bg-light);
-}
-
-.thumb, .card img {
-    width: 100%; 
-    max-width: 160px; 
-    height: 250px; 
-    object-fit: cover;
-    border-radius: 10px;
-    display: block;
-    margin: 0 auto 6px auto; 
-}
-.card h3{ 
-    font-weight:600; 
-    font-size:15px; 
-    margin: 0 0 2px 0; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-}
-.card p.meta{ 
-    color:var(--muted); 
-    font-size:13px; 
-    margin: 0; 
-}
-
-/* Slider Styles */
-.slider-container {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory; 
-    gap: 15px; 
-    padding-bottom: 25px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-.slider-container::-webkit-scrollbar { display: none; }
-
-.slider-card {
-    flex-shrink: 0; width: 150px; height: 250px; display: flex;
-    flex-direction: column; justify-content: flex-start; background: var(--bg-light); 
-    border-radius: 12px; padding: 8px; text-align: center; cursor: pointer;
-    scroll-snap-align: start; transition: transform 0.2s, background 0.2s;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-.slider-card:hover { transform: scale(1.02); background: rgba(15, 23, 32, 0.7); }
-.slider-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 5px; margin-right: 0; }
-.slider-card h4 { flex-grow: 0; font-size: 1rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-
-/* --- SKELETON LOADER --- */
-.skeleton-loader {
-    animation: pulse 1.5s infinite ease-in-out;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    opacity: 0.7;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.7; }
-    50% { opacity: 0.4; }
-    100% { opacity: 0.7; }
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 6. AUTH, UPLOAD, ADMIN PAGES --- */
-/* ----------------------------------------------------- */
-.auth-box, .upload-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    background: var(--bg-light); 
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--card);
-}
-
-.auth-box h2, .upload-container h2 {
-    color: var(--accent);
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.auth-form input, .upload-form input, .upload-form textarea {
-    width: 100%;
-    margin-bottom: 15px;
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    resize: vertical;
-}
-
-.auth-form input::placeholder, .upload-form input::placeholder, .upload-form textarea::placeholder {
-    color: var(--muted);
-}
-
-.auth-form p, .upload-form p {
-    text-align: center;
-    margin-top: 20px;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
-.flex-row {
-    display: flex;
-    gap: 15px;
-}
-.flex-row input {
-    margin-bottom: 0;
-}
-
-/* Admin List Styles */
-.admin-page h2 {
-    color: var(--accent);
-    margin-bottom: 20px;
-}
-.admin-list li {
+/* --- Header / Navigation Bar --- */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 1rem;
-}
-.admin-list li:last-child {
-    border-bottom: none;
-}
-.admin-list .button-group button {
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-.admin-list .button-group button:hover {
-    opacity: 0.8;
-}
-.admin-list .delete-btn {
-    background: var(--error);
-    color: white;
-}
-.admin-list .edit-btn {
-    background: var(--accent2);
-    color: var(--bg);
-    margin-right: 8px;
+    padding: 10px 15px;
+    background-color: #000000; /* Slightly darker black for the header */
+    border-bottom: 1px solid #333;
 }
 
-
-/* ----------------------------------------------------- */
-/* --- 7. WATCH PAGE (tpl-watch) --- */
-/* ----------------------------------------------------- */
-.watch-page {
-    padding-bottom: 50px;
-}
-
-.video-player-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    margin-bottom: 30px;
-    background: #000;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.video-player-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.watch-details h1 {
-    font-size: 2rem;
-    color: var(--accent2);
-    margin-top: 0;
-}
-
-.watch-details p {
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 30px;
-}
-
-.episode-list-container h3 {
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
-    color: var(--accent);
-    font-size: 1.5rem;
-}
-
-.season-heading {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: var(--text);
-    font-size: 1.2rem;
-    border-left: 3px solid var(--accent);
-    padding-left: 10px;
-}
-
-.episode-buttons-container {
+.logo-and-search {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    align-items: center;
+    flex-grow: 1; /* Allows it to take up available space */
 }
 
-.episode-buttons-container button {
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--red-zooker); /* Zooker in Red */
+    margin-right: 15px;
+}
+
+.version {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--light-text);
+}
+
+.search-container {
+    display: flex;
+    background-color: #2c3e50; /* Dark background for search area */
+    border-radius: 5px;
+    overflow: hidden;
+    flex-grow: 1; /* Allows the search bar to expand */
+    max-width: 250px; /* Limit search bar size on larger screens */
+}
+
+.search-input {
+    border: none;
+    padding: 8px 10px;
+    outline: none;
+    background: transparent;
+    color: var(--dark-text);
+    width: 100%;
+    font-size: 14px;
+}
+
+.search-input::placeholder {
+    color: #95a5a6;
+}
+
+.search-button {
+    background-color: var(--red-zooker);
+    color: var(--dark-text);
+    border: none;
     padding: 8px 15px;
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-    border-radius: 5px;
     font-weight: 600;
+    font-size: 14px;
 }
 
-.episode-buttons-container button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: var(--accent2);
+.menu-button {
+    background: none;
+    border: none;
+    color: var(--dark-text);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
 }
 
-.episode-buttons-container button.active {
-    background: var(--accent);
-    color: var(--bg);
+/* --- Content Wrapper & Button Grid --- */
+.content-wrapper {
+    padding: 15px;
+}
+
+.button-grid {
+    display: grid;
+    /* Create three columns, automatically adjusting the size */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.grid-btn {
+    padding: 12px 8px;
+    border: none;
+    border-radius: 5px;
+    color: var(--dark-text);
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.grid-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Button Color Classes */
+.green-bg { background-color: var(--green-btn); }
+.orange-bg { background-color: var(--orange-btn); }
+.red-bg { background-color: var(--red-btn); }
+.blue-bg { background-color: var(--blue-btn); }
+.yellow-bg { background-color: var(--yellow-btn); }
+.orange-dark-bg { background-color: var(--orange-dark-btn); }
+.red-dark-bg { background-color: var(--red-dark-btn); }
+
+/* Download App Button */
+.app-download-btn {
+    width: 100%;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 8px;
+    color: var(--dark-text);
     font-weight: 700;
-    border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 8. PAGINATION CONTROLS (Theme Adjusted) --- */
-/* ----------------------------------------------------- */
-.pagination-controls {
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    background-color: var(--pink-btn);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: var(--bg-light); 
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    border-radius: 0.75rem; 
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    gap: 10px;
 }
 
-.pagination-controls button {
-    padding: 0.5rem 1.5rem;
-    margin: 0 0.5rem;
-    background: var(--accent2); /* Theme Adjusted */
-    color: var(--bg);
+/* --- Category Header --- */
+.category-header {
+    color: var(--light-text);
+    font-size: 14px;
     font-weight: 600;
-    border-radius: 0.5rem; 
-    transition: background 0.15s;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--red-zooker);
+    padding-left: 10px;
+}
+
+/* --- Movie Grid and Cards --- */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive columns */
+    gap: 15px;
+}
+
+.movie-card {
+    background-color: #222222; /* Slightly lighter dark background for the card */
+    border-radius: 8px;
+    overflow: hidden;
     cursor: pointer;
-}
-.pagination-controls button:hover:not(:disabled) {
-    background: var(--accent); /* Theme Adjusted */
-}
-.pagination-controls button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    transition: box-shadow 0.2s;
 }
 
-.pagination-controls #pageInfo {
-    font-size: 1.125rem;
-    font-family: monospace;
-    color: var(--accent); /* Theme Adjusted */
-    padding-left: 1rem;
-    padding-right: 1rem;
+.movie-card:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
+.poster-placeholder {
+    width: 100%;
+    height: 220px; /* Standard poster height */
+    background-color: #333333;
+    position: relative;
+    /* This will eventually hold the background image */
+    background-image: url('https://via.placeholder.com/150x220?text=Poster');
+    background-size: cover;
+    background-position: center;
+}
 
-/* ----------------------------------------------------- */
-/* --- 9. MEDIA QUERIES (Desktop Overrides) --- */
-/* ----------------------------------------------------- */
-@media (min-width: 768px) {
-    
-    body {
-        padding-top: 60px; /* Header is now only one line high */
-    }
-    .site-header {
-        height: auto; 
-        padding: 10px 20px;
-        justify-content: flex-start; 
-        gap: 20px;
-    }
+/* Placeholder specific image styles to mimic the look */
+/* Note: For a real site, replace 'https://via.placeholder...' with your actual image URLs */
+.movie-card:nth-child(1) .poster-placeholder {
+    background-image: url('https://i.ibb.co/LNxn9wM/well-derry.jpg'); /* Fictional placeholder image */
+}
+.movie-card:nth-child(2) .poster-placeholder {
+    background-image: url('https://i.ibb.co/3sX8sW6/spartacus.jpg'); /* Fictional placeholder image */
+}
+.movie-card:nth-child(3) .poster-placeholder {
+    background-image: url('https://i.ibb.co/309j2z5/warrior.jpg'); /* Fictional placeholder image */
+}
 
-    .mobile-controls {
-        display: none;
-    }
+.web-dl-badge {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    background-color: var(--red-zooker);
+    color: var(--dark-text);
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
 
-    .brand {
-        text-align: left;
-        flex-grow: 0;
-        margin-right: 30px;
+.movie-info {
+    padding: 10px;
+    position: relative;
+}
+
+.rating-star {
+    position: absolute;
+    top: -30px; /* Position it over the poster */
+    left: 10px;
+    background-color: var(--gold-star);
+    color: var(--dark-bg);
+    padding: 5px 8px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    border: 3px solid var(--dark-bg);
+}
+
+.date {
+    font-size: 10px;
+    color: var(--light-text);
+    margin-top: 5px;
+}
+
+.title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin: 5px 0;
+}
+
+.description {
+    font-size: 10px;
+    color: var(--light-text);
+    /* Ensures text doesn't overflow */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    min-height: 40px; /* Give it a set space */
+}
+
+/* --- Media Queries for Responsiveness (Mobile First) --- */
+
+/* Adjusting for very small screens */
+@media (max-width: 350px) {
+    .logo {
+        font-size: 20px;
     }
-    
-    #desktopNav {
-        display: flex;
-        flex-grow: 1; 
+    .search-container {
+        display: none; /* Hide search bar on very small screens to save space */
+    }
+}
+
+/* Adjusting for tablet/desktop */
+@media (min-width: 600px) {
+    .navbar {
         justify-content: flex-start;
-        align-items: center; /* Vertically align nav items */
-        padding-left: 20px; /* Space between brand and nav */
     }
-
-    .search-bar-container {
-        position: static; 
-        top: auto; 
-        padding: 0;
-        border-bottom: none;
-        max-width: 300px; /* Smaller search bar on desktop */
+    .search-container {
+        display: flex;
+        max-width: 350px;
+        margin-left: 20px;
     }
-
-    .search-bar-container input#searchBar {
-        margin: 0;
-        max-width: none;
-        padding: 6px 15px; /* Adjust padding for better look */
+    .menu-button {
+        display: none; /* Hide mobile menu button on larger screens */
     }
-
-    .sidebar, .sidebar-overlay, .user-menu-dropdown {
-        display: none !important;
+    .logo-and-search {
+        flex-grow: 0;
     }
-}
-
-
-/* ----------------------------------------------------- */
-/* --- 10. MOBILE OVERRIDES (Max Width 600px) --- */
-/* ----------------------------------------------------- */
-@media (max-width: 600px) {
-
-    .card-grid{
-        grid-template-columns: 1fr 1fr; 
-        gap:10px;
+    .content-wrapper {
+        max-width: 1200px;
+        margin: auto;
     }
-    
-    .card{
-        min-height: 200px; 
-        padding: 6px; 
-    }
-    
-    .thumb, .card img {
-        height: 150px; 
-        max-width: 100%;
-        border-radius: 6px;
-        margin-bottom: 4px;
-    }
-
-    .card h3{
-        font-size: 12px;
-    }
-    .card p.meta{
-        font-size: 10px;
-    }
-
-    .video-player-container {
-        margin-left: -20px;
-        margin-right: -20px;
-        border-radius: 0;
-    }
-}
+        }
