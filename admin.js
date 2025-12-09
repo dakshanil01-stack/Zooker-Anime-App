@@ -7,7 +7,6 @@
 // --- admin.js फाइल में: ---
 
 // Firebase कॉन्फ़िगरेशन को फिर से जोड़ें (यदि पहले नहीं जोड़ा है)
-const firebaseConfig = {
    const firebaseConfig = {
   apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
   authDomain: "zookeranime.firebaseapp.com",
