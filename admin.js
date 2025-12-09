@@ -1,3 +1,53 @@
+// admin.html के <head> सेक्शन में (login.html की तरह) यह सुनिश्चित करें:
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+// नया: Firestore SDK जोड़ें
+// <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script> 
+
+// --- admin.js फाइल में: ---
+
+// Firebase कॉन्फ़िगरेशन को फिर से जोड़ें (यदि पहले नहीं जोड़ा है)
+const firebaseConfig = {
+    // ... आपकी Firebase डिटेल्स यहाँ ...
+};
+// सुनिश्चित करें कि app और firestore initialize हों
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(); // Firestore को initialize करें
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ... onAuthStateChanged (Login Check) लॉजिक यहाँ है ...
+
+    const addForm = document.getElementById('add-content-form');
+    // ... बाकी वेरिएबल्स ...
+
+    // --- फॉर्म सबमिशन लॉजिक को बदलें ---
+    addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const contentData = {
+            title: document.getElementById('title').value,
+            releaseDate: document.getElementById('release-date').value,
+            category: document.getElementById('category').value,
+            tag: document.getElementById('web-dl-tag').value,
+            posterUrl: document.getElementById('poster-url').value,
+            description: document.getElementById('description').value,
+            downloadLink: document.getElementById('download-link').value,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() // समय रिकॉर्ड करने के लिए
+        };
+
+        // डेटा को 'movies' कलेक्शन में जोड़ें
+        db.collection("movies").add(contentData)
+            .then((docRef) => {
+                alert("सफलता! कंटेंट ID: " + docRef.id + " Firebase में अपलोड हो गया है।");
+                addForm.reset();
+            })
+            .catch((error) => {
+                alert("त्रुटि: अपलोड करने में समस्या आई। " + error.message);
+                console.error("Error adding document: ", error);
+            });
+    });
+    // ... बाकी admin.js कोड ...
+});
 document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.admin-nav .nav-link');
     const sections = document.querySelectorAll('.admin-section');
