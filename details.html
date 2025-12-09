@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Loading...</title>
+    <link rel="stylesheet" href="style.css"> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="details-page-body">
+
+    <header class="navbar">
+        <span class="logo" onclick="window.location.href='index.html'">ZOOKER <span class="version">3.0</span></span>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </header>
+
+    <div class="content-wrapper">
+        
+        <div id="loading-spinner" style="text-align: center; padding: 50px;">
+            <i class="fas fa-spinner fa-spin fa-3x" style="color: #e74c3c;"></i>
+            <p style="margin-top: 15px;">Loading Movie Details...</p>
+        </div>
+
+        <div id="movie-details-content" style="display: none;">
+            <div class="details-header">
+                <img id="details-poster" src="" alt="Poster" class="details-poster">
+                <div class="details-info">
+                    <h1 id="details-title"></h1>
+                    <p class="tag-badge" id="details-tag"></p>
+                    <p id="details-date" class="details-date"></p>
+                </div>
+            </div>
+
+            <h3 class="section-heading">Plot / Full Description</h3>
+            <p id="details-description" class="details-plot"></p>
+
+            <h3 class="section-heading">Screenshots</h3>
+            <div id="details-screenshots" class="screenshot-grid">
+                </div>
+
+            <a id="details-download-link" href="#" target="_blank" class="download-btn-lg">
+                <i class="fas fa-download"></i> Download Full Content Now
+            </a>
+        </div>
+        
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script src="details.js"></script> 
+</body>
+</html>
