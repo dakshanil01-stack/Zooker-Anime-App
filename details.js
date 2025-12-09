@@ -66,3 +66,19 @@ document.addEventListener('DOMContentLoaded', () => {
         contentDiv.style.display = 'block';
     }
 });
+// details.js फाइल में, जहाँ आप 'movie' ऑब्जेक्ट का उपयोग कर रहे हैं...
+
+// Screenshots को लोड करने का नया लॉजिक
+const screenshotGrid = document.getElementById('details-screenshots');
+screenshotGrid.innerHTML = ''; // मौजूदा डमी कंटेंट हटाएँ
+
+if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
+    movie.screenshotUrls.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = "Screenshot";
+        screenshotGrid.appendChild(img);
+    });
+} else {
+    screenshotGrid.innerHTML = '<p style="color:#95a5a6;">No screenshots available.</p>';
+}
