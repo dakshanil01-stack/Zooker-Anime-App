@@ -2,7 +2,12 @@
 
 // 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स यहाँ भरें
 const firebaseConfig = {
-    // ... आपकी Firebase डिटेल्स यहाँ ...
+  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+  authDomain: "zookeranime.firebaseapp.com",
+  projectId: "zookeranime",
+  storageBucket: "zookeranime.firebasestorage.app",
+  messagingSenderId: "440126522624",
+  appId: "1:440126522624:web:abcd13f6715bda85721fe5"
 };
 
 // 2. Firebase को Initialize करें और Firestore को प्राप्त करें
