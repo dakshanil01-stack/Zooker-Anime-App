@@ -8,7 +8,13 @@
 
 // Firebase कॉन्फ़िगरेशन को फिर से जोड़ें (यदि पहले नहीं जोड़ा है)
 const firebaseConfig = {
-    // ... आपकी Firebase डिटेल्स यहाँ ...
+   const firebaseConfig = {
+  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+  authDomain: "zookeranime.firebaseapp.com",
+  projectId: "zookeranime",
+  storageBucket: "zookeranime.firebasestorage.app",
+  messagingSenderId: "440126522624",
+  appId: "1:440126522624:web:abcd13f6715bda85721fe5"
 };
 // सुनिश्चित करें कि app और firestore initialize हों
 firebase.initializeApp(firebaseConfig);
