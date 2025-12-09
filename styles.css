@@ -522,3 +522,171 @@ body {
         font-size: 24px;
     }
 }
+/* --- Details Page Specific Styles (details.html) --- */
+
+/* सुनिश्चित करें कि डिटेल्स पेज का शरीर (body) मार्जिन और पैडिंग के साथ ठीक से काम करे */
+.details-page-body {
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* कंटेंट को केंद्र में रखने वाला रैपर (Wrapper) */
+.content-wrapper {
+    padding: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 80px; /* Navbar के नीचे जगह बनाने के लिए */
+}
+
+/* Navbar पर 'Back to Home' लिंक */
+.back-link {
+    color: #f1c40f; /* Yellow/Gold color */
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: auto;
+    padding: 8px 15px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--dark-text); /* White on hover */
+}
+
+/* डिटेल्स सेक्शन का मुख्य हेडर (पोस्टर और टाइटल) */
+.details-header {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #2c3e50;
+}
+
+.details-poster {
+    width: 200px; /* बड़ी पोस्टर साइज */
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0; /* सुनिश्चित करता है कि यह सिकुड़े नहीं */
+}
+
+.details-info {
+    flex-grow: 1;
+}
+
+#details-title {
+    font-size: 36px;
+    color: var(--red-zooker); /* ZOOKER का लाल रंग */
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.tag-badge {
+    display: inline-block;
+    background-color: var(--blue-btn); /* e.g., #3498db */
+    color: var(--dark-text);
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.details-date {
+    color: #bdc3c7;
+    font-size: 16px;
+}
+
+/* सेक्शन हेडिंग (Plot, Screenshots) */
+.section-heading {
+    color: var(--dark-text); /* White text */
+    border-left: 5px solid #f39c12; /* Orange accent */
+    padding-left: 15px;
+    margin-top: 35px;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.details-plot {
+    line-height: 1.8;
+    color: var(--light-text); /* Slightly lighter text for readability */
+    font-size: 16px;
+}
+
+/* स्क्रीनशॉट ग्रिड */
+.screenshot-grid {
+    display: grid;
+    /* 150px से कम पर खुद को एडजस्ट करें */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.screenshot-grid img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.screenshot-grid img:hover {
+    opacity: 1;
+}
+
+/* Download Button Large */
+.download-btn-lg {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--success-color); /* Green button color */
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 20px;
+    border-radius: 10px;
+    margin-top: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s;
+}
+
+.download-btn-lg:hover {
+    background-color: #27ae60;
+}
+
+/* लोडिंग स्पिनर */
+#loading-spinner {
+    padding: 100px;
+    color: var(--red-zooker);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .details-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .details-poster {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+    }
+    #details-title {
+        font-size: 30px;
+    }
+    .content-wrapper {
+        padding: 15px;
+        padding-top: 70px;
+    }
+    .download-btn-lg {
+        font-size: 18px;
+        padding: 15px;
+    }
+}
