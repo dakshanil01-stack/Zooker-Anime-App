@@ -1,0 +1,68 @@
+// --- details.js फाइल ---
+
+// 1. Firebase कॉन्फ़िगरेशन (यह वही होना चाहिए जो script.js में है)
+const firebaseConfig = {
+    apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
+    authDomain: "zookeranime.firebaseapp.com",
+    projectId: "zookeranime",
+    storageBucket: "zookeranime.firebasestorage.app",
+    messagingSenderId: "440126522624",
+    appId: "1:440126522624:web:abcd13f6715bda85721fe5"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const contentDiv = document.getElementById('movie-details-content');
+
+    // URL से Movie ID प्राप्त करें
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('id');
+
+    if (movieId) {
+        // Firebase से विशिष्ट दस्तावेज़ (document) प्राप्त करें
+        db.collection("movies").doc(movieId).get()
+            .then((doc) => {
+                loadingSpinner.style.display = 'none'; // लोडिंग छिपाएँ
+                
+                if (doc.exists) {
+                    const movie = doc.data();
+                    
+                    // 2. पेज के तत्वों को डेटा से भरें
+                    document.getElementById('page-title').textContent = movie.title;
+                    document.getElementById('details-title').textContent = movie.title;
+                    document.getElementById('details-poster').src = movie.posterUrl;
+                    document.getElementById('details-date').textContent = `Released: ${movie.releaseDate}`;
+                    document.getElementById('details-tag').textContent = movie.tag;
+                    document.getElementById('details-description').textContent = movie.description;
+                    document.getElementById('details-download-link').href = movie.downloadLink;
+                    
+                    // Screenshots के लिए डमी डेटा लोड करें (यदि Firebase में नहीं है)
+                    const screenshotGrid = document.getElementById('details-screenshots');
+                    screenshotGrid.innerHTML = `
+                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+1" alt="Screenshot">
+                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+2" alt="Screenshot">
+                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+3" alt="Screenshot">
+                    `;
+                    
+                    contentDiv.style.display = 'block'; // कंटेंट दिखाएँ
+
+                } else {
+                    contentDiv.innerHTML = '<h2 style="color:red;">Error 404: Content not found.</h2>';
+                    contentDiv.style.display = 'block';
+                }
+            })
+            .catch((error) => {
+                loadingSpinner.style.display = 'none';
+                console.error("Error fetching document:", error);
+                contentDiv.innerHTML = `<h2 style="color:red;">An error occurred: ${error.message}</h2>`;
+                contentDiv.style.display = 'block';
+            });
+    } else {
+        loadingSpinner.style.display = 'none';
+        contentDiv.innerHTML = '<h2 style="color:red;">Error: No Movie ID specified in URL.</h2>';
+        contentDiv.style.display = 'block';
+    }
+});
