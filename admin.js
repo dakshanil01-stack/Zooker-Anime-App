@@ -3,7 +3,7 @@
 // 🚨 महत्वपूर्ण: अपनी वास्तविक Supabase Public Key (Anon Key) से बदलें 🚨
 // यदि आप सीधे ब्राउज़र में चला रहे हैं, तो 'process.env.SUPABASE_KEY' काम नहीं करेगा।
 const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
-const SUPABASE_ANON_KEY = 'YOUR_ACTUAL_SUPABASE_ANON_KEY_HERE'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkbmR4b3VycmRjZnh3ZWd2dHRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzQyMjgsImV4cCI6MjA4MDk1MDIyOH0.Ffw5ojAiv2W_yTS2neZw5_kvTXXuo5pQRfBwhNRssnM'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
