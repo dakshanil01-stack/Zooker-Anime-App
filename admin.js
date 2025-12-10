@@ -1,18 +1,16 @@
-// --- admin.js फाइल ---
+// --- admin.js फाइल (फिक्स्ड लॉगआउट के साथ) ---
 
-// 🚨 महत्वपूर्ण: अपनी वास्तविक Supabase Public Key (Anon Key) से बदलें 🚨
-// यदि आप सीधे ब्राउज़र में चला रहे हैं, तो 'process.env.SUPABASE_KEY' काम नहीं करेगा।
+// 🚨 महत्वपूर्ण: आपकी Keys सही हैं, लेकिन सार्वजनिक हैं
 const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkbmR4b3VycmRjZnh3ZWd2dHRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzQyMjgsImV4cCI6MjA4MDk1MDIyOH0.Ffw5ojAiv2W_yTS2neZw5_kvTXXuo5pQRfBwhNRssnM'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkbmR4b3VycmRjZnh3ZWd2dHRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzQyMjgsImV4cHA6MjA4MDk1MDIyOH0.Ffw5ojAiv2W_yTS2neZw5_kvTXXuo5pQRfBwhNRssnM'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
-// --- 1. LOGOUT फंक्शन (Supabase Auth का उपयोग) ---
+// --- 1. LOGOUT फंक्शन ---
 async function handleLogout() {
     try {
-        // Supabase Logout
         const { error } = await supabase.auth.signOut();
         
         if (error) {
@@ -20,7 +18,7 @@ async function handleLogout() {
              alert("Logout failed: " + error.message);
         } else {
              alert('Successfully logged out!');
-             window.location.href = 'login.html'; // लॉगिन पेज पर रीडायरेक्ट करें
+             window.location.href = 'login.html'; 
         }
 
     } catch (error) {
@@ -30,18 +28,11 @@ async function handleLogout() {
 
 
 // --- 2. Storage Upload Helper Function (Supabase) ---
-/**
- * फ़ाइल को Supabase Storage में अपलोड करता है और उसका सार्वजनिक URL लौटाता है।
- * @param {File} file - वह फाइल जिसे अपलोड करना है।
- * @returns {Promise<string>} - फ़ाइल का सार्वजनिक URL।
- */
 async function uploadFileAndGetUrl(file) {
-    // Storage में एक अद्वितीय (unique) फ़ाइल नाम बनाएँ
     const uniqueFileName = `public/${Date.now()}_${file.name}`; 
 
-    // फ़ाइल को 'screenshots' बकेट में अपलोड करें
     const { data, error } = await supabase.storage
-        .from('screenshots') // आपके बकेट का नाम
+        .from('screenshots') 
         .upload(uniqueFileName, file, {
             cacheControl: '3600',
             upsert: false
@@ -51,7 +42,6 @@ async function uploadFileAndGetUrl(file) {
         throw new Error("Supabase Storage Upload Failed: " + error.message);
     }
     
-    // फ़ाइल का सार्वजनिक रूप से एक्सेस किया जा सकने वाला URL प्राप्त करें
     const { data: publicUrlData } = supabase.storage
         .from('screenshots')
         .getPublicUrl(uniqueFileName); 
@@ -64,32 +54,32 @@ async function uploadFileAndGetUrl(file) {
 }
 
 
-// --- 3. DOMContentLoaded (सभी इवेंट हैंडलर, Auth Check के साथ) ---
+// --- 3. DOMContentLoaded (फिक्स्ड) ---
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // A. SUPABASE AUTH चेक (सबसे पहले)
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
-        window.location.href = 'login.html'; 
-        return; // आगे का कोड न चलाएं
-    } else {
-        console.log("Admin is logged in:", user.email);
-    }
-    
-    // --- Variables ---
+    // --- Variables (Logout बटन सहित) ---
+    const logoutBtn = document.getElementById('logout-btn'); 
     const navLinks = document.querySelectorAll('.admin-nav .nav-link');
     const sections = document.querySelectorAll('.admin-section');
     const addForm = document.getElementById('add-content-form');
     const screenshotFilesInput = document.getElementById('screenshot-files');
-    const logoutBtn = document.getElementById('logout-btn'); 
 
-    // B. LOGOUT बटन इवेंट हैंडलर
+    // B. LOGOUT बटन इवेंट हैंडलर (इसे Auth चेक से पहले रखा गया है)
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
+        // यह सुनिश्चित करता है कि बटन पर क्लिक इवेंट तुरंत काम करे
+        logoutBtn.addEventListener('click', handleLogout); 
     }
 
+    // A. SUPABASE AUTH चेक (अब यह सुरक्षित रूप से 'await' कर सकता है)
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        window.location.href = 'login.html'; 
+        return; 
+    } else {
+        console.log("Admin is logged in:", user.email);
+    }
+    
     // --- Tab Switching Logic (आपका existing logic) ---
     navLinks.forEach(link => { /* ... (लॉजिक यहाँ जारी है) */ });
 
