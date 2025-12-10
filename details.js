@@ -1,8 +1,8 @@
 // --- details.js फाइल (Supabase डेटा फेचिंग) ---
 
 // 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; 
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
+const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
+const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
