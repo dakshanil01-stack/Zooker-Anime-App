@@ -1,58 +1,67 @@
-document.addEventListener('DOMContentLoaded', () => {
+// --- login.js फाइल (Supabase Authentication) ---
+
+// 🚨 महत्वपूर्ण: अपनी वास्तविक Supabase Keys से बदलें 🚨
+const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
+const SUPABASE_ANON_KEY = 'YOUR_ACTUAL_SUPABASE_ANON_KEY_HERE'; 
+
+// Supabase क्लाइंट को initialize करें
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('admin-login-form');
     const errorMessage = document.getElementById('error-message');
+
+    // पेज लोड होने पर, यदि कोई एक्टिव सेशन है, तो उसे लॉगआउट कर दें 
+    // ताकि यूजर हमेशा फ्रेश लॉग इन करे।
+    await supabase.auth.signOut();
     
-    // 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स यहाँ भरें
-    const firebaseConfig = {
-  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
-  authDomain: "zookeranime.firebaseapp.com",
-  projectId: "zookeranime",
-  storageBucket: "zookeranime.firebasestorage.app",
-  messagingSenderId: "440126522624",
-  appId: "1:440126522624:web:abcd13f6715bda85721fe5"
-   };
+    // यह सुनिश्चित करने के लिए कि कोई पुराने Firebase ऑब्जेक्ट्स न बचें:
+    // यदि आप अभी भी login.html में Firebase SDK लोड कर रहे हैं, तो उसे हटा दें।
 
-    // 2. Firebase को Initialize करें
-    firebase.initializeApp(firebaseConfig);
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => { // async कीवर्ड आवश्यक है
+            e.preventDefault();
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value.trim(); // Username को Email के तौर पर उपयोग करेंगे
-        const password = document.getElementById('password').value.trim();
-        
-        errorMessage.style.display = 'none';
+            // Firebase में 'username' ईमेल था, यहाँ भी वही उपयोग होगा
+            const email = document.getElementById('username').value.trim(); 
+            const password = document.getElementById('password').value.trim();
+            
+            errorMessage.style.display = 'none';
 
-        if (!username || !password) {
-            errorMessage.textContent = 'Please enter both email and password.';
-            errorMessage.style.display = 'block';
-            return;
-        }
+            if (!email || !password) {
+                errorMessage.textContent = 'Please enter both email and password.';
+                errorMessage.style.display = 'block';
+                return;
+            }
 
-        // 3. Firebase Email/Password से साइन-इन करें
-        firebase.auth().signInWithEmailAndPassword(username, password)
-            .then((userCredential) => {
-                // Login Successful!
-                console.log("User logged in:", userCredential.user);
-                alert('Login Successful! Redirecting to Admin Panel...');
-                // सफलता पर एडमिन पैनल पर भेजें
-                window.location.href = 'admin.html'; 
-            })
-            .catch((error) => {
+            // --- 1. Supabase Auth: Email और Password के साथ लॉगिन करें ---
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
                 // Login Failed!
                 let message = 'Login failed. Check your credentials.';
-                if (error.code === 'auth/user-not-found') {
-                    message = 'User not found. Check the email.';
-                } else if (error.code === 'auth/wrong-password') {
-                    message = 'Incorrect password.';
+
+                // Supabase में अक्सर यह 'Invalid login credentials' एरर आता है
+                if (error.status === 400) {
+                    message = 'Invalid email or password.';
                 }
                 
                 errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
-                console.error("Login error:", error.message);
-            });
-    });
+                console.error('Supabase Login Error:', error);
 
-    // 4. सुनिश्चित करें कि कोई लॉग इन नहीं है
-    firebase.auth().signOut();
+            } else {
+                // Login Successful!
+                console.log('Login Successful! User:', data.user);
+                alert('Login Successful! Redirecting to Admin Panel...');
+                
+                // सफलता पर admin.html पर रीडायरेक्ट करें
+                window.location.href = 'admin.html';
+            }
+        });
+    }
 });
