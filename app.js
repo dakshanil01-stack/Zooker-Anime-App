@@ -2,8 +2,8 @@
 
 // 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स
 // Supabase कॉन्फ़िगरेशन
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // Console से लें
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Console से लें
+const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; // Console से लें
+const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; // Console से लें
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
