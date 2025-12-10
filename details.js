@@ -1,66 +1,73 @@
-// --- details.js फाइल ---
+// --- details.js फाइल (Supabase डेटा फेचिंग) ---
 
-// 1. Firebase कॉन्फ़िगरेशन (यह वही होना चाहिए जो script.js में है)
-const firebaseConfig = {
-    apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
-    authDomain: "zookeranime.firebaseapp.com",
-    projectId: "zookeranime",
-    storageBucket: "zookeranime.firebasestorage.app",
-    messagingSenderId: "440126522624",
-    appId: "1:440126522624:web:abcd13f6715bda85721fe5"
-};
+// 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; 
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// Supabase क्लाइंट को initialize करें
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const loadingSpinner = document.getElementById('loading-spinner');
     const contentDiv = document.getElementById('movie-details-content');
 
-    // URL से Movie ID प्राप्त करें
+    // Supabase ID (primary key) को प्राप्त करें
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
 
     if (movieId) {
-        // Firebase से विशिष्ट दस्तावेज़ (document) प्राप्त करें
-        db.collection("movies").doc(movieId).get()
-            .then((doc) => {
-                loadingSpinner.style.display = 'none'; // लोडिंग छिपाएँ
+        // Supabase से विशिष्ट Row प्राप्त करें
+        supabase
+            .from('movies')
+            .select('*') // सभी कॉलम चुनें
+            .eq('id', movieId) // 'id' कॉलम को movieId से मिलाएं
+            .single() // सुनिश्चित करें कि हमें केवल एक ही रिजल्ट मिले
+            .then(({ data: movie, error }) => {
+                loadingSpinner.style.display = 'none'; 
+
+                if (error) {
+                    contentDiv.innerHTML = `<h2 style="color:red;">Error fetching details: ${error.message}</h2>`;
+                    console.error("Supabase Fetch Error:", error);
+                } 
                 
-                if (doc.exists) {
-                    const movie = doc.data();
-                    
+                if (movie) {
                     // 2. पेज के तत्वों को डेटा से भरें
                     document.getElementById('page-title').textContent = movie.title;
                     document.getElementById('details-title').textContent = movie.title;
                     document.getElementById('details-poster').src = movie.posterUrl;
-                    document.getElementById('details-date').textContent = `Released: ${movie.releaseDate}`;
                     document.getElementById('details-tag').textContent = movie.tag;
                     document.getElementById('details-description').textContent = movie.description;
                     document.getElementById('details-download-link').href = movie.downloadLink;
                     
-                    // Screenshots के लिए डमी डेटा लोड करें (यदि Firebase में नहीं है)
-                    // details.js फाइल में, जहाँ आप 'movie' ऑब्जेक्ट का उपयोग कर रहे हैं...
+                    // Supabase 'created_at' का उपयोग करें
+                    document.getElementById('details-date').textContent = `Released: ${movie.releaseDate}`; 
+                    
+                    // Screenshots लोड करें
+                    const screenshotGrid = document.getElementById('details-screenshots');
+                    screenshotGrid.innerHTML = ''; 
 
-// Screenshots को लोड करने का नया लॉजिक
-const screenshotGrid = document.getElementById('details-screenshots');
-screenshotGrid.innerHTML = ''; // मौजूदा डमी कंटेंट हटाएँ
+                    if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
+                        movie.screenshotUrls.forEach(url => {
+                            const img = document.createElement('img');
+                            img.src = url;
+                            img.alt = "Screenshot";
+                            screenshotGrid.appendChild(img);
+                        });
+                    } else {
+                        screenshotGrid.innerHTML = '<p style="color:#95a5a6;">No screenshots available.</p>';
+                    }
+                    
+                    contentDiv.style.display = 'block'; 
 
-if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
-    movie.screenshotUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = "Screenshot";
-        screenshotGrid.appendChild(img);
-    });
-} else {
-    screenshotGrid.innerHTML = '<p style="color:#95a5a6;">No screenshots available.</p>';
-}
-            .catch((error) => {
-                loadingSpinner.style.display = 'none';
-                console.error("Error fetching document:", error);
-                contentDiv.innerHTML = `<h2 style="color:red;">An error occurred: ${error.message}</h2>`;
-                contentDiv.style.display = 'block';
+                } else {
+                    // यदि कोई डेटा नहीं मिला
+                    contentDiv.innerHTML = '<h2 style="color:red;">Error 404: Content not found.</h2>';
+                }
+            })
+            .catch((err) => {
+                 loadingSpinner.style.display = 'none';
+                 contentDiv.innerHTML = `<h2 style="color:red;">An unexpected error occurred: ${err.message}</h2>`;
             });
     } else {
         loadingSpinner.style.display = 'none';
@@ -68,19 +75,3 @@ if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
         contentDiv.style.display = 'block';
     }
 });
-// details.js फाइल में, जहाँ आप 'movie' ऑब्जेक्ट का उपयोग कर रहे हैं...
-
-// Screenshots को लोड करने का नया लॉजिक
-const screenshotGrid = document.getElementById('details-screenshots');
-screenshotGrid.innerHTML = ''; // मौजूदा डमी कंटेंट हटाएँ
-
-if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
-    movie.screenshotUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = "Screenshot";
-        screenshotGrid.appendChild(img);
-    });
-} else {
-    screenshotGrid.innerHTML = '<p style="color:#95a5a6;">No screenshots available.</p>';
-}
