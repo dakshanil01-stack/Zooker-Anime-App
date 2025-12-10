@@ -18,6 +18,7 @@
 // सुनिश्चित करें कि app और firestore initialize हों
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); // Firestore को initialize करें
+const storage = firebase.storage();
 
 document.addEventListener('DOMContentLoaded', () => {
     // ... onAuthStateChanged (Login Check) लॉजिक यहाँ है ...
