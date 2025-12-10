@@ -40,20 +40,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('details-download-link').href = movie.downloadLink;
                     
                     // Screenshots के लिए डमी डेटा लोड करें (यदि Firebase में नहीं है)
-                    const screenshotGrid = document.getElementById('details-screenshots');
-                    screenshotGrid.innerHTML = `
-                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+1" alt="Screenshot">
-                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+2" alt="Screenshot">
-                        <img src="https://via.placeholder.com/300x150?text=Trailer+Screenshot+3" alt="Screenshot">
-                    `;
-                    
-                    contentDiv.style.display = 'block'; // कंटेंट दिखाएँ
+                    // details.js फाइल में, जहाँ आप 'movie' ऑब्जेक्ट का उपयोग कर रहे हैं...
 
-                } else {
-                    contentDiv.innerHTML = '<h2 style="color:red;">Error 404: Content not found.</h2>';
-                    contentDiv.style.display = 'block';
-                }
-            })
+// Screenshots को लोड करने का नया लॉजिक
+const screenshotGrid = document.getElementById('details-screenshots');
+screenshotGrid.innerHTML = ''; // मौजूदा डमी कंटेंट हटाएँ
+
+if (movie.screenshotUrls && movie.screenshotUrls.length > 0) {
+    movie.screenshotUrls.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = "Screenshot";
+        screenshotGrid.appendChild(img);
+    });
+} else {
+    screenshotGrid.innerHTML = '<p style="color:#95a5a6;">No screenshots available.</p>';
+}
             .catch((error) => {
                 loadingSpinner.style.display = 'none';
                 console.error("Error fetching document:", error);
