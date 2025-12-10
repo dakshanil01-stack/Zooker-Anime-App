@@ -1,27 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZOOKER Admin Panel</title>
-    <link rel="stylesheet" href="admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZOOKER Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <header class="admin-header">
-        <h1 class="logo">ZOOKER <span class="version">Admin</span></h1>
-        <nav class="admin-nav">
-            <a href="#add-movie" class="nav-link active">Add New Content</a>
-            <a href="#manage-content" class="nav-link">Manage Existing Content</a>
-            <a href="index.html" class="nav-link exit-btn"><i class="fas fa-sign-out-alt"></i> Exit to Site</a>
-            <button id="logout-btn" class="nav-button">Logout</button> 
-        </nav>
-    </header>
+    <header class="admin-header">
+        <h1 class="logo">ZOOKER <span class="version">Admin</span></h1>
+        <nav class="admin-nav">
+            <a href="#add-movie" class="nav-link active">Add New Content</a>
+            <a href="#manage-content" class="nav-link">Manage Existing Content</a>
+            <a href="index.html" class="nav-link exit-btn"><i class="fas fa-sign-out-alt"></i> Exit to Site</a>
+            <button id="logout-btn" class="nav-button">Logout</button>
+        </nav>
+    </header>
 
-    <script src="admin.js"></script>
+    <div class="admin-container">
+
+        <section id="add-movie" class="admin-section active-section">
+            <h2><i class="fas fa-plus-circle"></i> Add New Movie or Series</h2>
+            <form id="add-content-form">
+                
+                <div class="form-group">
+                    <label for="title">Title (e.g., Spartacus S01 E01):</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="release-date">Release Date:</label>
+                    <input type="date" id="release-date" name="release-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category (e.g., Action, K-Drama, 18+):</label>
+                    <input type="text" id="category" name="category" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="web-dl-tag">Tag (e.g., WEB-DL, HD):</label>
+                    <input type="text" id="web-dl-tag" name="web-dl-tag" value="WEB-DL">
+                </div>
+                <h3 class="form-section-heading">🎬 Screenshots (Multiple)</h3>
+
+<div class="form-group">
+    <label for="screenshot-files">Screenshots / Trailer Images:</label>
+    <input type="file" id="screenshot-files" name="screenshot-files" accept="image/*" multiple>
+</div>
+
+                <div class="form-group">
+                    <label for="poster-url">Poster Image URL:</label>
+                    <input type="url" id="poster-url" name="poster-url" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Short Description / Subtitle:</label>
+                    <textarea id="description" name="description" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="download-link">Download Link (Actual File URL):</label>
+                    <input type="url" id="download-link" name="download-link" required>
+                </div>
+
+                <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload Content</button>
+            </form>
+        </section>
+
+        <section id="manage-content" class="admin-section">
+            <h2><i class="fas fa-edit"></i> Manage Existing Content</h2>
+            <p class="warning-text">**Note:** For a functional site, this section would load all current movies from a database. Here we show a static example.</p>
+            
+            <div id="content-list">
+                <div class="content-item">
+                    <span class="item-title">Spartatus (2025) Season 1 Ashur</span>
+                    <div class="item-actions">
+                        <button class="edit-btn"><i class="fas fa-pen"></i> Edit</button>
+                        <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                </div>
+                <div class="content-item">
+                    <span class="item-title">Title 1 (2025) Full Movie</span>
+                    <div class="item-actions">
+                        <button class="edit-btn"><i class="fas fa-pen"></i> Edit</button>
+                        <button class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                </div>
+            </div>
+
+             <div id="edit-form-placeholder" class="hidden">
+                 <h3>Editing: <span id="current-edit-title"></span></h3>
+                 <form class="edit-form">
+                     <div class="form-group"><label>New Title:</label><input type="text" value="Example Title"></div>
+                     <div class="form-group"><label>New Poster URL:</label><input type="url" value="http://example.com/poster.jpg"></div>
+                     <button type="button" class="submit-btn save-btn"><i class="fas fa-save"></i> Save Changes</button>
+                 </form>
+             </div>
+        </section>
+
+    </div>
+
+    <script src="admin.js"></script>
 </body>
 </html>
