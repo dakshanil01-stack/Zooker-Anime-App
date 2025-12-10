@@ -7,15 +7,12 @@
 
 
 // --- Firebase कॉन्फ़िगरेशन ---
-const firebaseConfig = {
-  apiKey: "AIzaSyDVreUCEz4qFF8LpMhQM963F4tTMgU4pY0",
-  authDomain: "zookeranime.firebaseapp.com",
-  projectId: "zookeranime",
-  storageBucket: "zookeranime.firebasestorage.app",
-  messagingSenderId: "440126522624",
-  appId: "1:440126522624:web:abcd13f6715bda85721fe5"
-};
+// Supabase कॉन्फ़िगरेशन
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // Console से लें
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Console से लें
 
+// Supabase क्लाइंट को initialize करें
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // सुनिश्चित करें कि app, firestore, और storage initialize हों
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); 
