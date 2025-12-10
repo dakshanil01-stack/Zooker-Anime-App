@@ -2,7 +2,7 @@
 
 // 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
 const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
-const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkbmR4b3VycmRjZnh3ZWd2dHRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzQyMjgsImV4cCI6MjA4MDk1MDIyOH0.Ffw5ojAiv2W_yTS2neZw5_kvTXXuo5pQRfBwhNRssnM'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
