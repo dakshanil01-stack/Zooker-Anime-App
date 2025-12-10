@@ -1,31 +1,25 @@
-// --- script.js फाइल (फाइनल वर्जन: Detail Page Redirection के साथ) ---
+// --- script.js फाइल (Supabase डेटा फेचिंग के साथ) ---
 
-// 1. अपनी Firebase कॉन्फ़िगरेशन डिटेल्स
-// Supabase कॉन्फ़िगरेशन
-const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; // Console से लें
-const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; // Console से लें
+// 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
+const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
+const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 2. Firebase को Initialize करें और Firestore को प्राप्त करें
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
-// 3. (Modal Logic को पूरी तरह से हटा दिया गया है)
-
-// --- 4. मूवी कार्ड बनाने का फंक्शन (अपडेटेड - अब details.html पर भेजता है) ---
+// --- 1. मूवी कार्ड बनाने का फंक्शन ---
 function createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card';
     
-    // नया: कार्ड पर क्लिक इवेंट Listener जोड़ें जो USER को details.html पर भेजे
+    // कार्ड पर क्लिक इवेंट Listener: details.html पर भेजें
     card.addEventListener('click', () => {
-        // Doc ID को URL पैरामीटर के रूप में पास करें
+        // Supabase में Primary Key 'id' होती है
         if (movie.id) {
             window.location.href = `details.html?id=${movie.id}`; 
         } else {
-             alert('Error: Movie ID not found.');
+             console.error('Error: Movie ID not found in Supabase data.');
         }
     });
 
@@ -43,49 +37,48 @@ function createMovieCard(movie) {
     return card;
 }
 
-// --- 5. Firebase से डेटा लोड करने का फंक्शन ---
-function loadContentFromFirebase() {
+
+// --- 2. Supabase से कंटेंट लोड करने का फंक्शन ---
+async function loadContentFromSupabase() {
     const movieGrid = document.querySelector('.movie-grid');
     
-    db.collection("movies")
-        .orderBy("timestamp", "desc") // सबसे नए कंटेंट को सबसे पहले दिखाएगा
-        .limit(10) // केवल 10 लेटेस्ट आइटम लोड करें
-        .get()
-        .then((querySnapshot) => {
-            // पहले से मौजूद डमी कंटेंट को हटा दें
-            movieGrid.innerHTML = ''; 
-            
-            querySnapshot.forEach((doc) => {
-                const movieData = doc.data();
-                // **अत्यंत महत्वपूर्ण:** Doc ID को movieData में जोड़ें
-                movieData.id = doc.id; 
-                const newCard = createMovieCard(movieData);
-                movieGrid.appendChild(newCard);
-            });
-        })
-        .catch((error) => {
-            console.error("Error fetching documents: ", error);
-            // यदि डेटा लोड नहीं हो पाता है, तो एक एरर मैसेज दिखाएँ
-            movieGrid.innerHTML = '<p style="color:red; padding: 20px;">कंटेंट लोड करने में समस्या आई। Firebase कनेक्शन जांचें।</p>';
-        });
+    // Supabase से डेटा fetch करें
+    const { data: movies, error } = await supabase
+        .from('movies')
+        .select('*') // सभी कॉलम सेलेक्ट करें
+        .order('id', { ascending: false }) // 'id' या 'created_at' के आधार पर डिसेंडिंग ऑर्डर में सॉर्ट करें
+        .limit(10);
+        
+    if (error) {
+        console.error("Error fetching documents from Supabase: ", error);
+        movieGrid.innerHTML = '<p style="color:red; padding: 20px;">कंटेंट लोड करने में समस्या आई। Supabase कनेक्शन जांचें।</p>';
+        return;
+    }
+        
+    // डेटा सफलतापूर्वक लोड हुआ
+    movieGrid.innerHTML = ''; 
+    
+    movies.forEach((movieData) => {
+        // Supabase में Primary Key पहले से ही 'id' होती है
+        const newCard = createMovieCard(movieData);
+        movieGrid.appendChild(newCard);
+    });
 }
 
-// --- 6. DOMContentLoaded (सभी इवेंट हैंडलर को एकजुट करें) ---
+
+// --- 3. DOMContentLoaded (सभी इवेंट हैंडलर) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // A. Firebase से कंटेंट लोड करें
-    loadContentFromFirebase();
+    // A. Supabase से कंटेंट लोड करें
+    loadContentFromSupabase();
 
-    // B. Modal Closing Logic को हटा दिया गया है। 
-    // अब सिर्फ़ पुराना Menu और Search Logic बचा है।
-
-    // C. पुराना Menu और Search Logic
+    // B. Menu और Search Logic (आपका existing logic)
     const menuButton = document.querySelector('.menu-button');
     const searchButton = document.querySelector('.search-button');
 
     menuButton.addEventListener('click', () => {
         console.log('Mobile menu button clicked!');
         menuButton.classList.toggle('is-active');
-        alert('Menu functionality placeholder. In a full site, the navigation would appear here.');
+        alert('Menu functionality placeholder.');
     });
 
     searchButton.addEventListener('click', (e) => {
