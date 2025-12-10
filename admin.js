@@ -1,59 +1,35 @@
-// --- admin.js फाइल में (सबसे ऊपर) ---
+// --- admin.js फाइल ---
 
-// 🚨 अपनी Supabase Keys के साथ जारी रखें...
+// 🚨 महत्वपूर्ण: अपनी वास्तविक Supabase Public Key (Anon Key) से बदलें 🚨
+// यदि आप सीधे ब्राउज़र में चला रहे हैं, तो 'process.env.SUPABASE_KEY' काम नहीं करेगा।
+const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
+const SUPABASE_ANON_KEY = 'YOUR_ACTUAL_SUPABASE_ANON_KEY_HERE'; 
 
 // Supabase क्लाइंट को initialize करें
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
-// --- LOGOUT फंक्शन ---
+// --- 1. LOGOUT फंक्शन (Supabase Auth का उपयोग) ---
 async function handleLogout() {
     try {
-        // Firebase Logout
-        await firebase.auth().signOut();
-        alert('Successfully logged out!');
-        window.location.href = 'login.html'; // लॉगिन पेज पर रीडायरेक्ट करें
+        // Supabase Logout
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+             console.error("Supabase Logout Error:", error);
+             alert("Logout failed: " + error.message);
+        } else {
+             alert('Successfully logged out!');
+             window.location.href = 'login.html'; // लॉगिन पेज पर रीडायरेक्ट करें
+        }
+
     } catch (error) {
-        console.error("Logout Error:", error);
-        alert("Logout failed: " + error.message);
+        console.error("Unexpected Logout Error:", error);
     }
 }
 
 
-// --- DOMContentLoaded के अंदर, सभी लॉजिक से पहले ---
-document.addEventListener('DOMContentLoaded', () => {
-
-    // A. LOGIN/LOGOUT चेक
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (!user) {
-            // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
-            window.location.href = 'login.html'; 
-        } else {
-            console.log("Admin is logged in:", user.email);
-            // यहाँ आप Logout बटन को भी दिखा सकते हैं
-        }
-    });
-
-    // B. LOGOUT बटन इवेंट हैंडलर
-    const logoutBtn = document.getElementById('logout-btn'); // सुनिश्चित करें कि admin.html में यह बटन ID है
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
-    
-    // ... बाकी Add Content Form Submission (आपका Supabase लॉजिक) यहाँ जारी रहता है ...
-
-});
-// --- admin.js फाइल (Supabase Storage & Database) ---
-
-// 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
-const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
-const SUPABASE_ANON_KEY = 'process.env.SUPABASE_KEY'; 
-
-// Supabase क्लाइंट को initialize करें
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
-// --- 1. Storage Upload Helper Function (Supabase) ---
+// --- 2. Storage Upload Helper Function (Supabase) ---
 /**
  * फ़ाइल को Supabase Storage में अपलोड करता है और उसका सार्वजनिक URL लौटाता है।
  * @param {File} file - वह फाइल जिसे अपलोड करना है।
@@ -61,7 +37,6 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  */
 async function uploadFileAndGetUrl(file) {
     // Storage में एक अद्वितीय (unique) फ़ाइल नाम बनाएँ
-    // सुनिश्चित करें कि यह 'screenshots/' बकेट से मेल खाता है जिसे आपने Supabase में बनाया है
     const uniqueFileName = `public/${Date.now()}_${file.name}`; 
 
     // फ़ाइल को 'screenshots' बकेट में अपलोड करें
@@ -89,35 +64,43 @@ async function uploadFileAndGetUrl(file) {
 }
 
 
-// --- 2. DOMContentLoaded (सभी इवेंट हैंडलर) ---
-document.addEventListener('DOMContentLoaded', () => {
+// --- 3. DOMContentLoaded (सभी इवेंट हैंडलर, Auth Check के साथ) ---
+document.addEventListener('DOMContentLoaded', async () => {
     
-    // Note: Supabase Auth के लिए अलग लॉजिक की आवश्यकता होगी, 
-    // अभी हम केवल डेटा और स्टोरेज पर ध्यान केंद्रित कर रहे हैं।
-    // अगर आप Firebase Auth का उपयोग कर रहे थे, तो उसे यहाँ बनाए रखें।
-    // For now, removing Firebase Auth check for clean Supabase integration:
-    // firebase.auth().onAuthStateChanged(function(user) { ... });
+    // A. SUPABASE AUTH चेक (सबसे पहले)
+    const { data: { user } } = await supabase.auth.getUser();
 
+    if (!user) {
+        // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
+        window.location.href = 'login.html'; 
+        return; // आगे का कोड न चलाएं
+    } else {
+        console.log("Admin is logged in:", user.email);
+    }
+    
     // --- Variables ---
     const navLinks = document.querySelectorAll('.admin-nav .nav-link');
     const sections = document.querySelectorAll('.admin-section');
     const addForm = document.getElementById('add-content-form');
     const screenshotFilesInput = document.getElementById('screenshot-files');
-    // ... बाकी वेरिएबल्स ...
+    const logoutBtn = document.getElementById('logout-btn'); 
 
+    // B. LOGOUT बटन इवेंट हैंडलर
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
 
-    // --- 3. Tab Switching Logic (आपका existing logic) ---
-    // (लॉजिक यहाँ जारी है...)
-    navLinks.forEach(link => { /* ... */ });
+    // --- Tab Switching Logic (आपका existing logic) ---
+    navLinks.forEach(link => { /* ... (लॉजिक यहाँ जारी है) */ });
 
-    // --- 4. Add Content Form Submission (Supabase UPDATED) ---
+    // --- Add Content Form Submission (Supabase INSERT) ---
     addForm.addEventListener('submit', async (e) => { 
         e.preventDefault();
         
         const screenshotFiles = screenshotFilesInput ? screenshotFilesInput.files : [];
         let screenshotUrls = [];
 
-        // A. Images को अपलोड करें (अगर मौजूद हैं)
+        // A. Images को अपलोड करें
         if (screenshotFiles.length > 0) {
             try {
                 alert('Images are being uploaded to Supabase Storage... Please wait.');
@@ -144,13 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
             posterUrl: document.getElementById('poster-url').value,
             description: document.getElementById('description').value,
             downloadLink: document.getElementById('download-link').value,
-            // स्क्रीनशॉट URLs को array के रूप में भेजें
             "screenshotUrls": screenshotUrls, 
-            // Supabase खुद ही 'created_at' timestamp जोड़ देगा
         };
 
         const { data, error } = await supabase
-            .from('movies') // आपके टेबल का नाम
+            .from('movies') 
             .insert([contentData]);
 
         if (error) {
