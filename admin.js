@@ -1,3 +1,48 @@
+// --- admin.js फाइल में (सबसे ऊपर) ---
+
+// 🚨 अपनी Supabase Keys के साथ जारी रखें...
+
+// Supabase क्लाइंट को initialize करें
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+// --- LOGOUT फंक्शन ---
+async function handleLogout() {
+    try {
+        // Firebase Logout
+        await firebase.auth().signOut();
+        alert('Successfully logged out!');
+        window.location.href = 'login.html'; // लॉगिन पेज पर रीडायरेक्ट करें
+    } catch (error) {
+        console.error("Logout Error:", error);
+        alert("Logout failed: " + error.message);
+    }
+}
+
+
+// --- DOMContentLoaded के अंदर, सभी लॉजिक से पहले ---
+document.addEventListener('DOMContentLoaded', () => {
+
+    // A. LOGIN/LOGOUT चेक
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+            // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
+            window.location.href = 'login.html'; 
+        } else {
+            console.log("Admin is logged in:", user.email);
+            // यहाँ आप Logout बटन को भी दिखा सकते हैं
+        }
+    });
+
+    // B. LOGOUT बटन इवेंट हैंडलर
+    const logoutBtn = document.getElementById('logout-btn'); // सुनिश्चित करें कि admin.html में यह बटन ID है
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+    
+    // ... बाकी Add Content Form Submission (आपका Supabase लॉजिक) यहाँ जारी रहता है ...
+
+});
 // --- admin.js फाइल (Supabase Storage & Database) ---
 
 // 🚨 अपनी वास्तविक Supabase Keys से बदलें 🚨
