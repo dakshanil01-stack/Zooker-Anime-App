@@ -1,4 +1,4 @@
-// --- admin.js फाइल (फिक्स्ड लॉगआउट के साथ) ---
+// --- admin.js फाइल (फाइनल फिक्स्ड वर्जन) ---
 
 // 🚨 महत्वपूर्ण: आपकी Keys सही हैं, लेकिन सार्वजनिक हैं
 const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
@@ -11,17 +11,17 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // --- 1. LOGOUT फंक्शन ---
 async function handleLogout() {
     try {
-        // पहले यह करें
-alert('Logout process started!');
-const { error } = await supabase.auth.signOut();
-// ...
+        console.log("Attempting Supabase Logout...");
+        // alert('Logout process started!'); // Debugging के लिए alert हटा दिया गया है
+        
+        // Supabase Logout
         const { error } = await supabase.auth.signOut();
         
         if (error) {
              console.error("Supabase Logout Error:", error);
              alert("Logout failed: " + error.message);
         } else {
-             alert('Successfully logged out!');
+             // alert('Successfully logged out!'); // Logout की पुष्टि के लिए alert हटा दिया गया है
              window.location.href = 'login.html'; 
         }
 
@@ -29,6 +29,20 @@ const { error } = await supabase.auth.signOut();
         console.error("Unexpected Logout Error:", error);
     }
 }
+
+
+// --- LOGOUT बटन सेटअप (यह हिस्सा DOMContentLoaded से पहले चलेगा) ---
+// यह सुनिश्चित करता है कि Logout बटन पर लिसनर Auth चेक से पहले जुड़ जाए।
+(function setupLogoutListener() {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout); 
+        console.log("Logout button listener attached successfully.");
+    }
+    // Note: अगर आप admin.html को <body> के अंत में admin.js से पहले लोड कर रहे हैं,
+    // तो setTimeout की जरूरत नहीं होनी चाहिए। 
+})(); 
+// ------------------------------------------------------------
 
 
 // --- 2. Storage Upload Helper Function (Supabase) ---
@@ -58,34 +72,41 @@ async function uploadFileAndGetUrl(file) {
 }
 
 
-// --- 3. DOMContentLoaded (फिक्स्ड) ---
+// --- 3. DOMContentLoaded (Auth Check और Form Logic) ---
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // --- Variables (Logout बटन सहित) ---
-    const logoutBtn = document.getElementById('logout-btn'); 
-    const navLinks = document.querySelectorAll('.admin-nav .nav-link');
-    const sections = document.querySelectorAll('.admin-section');
-    const addForm = document.getElementById('add-content-form');
-    const screenshotFilesInput = document.getElementById('screenshot-files');
-
-    // B. LOGOUT बटन इवेंट हैंडलर (इसे Auth चेक से पहले रखा गया है)
-    if (logoutBtn) {
-        // यह सुनिश्चित करता है कि बटन पर क्लिक इवेंट तुरंत काम करे
-        logoutBtn.addEventListener('click', handleLogout); 
-    }
-
-    // A. SUPABASE AUTH चेक (अब यह सुरक्षित रूप से 'await' कर सकता है)
+    // A. SUPABASE AUTH चेक
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
+        // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
         window.location.href = 'login.html'; 
         return; 
     } else {
         console.log("Admin is logged in:", user.email);
     }
     
-    // --- Tab Switching Logic (आपका existing logic) ---
-    navLinks.forEach(link => { /* ... (लॉजिक यहाँ जारी है) */ });
+    // --- Variables ---
+    const navLinks = document.querySelectorAll('.admin-nav .nav-link');
+    const sections = document.querySelectorAll('.admin-section');
+    const addForm = document.getElementById('add-content-form');
+    const screenshotFilesInput = document.getElementById('screenshot-files');
+    
+    // B. Logout बटन को यहाँ से हटा दिया गया है क्योंकि उसे setupLogoutListener() संभाल रहा है
+    
+    // --- Tab Switching Logic ---
+    navLinks.forEach(link => { 
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+            document.getElementById(targetId).classList.add('active-section');
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 
     // --- Add Content Form Submission (Supabase INSERT) ---
     addForm.addEventListener('submit', async (e) => { 
