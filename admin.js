@@ -11,6 +11,10 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // --- 1. LOGOUT फंक्शन ---
 async function handleLogout() {
     try {
+        // पहले यह करें
+alert('Logout process started!');
+const { error } = await supabase.auth.signOut();
+// ...
         const { error } = await supabase.auth.signOut();
         
         if (error) {
