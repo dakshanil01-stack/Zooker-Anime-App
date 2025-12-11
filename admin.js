@@ -1,27 +1,25 @@
-// --- admin.js फाइल (फाइनल फिक्स्ड वर्जन) ---
+// --- admin.js फाइल (FINAL FIXED VERSION) ---
 
 // 🚨 महत्वपूर्ण: आपकी Keys सही हैं, लेकिन सार्वजनिक हैं
 const SUPABASE_URL = 'https://jdndxourrdcfxwegvttr.supabase.co'; 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkbmR4b3VycmRjZnh3ZWd2dHRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNzQyMjgsImV4cHA6MjA4MDk1MDIyOH0.Ffw5ojAiv2W_yTS2neZw5_kvTXXuo5pQRfBwhNRssnM'; 
 
-// Supabase क्लाइंट को initialize करें
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ✅ क्लाइंट इनिशियलाइज़ेशन फिक्स: 'supabaseClient' वेरिएबल का उपयोग करें
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
 // --- 1. LOGOUT फंक्शन ---
 async function handleLogout() {
     try {
         console.log("Attempting Supabase Logout...");
-        // alert('Logout process started!'); // Debugging के लिए alert हटा दिया गया है
         
-        // Supabase Logout
-        const { error } = await supabase.auth.signOut();
+        // Supabase Logout: supabaseClient का उपयोग करें
+        const { error } = await supabaseClient.auth.signOut();
         
         if (error) {
              console.error("Supabase Logout Error:", error);
              alert("Logout failed: " + error.message);
         } else {
-             // alert('Successfully logged out!'); // Logout की पुष्टि के लिए alert हटा दिया गया है
              window.location.href = 'login.html'; 
         }
 
@@ -32,15 +30,12 @@ async function handleLogout() {
 
 
 // --- LOGOUT बटन सेटअप (यह हिस्सा DOMContentLoaded से पहले चलेगा) ---
-// यह सुनिश्चित करता है कि Logout बटन पर लिसनर Auth चेक से पहले जुड़ जाए।
 (function setupLogoutListener() {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout); 
         console.log("Logout button listener attached successfully.");
     }
-    // Note: अगर आप admin.html को <body> के अंत में admin.js से पहले लोड कर रहे हैं,
-    // तो setTimeout की जरूरत नहीं होनी चाहिए। 
 })(); 
 // ------------------------------------------------------------
 
@@ -49,7 +44,8 @@ async function handleLogout() {
 async function uploadFileAndGetUrl(file) {
     const uniqueFileName = `public/${Date.now()}_${file.name}`; 
 
-    const { data, error } = await supabase.storage
+    // supabaseClient का उपयोग करें
+    const { data, error } = await supabaseClient.storage
         .from('screenshots') 
         .upload(uniqueFileName, file, {
             cacheControl: '3600',
@@ -60,7 +56,8 @@ async function uploadFileAndGetUrl(file) {
         throw new Error("Supabase Storage Upload Failed: " + error.message);
     }
     
-    const { data: publicUrlData } = supabase.storage
+    // supabaseClient का उपयोग करें
+    const { data: publicUrlData } = supabaseClient.storage
         .from('screenshots')
         .getPublicUrl(uniqueFileName); 
 
@@ -75,8 +72,8 @@ async function uploadFileAndGetUrl(file) {
 // --- 3. DOMContentLoaded (Auth Check और Form Logic) ---
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // A. SUPABASE AUTH चेक
-    const { data: { user } } = await supabase.auth.getUser();
+    // A. SUPABASE AUTH चेक: supabaseClient का उपयोग करें
+    const { data: { user } } = await supabaseClient.auth.getUser();
 
     if (!user) {
         // यदि यूज़र लॉग इन नहीं है, तो उसे लॉगिन पेज पर भेज दें
@@ -92,9 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addForm = document.getElementById('add-content-form');
     const screenshotFilesInput = document.getElementById('screenshot-files');
     
-    // B. Logout बटन को यहाँ से हटा दिया गया है क्योंकि उसे setupLogoutListener() संभाल रहा है
-    
-    // --- Tab Switching Logic ---
+    // --- Tab Switching Logic (कोई बदलाव नहीं) ---
     navLinks.forEach(link => { 
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -115,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const screenshotFiles = screenshotFilesInput ? screenshotFilesInput.files : [];
         let screenshotUrls = [];
 
-        // A. Images को अपलोड करें
+        // A. Images को अपलोड करें (uploadFileAndGetUrl फिक्स किया गया है)
         if (screenshotFiles.length > 0) {
             try {
                 alert('Images are being uploaded to Supabase Storage... Please wait.');
@@ -133,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         
-        // B. Supabase Database में डेटा सेव करें (movies टेबल)
+        // B. Supabase Database में डेटा सेव करें (movies टेबल): supabaseClient का उपयोग करें
         const contentData = {
             title: document.getElementById('title').value,
             releaseDate: document.getElementById('release-date').value,
@@ -145,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             "screenshotUrls": screenshotUrls, 
         };
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('movies') 
             .insert([contentData]);
 
